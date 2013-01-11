@@ -1,0 +1,18 @@
+Package: NBGOF
+Type: Package
+Title: Simulation-based Goodness-of-Fit Tests for RNA-Seq
+      Data Analysis
+Description: An R package for implementing
+      goodness-of-fit tests for RNA-Seq data under
+      different negative binomial dispersion models
+Version: 0.1.1
+License: MIT
+Author: Gu Mi <mig@stat.oregonstate.edu>, Yanming Di
+      <diy@stat.oregonstate.edu>, Daniel Schafer
+      <schafer@science.oregonstate.edu>
+Maintainer: Gu Mi <mig@stat.oregonstate.edu>
+Depends: R (>= 2.15)
+LazyData: yes
+LazyLoad: yes
+License.1: GPL-2
+URL: http://people.oregonstate.edu/~mig
