@@ -1,5 +1,5 @@
 
-#' @title Empirical Probability Plot
+#' @title Plot Methods for "gofm" Objects
 #'
 #' @description A plot method for empirical probability plot based on a "gofm" 
 #' object obtained from the \code{\link{nb_gof_m}} outputs
@@ -9,37 +9,40 @@
 #' @param data.note a note on how data are simulated or the source of data
 #' @param leg.cex size of the legend fonts
 #' @param put.lab logical value: whether to put gene index labels on the plot
-#' @param ... 
-#'
-#' @rdname plot
+#' @param ... for future use
+#' 
 #' @method plot gofm
+#' @rdname plot.gofm
 #' @export
 #' 
-#' @details This is a generic function for plotting goodness-of-fit test results.
+#' @importFrom calibrate textxy
 #' 
-#' @return A plot
+#' @details This is a generic function for plotting goodness-of-fit test results.
+#' @usage plot(x, conf.env=0.95, data.note=NULL, leg.cex=1, put.lab = TRUE, ...)
+#' 
+#' @return A diagnostic plot for evaluating model adequacy. Each gene index (row index) 
+#' that falls outside a pre-specified confidence envelope is in red color and labels (if
+#' \code{put.lab=TRUE}).
+#' 
+#' @seealso See \code{\link{nb_gof_m}} for simulated data examples
 #' 
 #' @author Gu Mi, Yanming Di, Dan Schafer
 #' 
-plot <- function(x, ...) {
- UseMethod("plot", x)
-}
-
-plot.gofm <- function(x, ..., conf.env=0.95, data.note="", leg.cex=1, put.lab = TRUE){
+plot.gofm <- function(x, conf.env=0.95, data.note=NULL, leg.cex=1, put.lab = TRUE, ...){
   
   ## quantities from a "gofm" object:
   model.fit <- x$model.fit
   counts.dim = x$counts.dim
   xx = x$design.mat
   pv.P <- x$pear.pval
-  pv.T <- x$new.pval
-  stat.sim <- x$stat.sim
-  stat.sim.T <- x$stat.sim.T
+  #pv.T <- x$new.pval
+  #stat.sim <- x$stat.sim
+  #stat.sim.T <- x$stat.sim.T
   o.res.sim <- x$o.res.sim
   res.typic <- x$typ.res.sim  # for x-axis plotting
   res.obs <- x$o.res0         # for y-axis plotting
-  stat0 <- x$stat0
-  stat0.T <- x$stat0.T
+  #stat0 <- x$stat0
+  #stat0.T <- x$stat0.T
   sim <- x$sim
   n.pts <- length(res.typic)      # number of points
   
@@ -62,10 +65,10 @@ plot.gofm <- function(x, ..., conf.env=0.95, data.note="", leg.cex=1, put.lab = 
   
   ## plot epp:
   plot(res.typic[!out.ind], res.obs[!out.ind], xlim = c(min.x, max.x), 
-       ylim = c(min.y, max.y), xlab =  "Residuals from Simulations",
-       ylab =  "Original Residuals",
+       ylim = c(min.y, max.y), xlab =  "Expected Ordered Res. from NB (via Simulation)",
+       ylab =  "Ordered Pearson Residuals",
        main = paste("Testing ", model.fit, " Model Fit", "\n",
-                    " (sim = ", sim, ", CI = ", conf.env*100, "%)", 
+                    " (sim size = ", sim, ", CI = ", conf.env*100, "%)", 
                     sep=""),...)
   points(res.typic[out.ind], res.obs[out.ind], col="red", pch=".", cex=2)
   abline(a=0,b=1,col="blue",lty="dashed")
@@ -82,11 +85,42 @@ plot.gofm <- function(x, ..., conf.env=0.95, data.note="", leg.cex=1, put.lab = 
   }
   
   legend("topleft",bty="n", legend=c(
-    paste("Pear.T.pval = ", pv.P),
-    paste("New.T.pval = ", pv.T),
-    paste("Pear.Stat = ", round(stat0,2)),
-    paste("Dim.Count = ", counts.dim),
-    paste("#outside = ", nout, " (",round(p.hat*100,2),"%)", sep="")),
+    paste("P-value (par.boot.Pear-stat) = ", pv.P),
+    #paste("New.T.pval = ", pv.T),
+    #paste("Pear.Stat = ", round(stat0,2)),
+    paste("Count matrix dimension = ", counts.dim),
+    paste("#outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep="")),
          cex=leg.cex)   
-  legend("bottomright", bty="n", legend=paste("Data:", data.note)) 
+  legend("bottomright", bty="n", legend=paste("Actual Dist.:", data.note)) 
+  
+  invisible()
 }
+
+
+# #' Generic Plotting Function
+# #' 
+# #' @param model object of type gofv or gofm
+# #' @param ... for future use
+# #' @export 
+# #' @return a plot
+# #' 
+# plot <- function(x, ...) {
+#   UseMethod("plot", x)
+# }
+
+# #' Default Plotting Function
+# #' 
+# #' The default method for plot will return an error.  
+# #' Since currently we have two types of response, vector and matrix, with classes
+# #' "gofv" and "gofm" designed for effective plotting, it is not possible to write 
+# #' a generic function to cater for any type of object. 
+# #' 
+# #' @param x an object
+# #' @param ... for future use
+# #' @method plot default
+# #' @export 
+# plot.default <- function(x, ...){
+#   xx <- class(x)
+#   stop(paste("No plot method defined for class", xx))
+#   return(NULL)
+# }

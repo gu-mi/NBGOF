@@ -1,29 +1,40 @@
-\name{/Users/mig/OSU/R_pkg/NBGOF_dir/NBGOF-package}
-\alias{/Users/mig/OSU/R_pkg/NBGOF_dir/NBGOF-package}
 \docType{package}
-\title{
-~~ package title ~~
-}
+\name{NBGOF-package}
+\alias{NBGOF}
+\alias{NBGOF-package}
+\title{Simulation-based Goodness-of-Fit Tests for Evaluating the Adequacy of
+Negative Binomial Regression/Dispersion Models}
 \description{
-~~ A concise (1-5 lines) description of the package ~~
+  Motivated by the needs for evaluating negative binomial
+  (NB) model adequacy based on different dispersion models,
+  this package provides a simulation-based approach to
+  check the goodness-of-fit for a given NB regression
+  model.
 }
 \details{
-~~ An overview of how to use the package, including the most ~~
-~~ important functions ~~
+  It can be used to test the goodness-of-fit for a variety
+  of negative binomial dispersion models in popular
+  R/Bioconductor packages, including \itemize{ \item NB
+  genewise dispersion model in the \code{\link{NBPSeq}}
+  package \item NBP dispersion model in the
+  \code{\link{NBPSeq}} package \item NB common dispersion
+  model in the \code{\link{edgeR}} package \item NB tagwise
+  dispersion model in the \code{\link{edgeR}} package \item
+  NB trended dispersion model in the \code{\link{edgeR}}
+  package }
 }
 \author{
-~~ The author and/or maintainer of the package ~~
+  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+  Schafer
+
+  Maintainer: Gu Mi <http://people.oregonstate.edu/~mig>
 }
 \references{
-~~ Literature or other references for background information ~~
+  \url{https://github.com/gu-mi/NBGOF/wiki/}
 }
-~~ Optionally other standard keywords, one per line, from ~~
-~~ file KEYWORDS in the R documentation directory ~~
-\keyword{ package }
 \seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
+  See \code{\link{nb_gof_v}} and \code{\link{nb_gof_m}} for
+  examples on simulated datasets
 }
-\examples{
-~~ simple examples of the most important functions ~~
-}
+\keyword{package}
+

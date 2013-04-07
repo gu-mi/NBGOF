@@ -1,0 +1,13 @@
+*.[oa]
+*~
+*#
+*.html
+*.Rmd
+*.Rcheck/
+.Rpackages
+.Rhistory
+.Rprofile
+.RData
+.DS_Store
+.Rproj.user
+.Rbuildignore

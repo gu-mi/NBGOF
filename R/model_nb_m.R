@@ -3,28 +3,34 @@
 ## use nb.regression.1() function for NB2 fitting 
 ## (avoid convergence issues in MASS::glm.nb)
 
-# update: 2013/01/08
+# update: 2013/01/10
 
-#' @title Modeling NB genewise model with MLE on original and simulated datasets
+################################################################################
+#' @title Modeling NB genewise dispersion model with MLE on original and simulated 
+#' datasets
 #' 
 #' @description This function is designed to fit an NB regression model with
 #' genewise dispersions using the maximum likelihood estimator. The output of
-#' this function will be passed to the main GOF function
+#' this function will be passed to the main GOF function.
+#' 
+#' @details Details here
+#' 
+#' @usage
+#' model_nb_m(counts, x, lib.sizes=colSums(counts))
 #' 
 #' @param counts an m-by-n count matrix of non-negative integers. For a typical
-#' RNA-Seq experiment, this is the read counts with m genes and n samples
-#' @param x an n-by-p design matrix
+#' RNA-Seq experiment, this is the read counts with m genes and n samples.
+#' @param x an n-by-p design matrix.
 #' @param lib.sizes library sizes of a RNA-Seq experiment. Default is the column
-#' sums of the \code{counts} matrix
+#' sums of the \code{counts} matrix.
 #' 
-#' @return An object called "model_nb_m_obj" to be passed to the main
-#' \code{\link{nb_gof_m}} function
+#' @return A list of quantities to be used in the main \code{\link{nb_gof_m}} function.
 #' 
-#' @author Gu Mi <\url{http://people.oregonstate.edu/~mig}>
+#' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
 #' @references \url{https://github.com/gu-mi/NBGOF/wiki/}
 #' 
-model_nb_m <- function(counts, x, lib.sizes = colSums(counts)){
+model_nb_m <- function(counts, x, lib.sizes=colSums(counts)){
   
   nc = dim(counts)[2]  
   

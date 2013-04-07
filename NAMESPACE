@@ -1,2 +1,7 @@
-S3method(plot)
+S3method(plot,gofm)
+S3method(plot,gofv)
 export(nb_gof_m)
+export(nb_gof_v)
+import(NBPSeq)
+import(edgeR)
+importFrom(calibrate,textxy)

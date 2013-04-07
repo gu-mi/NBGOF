@@ -1,42 +1,42 @@
 
 ## For NBP model fitting on the original & simulated dataset
 
-# update: 2013/01/08
+# update: 2013/01/10
 
-#' @title Modeling NBP genewise model with the maximum likelihood estimator (MLE) on 
-#' original and simulated datasets
+################################################################################
+#' @title Modeling NBP genewise dispersion model with the maximum likelihood estimator 
+#' (MLE) on original and simulated datasets
 #' 
 #' @description This function is designed to fit an NBP regression model with
 #' genewise dispersions using the adjusted profile likelihood estimator. See details
-#' below. The output of this function will be passed to the main GOF function
+#' below. The output of this function will be passed to the main GOF function.
 #' 
 #' @details Under the NB model, the mean-variance relationship of a single read count 
-#' satisfies $\sigma_{ij}^2 = \mu_{ij} + \phi_{ij} \mu_{ij}^2$. For applying the NBP 
+#' satisfies \eqn{\sigma_{ij}^2 = \mu_{ij} + \phi_{ij} \mu_{ij}^2}. For applying the NBP 
 #' model to RNA-Seq data, we consider the "log-linear-rel-mean" method assuming a 
-#' parametric dispersion model
-#' \[
-#' \ohi_{ij} = \alpha_0 + \alpha_1 \log(\pi_{ij}),
-#' \]
-#' where $\pi_{ij} = \mu_{ij}/(N_j R_j) is the relative mean frequency after 
-#' normalization. The parameters $(\alpha_0, \alpha_1)$ in this dispersion model 
+#' parametric dispersion model \eqn{\phi_{ij} = \alpha_0 + \alpha_1 \log(\pi_{ij})},
+#' where \eqn{\pi_{ij} = \mu_{ij}/(N_j R_j)} is the relative mean frequency after 
+#' normalization. The parameters \eqn{(\alpha_0, \alpha_1)} in this dispersion model 
 #' are estimated by maximizing the adjusted profile likelihood. See the 
 #' \code{\link{estimate.dispersion}} function in the \code{\link{NBPSeq}} package
 #' for more information.
 #' 
+#' @usage
+#' model_nbp_m(counts, x, lib.sizes=colSums(counts))
+#' 
 #' @param counts an m-by-n count matrix of non-negative integers. For a typical
-#' RNA-Seq experiment, this is the read counts with m genes and n samples
-#' @param x an n-by-p design matrix
+#' RNA-Seq experiment, this is the read counts with m genes and n samples.
+#' @param x an n-by-p design matrix.
 #' @param lib.sizes library sizes of a RNA-Seq experiment. Default is the column
-#' sums of the \code{counts} matrix
+#' sums of the \code{counts} matrix.
 #' 
-#' @return An object called "model_nbp_m_obj" to be passed to the main
-#' \code{\link{nb_gof_m}} function
+#' @return A list of quantities to be used in the main \code{\link{nb_gof_m}} function.
 #' 
-#' @author Gu Mi <\url{http://people.oregonstate.edu/~mig}>
+#' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
 #' @references \url{https://github.com/gu-mi/NBGOF/wiki/}
 #' 
-model_nbp_m <- function(counts, x, lib.sizes = colSums(counts)){
+model_nbp_m <- function(counts, x, lib.sizes=colSums(counts)){
   
   nc = dim(counts)[2]
   
