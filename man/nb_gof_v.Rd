@@ -3,7 +3,8 @@
 \title{Main Function of Implementing Simulation-based Goodness-of-Fit Tests on
 the regression of a univariate count response on one or more explanatory variables}
 \usage{
-  nb_gof_v(y, x, lib.sizes=NULL, sim=99, model.fit = "NB2")
+  nb_gof_v(y, x, lib.sizes=NULL, sim=999, model.fit =
+    "NB2")
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
@@ -47,33 +48,33 @@ library(NBGOF)
 
 ## basic set-up of the model
 seed <- 31513
-n <- 30
-beta.v <- c(-2,-1)
+n <- 100
+beta.v <- c(1, -3)
 
 ## specify a design matrix
-X <- cbind(rep(1,n),seq(1,4,length=n))
-s <- rep(1e5,n)
+X <- cbind(rep(1,n),seq(1.5, 3.5, length=n))
+s <- rep(1e6, n)
 mu <- s * exp(X \%*\% beta.v)
 pi <- mu/s  # relative frequency
-sim <- 99
+sim <- 499
 
 ## simulate an n-by-1 vector for the read counts of a single gene
 set.seed(seed)
 alpha1 = -1  # NB1 data
-phi0 = 0.002
+phi0 = 0.0001
 alpha0 <- log(phi0);
 phi.nb1 <- phi0 * pi^alpha1
 y.nb1 <- rnbinom(n, size=1/phi.nb1, mu=mu)
 
-## implement the GOF test for testing an NB regression model adequacy
+## implement the GOF test for testing an NB regression model adequacy #' of NB2 and NBP models
 # pdf("gofv-result.pdf", width=14, height=7)
 par(mfrow=c(1,2))
 # NB2 model fit
 gf.nb1.nb2 <- nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NB2")
-plot(gf.nb1.nb2, conf.env=0.9, data.note = "NB1", pch=".", cex=5)
+plot(gf.nb1.nb2, conf.env=0.95, data.note = "NB1", pch=".", cex=5)
 # NBP model fit
 gf.nb1.nbp <- nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NBP")
-plot(gf.nb1.nbp, conf.env=0.9, data.note = "NB1", pch=".", cex=5)
+plot(gf.nb1.nbp, conf.env=0.95, data.note = "NB1", pch=".", cex=5)
 # dev.off()
 }
 \author{

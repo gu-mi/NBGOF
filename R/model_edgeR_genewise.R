@@ -1,11 +1,7 @@
 
-## For NB2 model fitting on the original & simulated datasets
 ## dispersion estimation: tagwise dispersion in edgeR (prior.df = 0) -- call "genewise"
-
 # this is entirely gene-wise dispersion: each gene has its unique dispersion,
 # without any weighting from shared APL towards a global dispersion trend
-
-# update: 2013/01/10
 
 ################################################################################
 #' @title Modeling NB genewise dispersion model with the adjusted profile likelihood
@@ -67,8 +63,7 @@ model_edgeR_genewise <- function(counts, x, lib.sizes=colSums(counts)){
                          res.mat = res.m,
                          res.omat = res.om,
                          ord.res.vec = ord.res.v,
-                         phi.hat.mat = phi.hat.m,
-                         fit.gen = gen.fit
+                         phi.hat.mat = phi.hat.m
   )
   return(model_gen_m_obj)
 }

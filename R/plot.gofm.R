@@ -26,7 +26,7 @@
 #' 
 #' @seealso See \code{\link{nb_gof_m}} for simulated data examples
 #' 
-#' @author Gu Mi, Yanming Di, Dan Schafer
+#' @author Gu Mi, Yanming Di, Daniel Schafer
 #' 
 plot.gofm <- function(x, conf.env=0.95, data.note=NULL, leg.cex=1, put.lab = TRUE, ...){
   

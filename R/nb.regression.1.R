@@ -1,9 +1,6 @@
 
-## code from Yanming on 2012/11/08 (concise version of estimate.disp.1.R)
-
-## Estimate dispersion for each gene separately
-
 library(numDeriv);
+
 
 irls.nb = function(y, s, x, phi, beta0, ..., print.level=0) {
   m = dim(y)[1];
@@ -15,7 +12,7 @@ irls.nb = function(y, s, x, phi, beta0, ..., print.level=0) {
   if (print.level > 0)
     print("Estimating NB regression coefficients using IRLS.");
   
-  res=list(mu=matrix(NA, m, n), beta=matrix(NA, m, p), phi=matrix(NA, m, n),
+  res=list(mu=matrix(NA, m, n), beta=matrix(NA, m, p),
            conv=logical(m), iter=numeric(m));
   
   if (print.level > 1) {
@@ -26,7 +23,8 @@ irls.nb = function(y, s, x, phi, beta0, ..., print.level=0) {
   for (i in 1:m) {
     if (print.level > 1) {
       setTxtProgressBar(pb, i/m);
-    }   
+    }
+    
     res0 = irls.nb.1(y[i,], s, x, phi[i,], beta0,
                      ...,
                      print.level=print.level-1);
@@ -42,24 +40,50 @@ irls.nb = function(y, s, x, phi, beta0, ..., print.level=0) {
 }
 
 
-## For fitting NB2 regression model, when glm.nb() has convergence issues
-
-irls.nb.1 <- function(y, s, x, phi, beta0=rep(NA,p),
-                      maxit=50, tol.mu=1e-3/length(y), print.level=0) {
+##' Estimate the regression coefficients in an NB GLM model with known
+##' dispersion parameters
+##'
+##' This function estimate <beta> using iterative reweighted least
+##' squares (IRLS) algorithm, which is equivalent to Fisher scoring.
+##' We used the glm.fit code as a template.
+##'
+##' @title Estimate the regression coefficients in an NB GLM model
+##' @param y an n vector of counts
+##' @param s a scalar or an n vector of effective library sizes
+##' @param x a n by p design matrix
+##' @param phi a scalar or an n-vector of dispersion parameters
+##' @param beta0 a vector specifying known and unknown components of
+##' the regression coefficients: non-NA components are hypothesized
+##' values of beta, NA components are free components
+##' @param maxit 
+##' @param tol.mu convergence criteria
+##' @param print.level 
+##' @return a list of the following components:
+##'  beta, a p-vector of estimated regression coefficients
+##'  mu, an n-vector of estimated mean values
+##'  converged, logical. Was the IRLS algorithm judged to have converged?
+##'  @useDynLib NBGOF Cdqrls
+irls.nb.1 = function(y, s, x, phi, beta0=rep(NA,p),
+                     maxit=50, tol.mu=1e-3/length(y), print.level=0) {
   
   nobs = as.integer(dim(x)[1]);
   p = as.integer(dim(x)[2]);
   
   ## Indices to fixed and free components of beta
-  id1 = (1:p)[is.na(beta0)];  # NA beta's
-  id0 = (1:p)[!is.na(beta0)]; # non-NA beta
-  q = length(id0);  # number of beta's (non-NA) to test (currently =1)
+  id1 = (1:p)[is.na(beta0)];
+  id0 = (1:p)[!is.na(beta0)];
+  q = length(id0);
   nvars = p - q;
+  
   
   ## Offset
   beta = beta0;
   offset = matrix(x[, id0], nobs, q) %*% beta[id0];
   
+  ## Initial estiamte of beta
+  ## eta = log((y+0.5)/s);
+  ## beta[id1] = qr.solve(x[, id1], eta - offset);
+  ## eta = drop(x %*% beta);
   mu = y + (y==0)/6;
   eta = log(mu/s);
   
@@ -72,28 +96,34 @@ irls.nb.1 <- function(y, s, x, phi, beta0=rep(NA,p),
     if (any(varmu == 0))
       stop("0s in V(mu)")
     
+    ## mu.eta.val = mu;
+    ## if (any(is.na(mu.eta.val))) stop("NAs in d(mu)/d(eta)")
+    ## drop observations for which w will be zero
+    ## good = (mu.eta.val != 0)
     z = eta - offset + (y - mu)/mu;
     w = drop(mu/sqrt(varmu));
     
     ## call Fortran code to perform weighted least square
-    ## cf. glm.fit()
     epsilon = 1e-7;
-    fit = .Fortran("dqrls",
-                   qr = x[,id1] * w, n = nobs,
-                   p = nvars, y = w * z, ny = 1L,
-                   tol = epsilon,
-                   coefficients = double(nvars),
-                   residuals = double(nobs),
-                   effects = double(nobs),
-                   rank = integer(1L),
-                   pivot = 1L:nvars,
-                   qraux = double(nvars),
-                   work = double(2 * nvars),
-                   PACKAGE = "base");
+    
+    ## call Fortran code via C wrapper
+    fit = .Call(Cdqrls, x[, id1, drop=FALSE] * w,  w * z, epsilon);
+    
+    ##    fit = .Fortran("dqrls",
+    ##                    qr = x[,id1] * w, n = nobs,
+    ##                    p = nvars, y = w * z, ny = 1L,
+    ##                    tol = epsilon,
+    ##                    coefficients = double(nvars),
+    ##                    residuals = double(nobs),
+    ##                    effects = double(nobs),
+    ##                    rank = integer(1L),
+    ##                    pivot = 1L:nvars,
+    ##                    qraux = double(nvars),
+    ##                    work = double(2 * nvars),
+    ##                    PACKAGE = "base");
     
     if (any(!is.finite(fit$coefficients))) {
-      warning(gettextf("non-finite coefficients at iteration %d", iter),
-              domain = NA);
+      warning(gettextf("non-finite coefficients at iteration %d", iter), domain = NA);
       break
     }
     
@@ -120,7 +150,6 @@ irls.nb.1 <- function(y, s, x, phi, beta0=rep(NA,p),
   list(mu=mu, beta=beta, conv=conv, iter=iter);
 }
 
-
 log.likelihood.nb= function(kappa, mu, y) {
   ## p = mu/(mu+kappa);
   ## l0= sum(log(gamma(kappa+y)) - log(gamma(kappa)) - log(gamma(1+y))
@@ -129,18 +158,6 @@ log.likelihood.nb= function(kappa, mu, y) {
   sum(dnbinom(y, kappa, mu=mu, log=TRUE));
 }
 
-pl.phi.1 = function(phi, y, lib.sizes, xx,
-                    beta0=rep(NA, dim(xx)[2]),
-                    log.dispersion=TRUE,
-                    print.level=0) {
-  
-  if (log.dispersion) {
-    phi = exp(phi);
-  }
-  fit = irls.nb.1(y, lib.sizes, xx, phi, beta0);
-  log.likelihood.nb(1/phi, fit$mu, y);
-  
-}
 
 mle.phi.1 = function(likelihood, interval, y, s, x, beta0, 
                      information=TRUE,
@@ -161,10 +178,22 @@ mle.phi.1 = function(likelihood, interval, y, s, x, beta0,
   } else {
     h = NA;
   }
-  
   ## Return the MLE
   list(maximum=obj$maximum, information=h);
 }
+
+
+pl.phi.1 = function(phi, y, lib.sizes, xx,
+                    beta0=rep(NA, dim(xx)[2]),
+                    log.dispersion=TRUE,
+                    print.level=0) {
+  if (log.dispersion) {
+    phi = exp(phi);
+  }
+  fit = irls.nb.1(y, lib.sizes, xx, phi, beta0);
+  log.likelihood.nb(1/phi, fit$mu, y);
+}
+
 
 estimate.disp.1 = function(counts, lib.sizes, x, beta0, 
                            likelihood, interval = c(-20, 7),
@@ -189,7 +218,6 @@ estimate.disp.1 = function(counts, lib.sizes, x, beta0,
     i.hat[i] = res$information;
   }
   #close(pb);
-  
   list(estimate=phi, information=i.hat);
 }
 

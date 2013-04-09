@@ -1,0 +1,81 @@
+\name{irls.nb.1}
+\alias{irls.nb.1}
+\title{Estimate the regression coefficients in an NB GLM model}
+\usage{
+  irls.nb.1(y, s, x, phi, beta0 = rep(NA, p), maxit = 50,
+    tol.mu = 0.001/length(y), print.level = 0)
+
+  irls.nb.1(y, s, x, phi, beta0 = rep(NA, p), maxit = 50,
+    tol.mu = 0.001/length(y), print.level = 0)
+}
+\arguments{
+  \item{y}{an n vector of counts}
+
+  \item{s}{a scalar or an n vector of effective library
+  sizes}
+
+  \item{x}{a n by p design matrix}
+
+  \item{phi}{a scalar or an n-vector of dispersion
+  parameters}
+
+  \item{beta0}{a vector specifying known and unknown
+  components of the regression coefficients: non-NA
+  components are hypothesized values of beta, NA components
+  are free components}
+
+  \item{maxit}{}
+
+  \item{tol.mu}{convergence criteria}
+
+  \item{print.level}{}
+
+  \item{y}{an n vector of counts}
+
+  \item{s}{a scalar or an n vector of effective library
+  sizes}
+
+  \item{x}{a n by p design matrix}
+
+  \item{phi}{a scalar or an n-vector of dispersion
+  parameters}
+
+  \item{beta0}{a vector specifying known and unknown
+  components of the regression coefficients: non-NA
+  components are hypothesized values of beta, NA components
+  are free components}
+
+  \item{maxit}{}
+
+  \item{tol.mu}{convergence criteria}
+
+  \item{print.level}{}
+}
+\value{
+  a list of the following components: beta, a p-vector of
+  estimated regression coefficients mu, an n-vector of
+  estimated mean values converged, logical. Was the IRLS
+  algorithm judged to have converged?
+
+  a list of the following components: beta, a p-vector of
+  estimated regression coefficients mu, an n-vector of
+  estimated mean values converged, logical. Was the IRLS
+  algorithm judged to have converged?
+}
+\description{
+  Estimate the regression coefficients in an NB GLM model
+  with known dispersion parameters
+
+  Estimate the regression coefficients in an NB GLM model
+  with known dispersion parameters
+}
+\details{
+  This function estimate <beta> using iterative reweighted
+  least squares (IRLS) algorithm, which is equivalent to
+  Fisher scoring. We used the glm.fit code as a template.
+
+  This function estimate <beta> using iterative reweighted
+  least squares (IRLS) algorithm, which is equivalent to
+  Fisher scoring. We used the glm.fit code as a template.
+}
+

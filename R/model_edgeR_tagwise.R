@@ -1,8 +1,5 @@
 
-## For NB2 model fitting on the original & simulated datasets
 # dispersion estimation: tagwise dispersion in edgeR (default with shrinkage)
-
-# update: 2013/01/11
 
 ################################################################################
 #' @title Modeling NB tagwise dispersion model with the adjusted profile likelihood
@@ -39,16 +36,8 @@
 #' 
 model_edgeR_tagwise <- function(counts, x, lib.sizes=colSums(counts)){
   
-#   nr = dim(counts)[1]
-#   nc = dim(counts)[2]
-#   n = nr * nc
-  
-  # initializations
-#   mu.hat.m = matrix(0, nr = nr, nc = nc)
-#   phi.hat.m = matrix(0, nr = nr, nc = nc)
-#   res.m = matrix(0, nr = nr, nc = nc)
-  
   ## edgeR tagwise dispersion:
+  
   # convert model matrix into group index
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
                    labels = seq(ncol(x)))
@@ -73,7 +62,6 @@ model_edgeR_tagwise <- function(counts, x, lib.sizes=colSums(counts)){
                          res.omat = res.om,
                          ord.res.vec = ord.res.v,
                          phi.hat.mat = phi.hat.m
-                         #fit.tag = tag.fit
   )
   return(model_tag_m_obj)
 }

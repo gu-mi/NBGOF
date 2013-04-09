@@ -1,8 +1,6 @@
 
 ## For NBP model fitting on the original & simulated dataset
 
-# update: 2013/01/13
-
 ################################################################################
 #' @title Modeling NBP regression model with MLE on original and simulated 
 #' datasets
@@ -40,12 +38,10 @@ model_nbp_v <- function(y, x, lib.sizes=NULL){
   mu <- fit$mu
   phi <- fit$phi
   res.v <- fit$p.res
-  ord.res.v <- sort(res.v)
   
   # save as a list
   model_nbp_v_obj = list(mu.hat.v = mu,
                          res.vec = res.v,
-                         ord.res.vec = ord.res.v,
                          phi = phi
                          )
   return(model_nbp_v_obj)

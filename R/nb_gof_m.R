@@ -1,11 +1,9 @@
 
-## Main function for GOF test, in the form of a count matrix
+## Main function for GOF test for multivariate response
 
 # dispersion models expand to the following:
 # NB, NBP, edgeR-common, edgeR-genewise, edgeR-tagwise, edgeR-trended
 # ordered sim res matrix includes the original residual vector <--> (R+1) on denom.
-
-# update: 2013/01/13
 
 ################################################################################
 #' @title Main Function of Implementing Simulation-based Goodness-of-Fit Tests on a 
@@ -105,20 +103,27 @@
 #' plot(ftrd.nb2c, conf.env=conf.env, data.note="NB2", col="azure4", pch=".", cex=3)
 #' # dev.off()
 #' 
+#' ## summarize the GOF test results:
+#' summary(fnb2.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
+#' summary(fnbp.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
+#' summary(fcom.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
+#' summary(fgen.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
+#' summary(ftag.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
+#' summary(ftrd.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
+
 nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="NB"){
   
   stopifnot(model.fit %in% c("NB","NBP","edgeR-common","edgeR-genewise",
                              "edgeR-tagwise","edgeR-trended"))
   
-  nr = dim(counts)[1]
-  nc = dim(counts)[2]
-  n = nr * nc
-  counts.dim = paste(dim(counts)[1],"x",dim(counts)[2])
+  m = dim(counts)[1]
+  n = dim(counts)[2]
+  N = m * n
+  counts.dim = paste(m,"x",n)
   
   ## initialize simulation variables
-  ord.res.sim.mat <- matrix(0, nrow = (sim+1), ncol = n)   # ordered residual matrix
-  stat.sim <- numeric(sim)   # Pearson chi-sq test stat
-  #stat.sim.T <- numeric(sim) # new test stat (by Dan)
+  ord.res.sim.mat <- matrix(0, nrow = (sim+1), ncol = N)   # ordered residual matrix
+  stat.sim.G <- numeric(sim)   # orthogonal distances
   
   #### -----------------------------------------------------------------
   if (model.fit == "NB"){
@@ -131,7 +136,7 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
     pb = txtProgressBar(style=3)
     for (i in 1:sim){
       setTxtProgressBar(pb, i/sim)
-      y.mat.h = rnbinom(n=n, mu=mu.hat.mat0, size=1/phi.hat.mat0)
+      y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       mnb2.h = model_nb_m(y.mat.h, x, lib.sizes=lib.sizes)
       ord.res.sim.mat[i, ] = mnb2.h$ord.res.vec
@@ -150,7 +155,7 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
     pb = txtProgressBar(style=3)
     for (i in 1:sim){
       setTxtProgressBar(pb, i/sim)
-      y.mat.h = rnbinom(n=n, mu=mu.hat.mat0, size=1/phi.hat.mat0)
+      y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
@@ -171,7 +176,7 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
     pb = txtProgressBar(style=3)
     for (i in 1:sim){
       setTxtProgressBar(pb, i/sim)
-      y.mat.h = rnbinom(n=n, mu=mu.hat.mat0, size=1/phi.hat.mat0)
+      y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       mcom.h = model_edgeR_common(y.mat.h, x, lib.sizes=lib.sizes)
       ord.res.sim.mat[i, ] = mcom.h$ord.res.vec
@@ -190,7 +195,7 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
     pb = txtProgressBar(style=3)
     for (i in 1:sim){
       setTxtProgressBar(pb, i/sim)
-      y.mat.h = rnbinom(n=n, mu=mu.hat.mat0, size=1/phi.hat.mat0)
+      y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       mgen.h = model_edgeR_genewise(y.mat.h, x, lib.sizes=lib.sizes)
       ord.res.sim.mat[i, ] = mgen.h$ord.res.vec
@@ -209,7 +214,7 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
     pb = txtProgressBar(style=3)
     for (i in 1:sim){
       setTxtProgressBar(pb, i/sim)
-      y.mat.h = rnbinom(n=n, mu=mu.hat.mat0, size=1/phi.hat.mat0)
+      y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       mtag.h = model_edgeR_tagwise(y.mat.h, x, lib.sizes=lib.sizes)
       ord.res.sim.mat[i, ] = mtag.h$ord.res.vec
@@ -228,7 +233,7 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
     pb = txtProgressBar(style=3)
     for (i in 1:sim){
       setTxtProgressBar(pb, i/sim)
-      y.mat.h = rnbinom(n=n, mu=mu.hat.mat0, size=1/phi.hat.mat0)
+      y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       mtrd.h = model_edgeR_trended(y.mat.h, x, lib.sizes=lib.sizes)
       ord.res.sim.mat[i, ] = mtrd.h$ord.res.vec
@@ -238,39 +243,43 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
   }
   #### -----------------------------------------------------------------
   
-  typ.res.sim = apply(ord.res.sim.mat, 2, median)
+  # find the median of the big residual matrix (ordered): a vector
+  ord.typ.res.sim = apply(ord.res.sim.mat[1:sim, ], 2, median)  # on simulated datasets ONLY!
+  # subtract the typical residual vector from each row of the ordered residual matrix
+  dists.mat.res =  abs(sweep(ord.res.sim.mat, 2, ord.typ.res.sim, "-"))
   
-  ## calcualte test statistics
-  stat0 = sum(res.omat0^2)
-  #stat0.T = sum((ord.res.vec0 - typ.res.sim)^2)
+  # construct new distance measure matrix of dimension R-by-m
+  grp.vec = ( seq_len( ncol(dists.mat.res) ) - 1 ) %/% n     # grouping vector
+  dist.mat = t( rowsum(t(dists.mat.res), grp.vec) )    # orthogonal distance matrix (sim. + obs.)
+  # THIS dist.mat IS UN-SORTED!! WE CAN USE THIS MATRIX FOR THE ENVELOPE METHOD CALCULATIONS!!
+  
+  
+  # sort each row of the orthogonal distance matrix, and get typical distance vector (from sim only)
+  ord.dist.mat = t(apply(dist.mat, 1, sort))
+  ord.typ.dist = apply(ord.dist.mat[1:sim, ], 2, median)   # x-axis (from sim. ONLY!)
+  dist.obs = ord.dist.mat[(sim+1), ]    # y-axis
+  
+  #### -----------------------------------------------------------------
+  ## calcualte test statistics and p-values
+  stat0.G = sum(ord.dist.mat[(sim+1), ])
   for (i in 1:sim){
-    stat.sim[i] = sum(ord.res.sim.mat[i, ]^2)
-    #stat.sim.T[i] = sum((ord.res.sim.mat[i, ] - typ.res.sim)^2)
+    stat.sim.G[i] = sum(ord.dist.mat[i, ])
   }
+  pval.G = (sum(stat.sim.G >= stat0.G) + 1) / (sim + 1)    # ONE-SIDED!!
+  pv.G = round(pval.G, 6)
   
-  ## calculate p-values
-  pval.P <- 2 * min( (sum(stat.sim >= stat0) + 1 ) / (sim + 1),
-                        1 - ( sum(stat.sim >= stat0) + 1 ) / (sim + 1) )
-  #pval.T <- 2 * min( (sum(stat.sim.T >= stat0.T) + 1 ) / (sim + 1),
-  #                      1 - (sum(stat.sim.T >= stat0.T) + 1) / (sim + 1) )
-  pv.P <- round(pval.P, 4)
-  #pv.T <- round(pval.T, 4)
-  
+  #### -----------------------------------------------------------------
   ## save as a list
   gof.obj <- list(model.fit = model.fit,
                   counts.dim = counts.dim,
                   design.mat = x,
                   lib.sizes = lib.sizes,
-                  pear.pval = pv.P,
-                  #new.pval = pv.T,
-                  #stat.sim = stat.sim,
-                  #stat.sim.T = stat.sim.T,
+                  orth.pval = pv.G,
                   mu.hat.m0 = mu.hat.mat0,
-                  o.res.sim = ord.res.sim.mat,
-                  typ.res.sim = typ.res.sim,
-                  o.res0 = ord.res.vec0,
-                  #stat0 = stat0,
-                  #stat0.T = stat0.T,
+                  ord.dist.mat = ord.dist.mat,
+                  ord.typ.dist  = ord.typ.dist,
+                  dist.obs = dist.obs,
+                  dist.mat = dist.mat,
                   sim = sim)
   
   # save the object as a "gofm" class

@@ -1,8 +1,4 @@
 
-## For NBP model fitting on the original & simulated dataset
-
-# update: 2013/01/10
-
 ################################################################################
 #' @title Modeling NBP genewise dispersion model with the maximum likelihood estimator 
 #' (MLE) on original and simulated datasets
@@ -58,9 +54,7 @@ model_nbp_m <- function(counts, x, lib.sizes=colSums(counts)){
                          res.mat = res.m,
                          res.omat = res.om,
                          ord.res.vec = ord.res.v,
-                         phi.hat.mat = phi,
-                         fit.nbp = fit$models[[1]]
+                         phi.hat.mat = phi
   )
   return(model_nbp_m_obj)
 }
-

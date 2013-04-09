@@ -1,10 +1,10 @@
 Package: NBGOF
 Type: Package
-Title: Goodness-of-Fit Tests and Model Diagnostics for Negative
-    Binomial Regression of RNA-Sequencing Data
-Description: An R package for implementing goodness-of-fit tests for
-    RNA-Seq data under different negative binomial dispersion
-    models.
+Title: Goodness-of-Fit Tests and Model Diagnostics for
+    Negative Binomial Regression of RNA-Sequencing Data
+Description: An R package for implementing goodness-of-fit
+    tests for RNA-Seq data under different negative
+    binomial dispersion models.
 Version: 0.1.5
 License: GPL-2
 Author: Gu Mi <mig@stat.oregonstate.edu>, Yanming Di
@@ -37,4 +37,5 @@ Collate:
     'nb_gof_v.R'
     'plot.gofm.R'
     'plot.gofv.R'
+    'summary.gofm.R'
     'utils.R'

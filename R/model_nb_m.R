@@ -1,10 +1,4 @@
 
-## For NB2 model fitting on the original & simulated datasets
-## use nb.regression.1() function for NB2 fitting 
-## (avoid convergence issues in MASS::glm.nb)
-
-# update: 2013/01/10
-
 ################################################################################
 #' @title Modeling NB genewise dispersion model with MLE on original and simulated 
 #' datasets
@@ -44,15 +38,14 @@ model_nb_m <- function(counts, x, lib.sizes=colSums(counts)){
   phi.hat.m = nb.fit$phi
   res.m = (counts - mu.hat.m) / sqrt(v.hat.m) 
   res.om = t(apply(res.m, 1, sort))  # order each row first! (a matrix still)
-  ord.res.v = as.vector(t(res.om))
+  ord.res.v = as.vector(t(res.om))   # the "V" vector of block-wise-ordered residuals
   
   # save as a list
   model_nb_m_obj = list(mu.hat.mat = mu.hat.m,
                         res.mat = res.m,
                         res.omat = res.om,
                         ord.res.vec = ord.res.v,
-                        phi.hat.mat = phi.hat.m,
-                        fit.nb = nb.fit
+                        phi.hat.mat = phi.hat.m
   )
   return(model_nb_m_obj)
 }

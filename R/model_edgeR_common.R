@@ -1,9 +1,4 @@
 
-## For NB2 model fitting on the original & simulated datasets
-## dispersion estimation: common dispersion in edgeR
-
-# update: 2013/01/11
-
 ################################################################################
 #' @title Modeling NB2 common dispersion model with the adjusted profile likelihood 
 #' estimator (APLE) on original and simulated datasets
@@ -57,8 +52,7 @@ model_edgeR_common <- function(counts, x, lib.sizes=colSums(counts)){
                          res.mat = res.m,
                          res.omat = res.om,
                          ord.res.vec = ord.res.v,
-                         phi.hat.mat = phi.hat.m,
-                         fit.com = com.fit
+                         phi.hat.mat = phi.hat.m
   )
   return(model_com_m_obj)
 }

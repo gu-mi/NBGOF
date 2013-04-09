@@ -31,7 +31,7 @@
   test results.
 }
 \author{
-  Gu Mi, Yanming Di, Dan Schafer
+  Gu Mi, Yanming Di, Daniel Schafer
 }
 \seealso{
   See \code{\link{nb_gof_v}} for simulated data examples

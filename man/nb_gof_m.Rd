@@ -103,6 +103,14 @@ plot(ftag.nb2c, conf.env=conf.env, data.note="NB2", col="azure4", pch=".", cex=3
 ftrd.nb2c = nb_gof_m(counts=y,x=x,lib.sizes=lib.sizes, sim=sim,model.fit="edgeR-trended")
 plot(ftrd.nb2c, conf.env=conf.env, data.note="NB2", col="azure4", pch=".", cex=3)
 # dev.off()
+
+## summarize the GOF test results:
+summary(fnb2.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
+summary(fnbp.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
+summary(fcom.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
+summary(fgen.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
+summary(ftag.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
+summary(ftrd.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")
 }
 \author{
   Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
