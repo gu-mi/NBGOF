@@ -67,6 +67,7 @@ optim.full.likelihood <- function(y, s, x, trace=0) {
 ##'  mu, an n-vector of estimated mean values
 ##'  converged, logical. Was the IRLS algorithm judged to have converged?
 ##'  @useDynLib NBGOF Cdqrls
+##'  @keywords internal
 irls.nb.1 = function(y, s, x, phi, beta0=rep(NA,p),
                      maxit=50, tol.mu=1e-3/length(y), print.level=0) {
   
@@ -225,6 +226,7 @@ irls.nb.1 = function(y, s, x, phi, beta0=rep(NA,p),
 ##'  mu, an n-vector of estimated mean values
 ##'  converged, logical. Was the IRLS algorithm judged to have converged?
 ##'  @useDynLib NBGOF Cdqrls
+##'  @keywords internal
 irls.nbp.1 = function(y, s, x, phi0, alpha1, beta0=rep(NA, p),
                       maxit=50, tol.mu=1e-3/length(y), print.level=1) {
   

@@ -78,4 +78,5 @@
   least squares (IRLS) algorithm, which is equivalent to
   Fisher scoring. We used the glm.fit code as a template.
 }
+\keyword{internal}
 

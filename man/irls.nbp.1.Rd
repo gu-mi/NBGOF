@@ -50,4 +50,5 @@
 
   to the score equation.
 }
+\keyword{internal}
 

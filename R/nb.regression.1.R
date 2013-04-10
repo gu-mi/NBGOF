@@ -63,6 +63,7 @@ irls.nb = function(y, s, x, phi, beta0, ..., print.level=0) {
 ##'  mu, an n-vector of estimated mean values
 ##'  converged, logical. Was the IRLS algorithm judged to have converged?
 ##'  @useDynLib NBGOF Cdqrls
+##'  @keywords internal
 irls.nb.1 = function(y, s, x, phi, beta0=rep(NA,p),
                      maxit=50, tol.mu=1e-3/length(y), print.level=0) {
   

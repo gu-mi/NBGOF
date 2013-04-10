@@ -39,3 +39,4 @@ Collate:
     'plot.gofv.R'
     'summary.gofm.R'
     'utils.R'
+    'vlog.R'
