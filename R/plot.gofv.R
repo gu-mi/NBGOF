@@ -23,35 +23,35 @@
 #' 
 #' @author Gu Mi, Yanming Di, Daniel Schafer
 #'  
-plot.gofv <- function(x, 
+plot.gofv = function(x, 
                       conf.env=0.95, 
                       data.note=NULL, 
                       leg.cex=1, 
                       ...){
   
   ## quantities from a "gofv" object:
-  model.fit <- x$model.fit
+  model.fit = x$model.fit
   samp.size = x$samp.size
-  pv.D <- x$new.pval
-  sim <- x$sim
+  pv.D = x$new.pval
+  sim = x$sim
   
   ord.res.sim.mat = x$ord.res.sim.mat
   ord.typ.res.sim = x$ord.typ.res.sim         # for x-axis plotting
   ord.res.obs = x$ord.res.sim.mat[(sim+1), ]  # for y-axis plotting
   
-  n.pts <- length(ord.res.obs)  # number of points (samples)
+  n.pts = length(ord.res.obs)  # number of points (samples)
   
   # determine what quantiles to use for plotting:
   alpha = 1-conf.env
-  q.upp <- conf.env + alpha/2
-  q.low <- alpha/2
-  quant = apply(ord.res.sim.mat, 2, quantile, probs = c(q.low, q.upp))
+  q.upp = conf.env + alpha/2
+  q.low = alpha/2
+  quant = apply(ord.res.sim.mat[-(sim+1), ], 2, quantile, probs = c(q.low, q.upp))
   
   ## plotting options:
-  min.x <- min(ord.typ.res.sim)
-  max.x <- max(ord.typ.res.sim)
-  min.y <- min(quant[1, ])
-  max.y <- max(quant[2, ])
+  min.x = min(ord.typ.res.sim)
+  max.x = max(ord.typ.res.sim)
+  min.y = min(quant[1, ], ord.res.obs)
+  max.y = max(quant[2, ], ord.res.obs)
   
   # estiamte p.hat:
   out.ind = ( (ord.res.obs < quant[1, ]) | (ord.res.obs > quant[2, ]) )
@@ -64,11 +64,11 @@ plot.gofv <- function(x,
        ylim = c(min.y, max.y), 
        xlab =  "Exp. Ordered Res. from NB (via Simulation)",
        ylab =  "Ordered Pearson Residuals",
-       main = paste("Testing ", model.fit, " Model Fit"),
+       main = paste("Testing", model.fit, "Model Fit"),
        ...)
   
   # highlight points outside:
-  points(ord.typ.res.sim[out.ind], ord.res.obs[out.ind], col="red", cex=5, pch=".")
+  points(ord.typ.res.sim[out.ind], ord.res.obs[out.ind], col="red", ...)
   abline(a=0,b=1,col="blue",lty="dashed")
   
   # quantiles for epp:
@@ -90,8 +90,7 @@ plot.gofv <- function(x,
            cex=leg.cex)
   }  
   ##  
-  legend("bottomright", bty="n", legend=c(
-    paste("Actual Distribution:", data.note),
+  legend("bottomright", bty="n", legend=c(data.note,
     paste("(sim size = ", sim, ", CI = ", conf.env*100, "%)", sep="")),
          cex=leg.cex)
 }

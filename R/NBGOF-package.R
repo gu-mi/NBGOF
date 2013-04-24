@@ -56,7 +56,7 @@
 NULL
 
 .onLoad <- function(libname, pkgname){
-  message <- "The NBGOF package is experimental and under development: 
+  message <- "\n The NBGOF package is experimental and under development: 
   Function syntax may have minor changes in future versions.
   See https://github.com/gu-mi/NBGOF for more information. \n"
   packageStartupMessage(message)

@@ -10,7 +10,9 @@ datasets}
   typical RNA-Seq experiment, this may represent the read
   counts for a single gene}
 
-  \item{x}{an n-by-p design matrix.}
+  \item{x}{an n-by-p design matrix. If an intercept is
+  desired in the model, you need to specify the first
+  column of \code{x} as a vector of 1.}
 
   \item{lib.sizes}{library sizes of a RNA-Seq experiment.
   Default is 1 for all samples}

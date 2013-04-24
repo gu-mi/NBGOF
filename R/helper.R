@@ -1,4 +1,18 @@
 
+################################################################################
+# helper functions in NBGOF, and discarded functions for future use
+# invisible to end-users
+################################################################################
+
+#' @title Group-wise sort of residual matrix in multivariate case
+#' @description Group-wise sort of residual matrix in multivariate case
+#' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+#' @keywords internal
+#' 
+sort.vec = function(x, grp.ids)  ave(x, grp.ids, FUN = sort)
+
+printf = function(...) cat(sprintf(...));
+
 
 #' @title User-defined link function for gamma regression
 #' 
@@ -9,7 +23,7 @@
 #' family = Gamma(link = vlog())
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
-#' @export
+#' @keywords internal
 #' 
 #' @examples
 #' 
@@ -39,3 +53,5 @@ vlog <- function() {
                  name = link),
             class = "link-glm")
 }
+
+

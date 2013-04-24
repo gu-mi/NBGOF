@@ -37,32 +37,70 @@
 #' @references \url{https://github.com/gu-mi/NBGOF/wiki/}
 #' 
 model_edgeR_trended <- function(counts, x, lib.sizes=colSums(counts)){
-
-  ## edgeR tagwise dispersion:
+  
+  ## edgeR genewise dispersion:
   
   # convert model matrix into group index
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
                    labels = seq(ncol(x)))
   d = DGEList(counts=counts, lib.size=lib.sizes, group = grp.ids)
-  design = model.matrix(~grp.ids, data=d$samples)
-  e.com = estimateGLMCommonDisp(d, design, verbose=TRUE)
-  e.trd = estimateGLMTrendedDisp(e.com, design)
-  trd.fit = glmFit(d, design, dispersion=e.trd$trended.dispersion)
   
-  # extract quantities:
-  mu.hat.m = trd.fit$fitted.values   # mu may be close to 0
-  phi.hat.m = trd.fit$dispersion     # there may be NA's
-  v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
-  res.m = (counts - mu.hat.m) / sqrt(v) 
-  res.om = t(apply(res.m, 1, sort))  # order each row first! (a matrix still)
-  ord.res.v = as.vector(t(res.om))
+  # include fitting a single-intercept model, so separate into two parts:
   
-  # save as a list
-  model_trd_m_obj = list(mu.hat.mat = mu.hat.m,
-                         res.mat = res.m,
-                         res.omat = res.om,
-                         ord.res.vec = ord.res.v,
-                         phi.hat.mat = phi.hat.m
-  )
-  return(model_trd_m_obj)
+  # single-group case
+  if (length(unique(grp.ids)) == 1){   
+    design = matrix(as.numeric(as.character(grp.ids)))
+    #e.com = estimateGLMCommonDisp(d, design, verbose=FALSE)
+    #e.trd = estimateGLMTrendedDisp(e.com, design)
+    e.trd = estimateGLMTrendedDisp(d, design)
+    trd.fit = glmFit(d, design, dispersion=e.trd$trended.dispersion)
+    
+    # extract quantities:
+    mu.hat.m = trd.fit$fitted.values   # mu may be close to 0
+    phi.hat.m = trd.fit$dispersion     # there may be NA's
+    v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
+    res.m = (counts - mu.hat.m) / sqrt(v) 
+    
+    # sort res.m with care!
+    res.om = t(apply(res.m, 1, sort))
+    ord.res.v = as.vector(t(res.om))
+    
+    # save as a list
+    model_trd_m_obj = list(mu.hat.mat = mu.hat.m,
+                           res.mat = res.m,
+                           res.omat = res.om,
+                           ord.res.vec = ord.res.v,
+                           phi.hat.mat = phi.hat.m
+    )
+    return(model_trd_m_obj)
+  }
+  
+  # multiple-group case
+  else { 
+    design = model.matrix(~grp.ids, data=d$samples)
+    #e.com = estimateGLMCommonDisp(d, design, verbose=FALSE)
+    #e.trd = estimateGLMTrendedDisp(e.com, design)
+    e.trd = estimateGLMTrendedDisp(d, design)
+    trd.fit = glmFit(d, design, dispersion=e.trd$trended.dispersion)
+    
+    # extract quantities:
+    mu.hat.m = trd.fit$fitted.values   # mu may be close to 0
+    phi.hat.m = trd.fit$dispersion     # there may be NA's
+    v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
+    res.m = (counts - mu.hat.m) / sqrt(v) 
+    
+    # sort res.m with care!
+    res.om = t(apply(res.m, 1, sort.vec, grp.ids))
+    ord.res.v = as.vector(t(res.om))
+    
+    # save as a list
+    model_trd_m_obj = list(mu.hat.mat = mu.hat.m,
+                           res.mat = res.m,
+                           res.omat = res.om,
+                           ord.res.vec = ord.res.v,
+                           phi.hat.mat = phi.hat.m
+    )
+    return(model_trd_m_obj)
+  }
+  
 }

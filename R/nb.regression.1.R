@@ -1,7 +1,14 @@
-
-library(numDeriv);
-
-
+##' Estimate the regression coefficients in an NBP GLM model for each gene
+##'
+##' @title Estiamte the regression coefficients in an NB GLM model
+##' @param y an m*n matrix of counts
+##' @param s an n vector of effective library sizes
+##' @param x an n*p design matrix
+##' @param phi an n*p matrix of regression coefficients 
+##' @param tol.mu convergence criteria
+##' @param beta0 a K vector, non NA components are hypothesized values of beta, NA components are free components
+##' @return beta a K vector, the MLE of the regression coefficients.
+##' @keywords internal
 irls.nb = function(y, s, x, phi, beta0, ..., print.level=0) {
   m = dim(y)[1];
   n = dim(y)[2];

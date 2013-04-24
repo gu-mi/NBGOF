@@ -39,22 +39,57 @@ model_nbp_m <- function(counts, x, lib.sizes=colSums(counts)){
   # preconditions
   stopifnot(is.matrix(x), nc == dim(x)[1])
   
-  # data preparations
-  nb.data <- prepare.nb.data(counts, lib.sizes=lib.sizes)
-  fit <- estimate.dispersion(nb.data, x, print.level=0)
-  phi <- fit$models[[1]]$phi        # NBP "phi" --> mu+phi*mu^2
-  mu <- fit$models[[1]]$mu
-  v <- mu + phi * mu^2              # variance matrix
-  res.m <- (counts - mu) / sqrt(v)  # res. matrix
-  res.om = t(apply(res.m, 1, sort))  # order each row first! (a matrix still)
-  ord.res.v = as.vector(t(res.om))
+  grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
+                   labels = seq(ncol(x)))
   
-  # save as a list
-  model_nbp_m_obj = list(mu.hat.mat = mu,
-                         res.mat = res.m,
-                         res.omat = res.om,
-                         ord.res.vec = ord.res.v,
-                         phi.hat.mat = phi
-  )
-  return(model_nbp_m_obj)
+  # include fitting a single-intercept model, so separate into two parts:
+  
+  # single-group case
+  if (length(unique(grp.ids)) == 1){   
+    # data preparations
+    nb.data <- prepare.nb.data(counts, lib.sizes=lib.sizes)
+    fit <- estimate.dispersion(nb.data, x, print.level=0)
+    phi <- fit$models[[1]]$phi        # NBP "phi" --> mu+phi*mu^2
+    mu <- fit$models[[1]]$mu
+    v <- mu + phi * mu^2              # variance matrix
+    res.m <- (counts - mu) / sqrt(v)  # res. matrix
+    
+    # sort res.m with care!
+    res.om = t(apply(res.m, 1, sort))
+    ord.res.v = as.vector(t(res.om))
+    
+    # save as a list
+    model_nbp_m_obj = list(mu.hat.mat = mu,
+                           res.mat = res.m,
+                           res.omat = res.om,
+                           ord.res.vec = ord.res.v,
+                           phi.hat.mat = phi
+    )
+    return(model_nbp_m_obj)
+  }
+  
+  # multiple-group case
+  else { 
+    # data preparations
+    nb.data <- prepare.nb.data(counts, lib.sizes=lib.sizes)
+    fit <- estimate.dispersion(nb.data, x, print.level=0)
+    phi <- fit$models[[1]]$phi        # NBP "phi" --> mu+phi*mu^2
+    mu <- fit$models[[1]]$mu
+    v <- mu + phi * mu^2              # variance matrix
+    res.m <- (counts - mu) / sqrt(v)  # res. matrix
+    
+    # sort res.m with care!
+    res.om = t(apply(res.m, 1, sort.vec, grp.ids))
+    ord.res.v = as.vector(t(res.om))
+    
+    # save as a list
+    model_nbp_m_obj = list(mu.hat.mat = mu,
+                           res.mat = res.m,
+                           res.omat = res.om,
+                           ord.res.vec = ord.res.v,
+                           phi.hat.mat = phi
+    )
+    return(model_nbp_m_obj)
+  }
+
 }

@@ -26,4 +26,5 @@ sum.fit1 = summary(fit1)
   Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
   Schafer
 }
+\keyword{internal}
 

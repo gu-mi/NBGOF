@@ -44,51 +44,71 @@
 #' library(NBGOF)
 #' 
 #' ## basic set-up of the model
-#' seed <- 31513
-#' n <- 100
-#' beta.v <- c(1, -3)
+#' seed = 31513
+#' n = 100
+#' beta.v = c(1, -3)
 #' 
 #' ## specify a design matrix
-#' X <- cbind(rep(1,n),seq(1.5, 3.5, length=n))
-#' s <- rep(1e6, n)
-#' mu <- s * exp(X %*% beta.v)
-#' pi <- mu/s  # relative frequency
-#' sim <- 499
+#' X = cbind(rep(1,n),seq(1.5, 3.5, length=n))
+#' s = rep(1e6, n)
+#' mu = s * exp(X %*% beta.v)
+#' pi = mu/s  # relative frequency
+#' sim = 499
 #' 
 #' ## simulate an n-by-1 vector for the read counts of a single gene
 #' set.seed(seed)
 #' alpha1 = -1  # NB1 data
 #' phi0 = 0.0001
-#' alpha0 <- log(phi0); 
-#' phi.nb1 <- phi0 * pi^alpha1
-#' y.nb1 <- rnbinom(n, size=1/phi.nb1, mu=mu)
+#' alpha0 = log(phi0); 
+#' phi.nb1 = phi0 * pi^alpha1
+#' y.nb1 = rnbinom(n, size=1/phi.nb1, mu=mu)
 #' 
-#' ## implement the GOF test for testing an NB regression model adequacy #' of NB2 and NBP models
+#' ## implement the GOF test for testing an NB regression model adequacy of NB2 and NBP models
 #' # pdf("gofv-result.pdf", width=14, height=7)
 #' par(mfrow=c(1,2))
 #' # NB2 model fit
-#' gf.nb1.nb2 <- nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NB2")
+#' gf.nb1.nb2 = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NB2")
 #' plot(gf.nb1.nb2, conf.env=0.95, data.note = "NB1", pch=".", cex=5)
 #' # NBP model fit
-#' gf.nb1.nbp <- nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NBP")
+#' gf.nb1.nbp = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NBP")
 #' plot(gf.nb1.nbp, conf.env=0.95, data.note = "NB1", pch=".", cex=5)
 #' # dev.off()
 #' 
-nb_gof_v <- function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2"){
+nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2"){
   
   n = length(y)
   p = dim(x)[2]
-  libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
   
   # preconditions
-  stopifnot(model.fit %in% c("NB2","NBP"))
+  stopifnot(model.fit %in% c("Poisson", "NB2", "NBP"))
   
   ## initialize simulation variables
-  res.sim.mat <- matrix(0, nrow = (sim+1), ncol = n)  # residual matrix
+  res.sim.mat = matrix(0, nrow = (sim+1), ncol = n)  # residual matrix
+  stat.sim.P = numeric(sim)  # Pearson chi-sq test stat (NOT USED! for simulation only!)
   stat.sim.D = numeric(sim)  # statistic based on the overall vertical distance
   
   #### -----------------------------------------------------------------
+  if (model.fit == "Poisson"){
+    libs = ifelse(is.null(lib.sizes), rep(0, n), lib.sizes)  # pay attention to the offset here!
+    mpoi.0 = model_poi_v(y=y, x=x, lib.sizes=libs)  
+    # Poisson model fit on original data
+    mu.hat.v0 = mpoi.0$mu.hat.v
+    res.vec0 = mpoi.0$res.vec
+    ## simulate new datasets and re-fit
+    pb = txtProgressBar(style=3)
+    for (i in 1:sim){
+      setTxtProgressBar(pb, i/sim)
+      y.vec.h = rpois(n, lambda=mu.hat.v0)
+      mpoi.h = model_poi_v(y=y.vec.h, x=x, lib.sizes=libs)  
+      # NB2 model fit on simulated data
+      res.sim.mat[i, ] = mpoi.h$res.vec
+    }
+    close(pb)
+    res.sim.mat[(sim+1), ] = res.vec0
+  }
+  #### -----------------------------------------------------------------
   if (model.fit == "NB2"){
+    libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
     mnb2.0 = model_nb2_v(y=y, x=x, lib.sizes=libs)  
     # NB2 model fit on original data
     mu.hat.v0 = mnb2.0$mu.hat.v
@@ -108,6 +128,7 @@ nb_gof_v <- function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2"){
   }
   #### -----------------------------------------------------------------
   if (model.fit == "NBP"){
+    libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
     mnbp.0 = model_nbp_v(y=y, x=x, lib.sizes=libs)  
     # NBP model fit on original data
     mu.hat.v0 = mnbp.0$mu.hat.v
@@ -129,29 +150,34 @@ nb_gof_v <- function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2"){
   #### -----------------------------------------------------------------
   ## row-wise sort residual matrix res.sim.mat
   ord.res.sim.mat = t(apply(res.sim.mat, 1, sort))
-  ord.typ.res.sim = apply(ord.res.sim.mat, 2, median)
+  ord.typ.res.sim = apply(ord.res.sim.mat[-(sim+1), ], 2, median)   # exclude the obs. row
   
   #### -----------------------------------------------------------------
   ## calcualte test statistics (observed and simulated) and p-values
+  stat0.P = sum(res.vec0^2)
   stat0.D = sum( abs(ord.res.sim.mat[(sim+1), ] - ord.typ.res.sim) )
   for (i in 1:sim){
+    stat.sim.P[i] = sum( res.sim.mat[i, ]^2 )
     stat.sim.D[i] = sum( abs(ord.res.sim.mat[i, ] - ord.typ.res.sim) )
   }
-  pval.D = (sum(stat.sim.D >= stat0.D) + 1) / (sim + 1)    # ONE-SIDED!!
+  pval.P = (sum(stat.sim.P >= stat0.P) + 1) / (sim + 1)
+  pval.D = (sum(stat.sim.D >= stat0.D) + 1) / (sim + 1)
+  pv.P = round(pval.P, 6)
   pv.D = round(pval.D, 6)
   
   #### -----------------------------------------------------------------
   ## save as a list
-  gof.obj <- list(model.fit = model.fit,
-                  design.mat = x,
-                  samp.size = n,
-                  num.pred = p,
-                  new.pval = pv.D,
-                  res.vec0 = res.vec0,
-                  ord.res.sim.mat = ord.res.sim.mat,
-                  ord.typ.res.sim = ord.typ.res.sim,
-                  sim = sim
+  gof.obj = list(model.fit = model.fit,
+                 design.mat = x,
+                 samp.size = n,
+                 num.pred = p,
+                 pear.pval = pv.P,
+                 new.pval = pv.D,
+                 res.vec0 = res.vec0,
+                 ord.res.sim.mat = ord.res.sim.mat,
+                 ord.typ.res.sim = ord.typ.res.sim,
+                 sim = sim
   )
-  class(gof.obj) <- "gofv"
+  class(gof.obj) = "gofv"
   return(gof.obj)
 }

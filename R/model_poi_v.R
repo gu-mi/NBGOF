@@ -1,11 +1,8 @@
 
-## For NB2 model fitting on the original & simulated datasets
-
-# the same function, nb.regression.1(), is used in NB2 fitting for matrix response
-# cf. model_nb2_m.R
+## For Poisson model fitting on the original & simulated datasets
 
 ################################################################################
-#' @title Modeling NB2 regression model with MLE on original and simulated 
+#' @title Modeling Poisson regression model with MLE on original and simulated 
 #' datasets
 #' 
 #' @description This function is designed to fit an NB2 regression model. The output of
@@ -14,13 +11,13 @@
 #' @details Details here
 #' 
 #' @usage
-#' model_nb2_v(y, x, lib.sizes=NULL)
+#' model_poi_v(y, x, lib.sizes=NULL)
 #' 
 #' @param y an n-by-1 vector of non-negative integers. For a typical RNA-Seq experiment, 
 #' this may represent the read counts for a single gene 
-#' @param x an n-by-p design matrix. If an intercept is desired in the model, you need to specify
-#' the first column of \code{x} as a vector of 1.
-#' @param lib.sizes library sizes of a RNA-Seq experiment. Default is 1 for all samples
+#' @param x an n-by-p design matrix. For Poisson model fitting, we used the \link{glm} function,
+#' so if an intercept is desired, there is no need to include the first column of 1.
+#' @param lib.sizes library sizes of a RNA-Seq experiment. Default is 0 for all samples
 #' 
 #' @return A list of quantities to be used in the main \code{\link{nb_gof_v}} function.
 #' 
@@ -28,26 +25,23 @@
 #' 
 #' @references \url{https://github.com/gu-mi/NBGOF/wiki/}
 #' 
-model_nb2_v <- function(y, x, lib.sizes=NULL){
+model_poi_v <- function(y, x, lib.sizes=NULL){
   
   n = length(y)
   p = dim(x)[2]
-  lib.sizes = ifelse(rep(is.null(lib.sizes),n), rep(1,n), lib.sizes)
+  lib.sizes = ifelse(rep(is.null(lib.sizes),n), rep(0,n), lib.sizes)
   
   # preconditions
   stopifnot(n == dim(x)[1], n == length(lib.sizes))
   
-  # fit NB2 model
-  nb2.fit = nb.regression.1(y=y, s=lib.sizes, x=x, beta=NA)
-  mu.hat.v = nb2.fit$mu
-  phi = nb2.fit$phi
-  v = nb2.fit$v
-  res.v = (y - mu.hat.v)/sqrt(v)
+  # fit Poisson model
+  poi.fit = glm(y ~ x, family = poisson, offset=lib.sizes)
+  mu.hat.v = fitted(poi.fit)
+  res.v = resid(poi.fit, type="pearson")
   
   # save as a list
   model_nb2_v_obj = list(mu.hat.v = mu.hat.v,
-                         res.vec = res.v,
-                         phi = phi
+                         res.vec = res.v
                          )
   return(model_nb2_v_obj)
 }

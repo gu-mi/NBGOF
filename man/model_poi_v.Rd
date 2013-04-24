@@ -1,21 +1,22 @@
-\name{model_nb2_v}
-\alias{model_nb2_v}
-\title{Modeling NB2 regression model with MLE on original and simulated
+\name{model_poi_v}
+\alias{model_poi_v}
+\title{Modeling Poisson regression model with MLE on original and simulated
 datasets}
 \usage{
-  model_nb2_v(y, x, lib.sizes=NULL)
+  model_poi_v(y, x, lib.sizes=NULL)
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
   typical RNA-Seq experiment, this may represent the read
   counts for a single gene}
 
-  \item{x}{an n-by-p design matrix. If an intercept is
-  desired in the model, you need to specify the first
-  column of \code{x} as a vector of 1.}
+  \item{x}{an n-by-p design matrix. For Poisson model
+  fitting, we used the \link{glm} function, so if an
+  intercept is desired, there is no need to include the
+  first column of 1.}
 
   \item{lib.sizes}{library sizes of a RNA-Seq experiment.
-  Default is 1 for all samples}
+  Default is 0 for all samples}
 }
 \value{
   A list of quantities to be used in the main

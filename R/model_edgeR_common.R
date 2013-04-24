@@ -34,25 +34,61 @@ model_edgeR_common <- function(counts, x, lib.sizes=colSums(counts)){
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
                    labels = seq(ncol(x)))
   d = DGEList(counts=counts, lib.size=lib.sizes, group = grp.ids)
-  design = model.matrix(~grp.ids, data=d$samples)
-  e.com = estimateGLMCommonDisp(d, design, verbose=TRUE)
-  com.fit = glmFit(d, design, dispersion=e.com$common.dispersion)
   
-  # extract quantities:
-  mu.hat.m = com.fit$fitted.values  # mu may be close to 0
-  phi.hat.m = com.fit$dispersion    # there may be NA's
-  v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14  # add epsilon to avoid NaN in v
-  res.m = (counts - mu.hat.m) / sqrt(v) 
+  # include fitting a single-intercept model, so separate into two parts:
   
-  res.om = t(apply(res.m, 1, sort))  # order each row first! (a matrix still)
-  ord.res.v = as.vector(t(res.om))
+  # single-group case
+  if (length(unique(grp.ids)) == 1){    
+    design = matrix(as.numeric(as.character(grp.ids)))
+    e.com = estimateGLMCommonDisp(d, design, verbose=FALSE)
+    com.fit = glmFit(d, design, dispersion=e.com$common.dispersion)
+    
+    # extract quantities:
+    mu.hat.m = com.fit$fitted.values  # mu may be close to 0
+    phi.hat.m = com.fit$dispersion    # there may be NA's
+    v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14  # add epsilon to avoid v == 0
+    res.m = (counts - mu.hat.m) / sqrt(v)   
+    # for 0 reads, sqrt(v) != 0 makes res.m == 0
+    # make sure 0/0 = NaN never happens!
+    
+    # sort res.m with care!
+    res.om = t(apply(res.m, 1, sort))  # if NaN is produced in res.m: error when sorting!
+    ord.res.v = as.vector(t(res.om))
+    
+    # save as a list
+    model_com_m_obj = list(mu.hat.mat = mu.hat.m,
+                           res.mat = res.m,
+                           res.omat = res.om,
+                           ord.res.vec = ord.res.v,
+                           phi.hat.mat = phi.hat.m
+    )
+    return(model_com_m_obj)
+  }
   
-  # save as a list
-  model_com_m_obj = list(mu.hat.mat = mu.hat.m,
-                         res.mat = res.m,
-                         res.omat = res.om,
-                         ord.res.vec = ord.res.v,
-                         phi.hat.mat = phi.hat.m
-  )
-  return(model_com_m_obj)
+  # multiple-group case
+  else {    
+    design = model.matrix(~grp.ids, data=d$samples)
+    e.com = estimateGLMCommonDisp(d, design, verbose=FALSE)
+    com.fit = glmFit(d, design, dispersion=e.com$common.dispersion)
+    
+    # extract quantities:
+    mu.hat.m = com.fit$fitted.values 
+    phi.hat.m = com.fit$dispersion  
+    v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
+    res.m = (counts - mu.hat.m) / sqrt(v)    
+    
+    # sort res.m with care!
+    res.om = t(apply(res.m, 1, sort.vec, grp.ids))  
+    ord.res.v = as.vector(t(res.om))
+    
+    # save as a list
+    model_com_m_obj = list(mu.hat.mat = mu.hat.m,
+                           res.mat = res.m,
+                           res.omat = res.om,
+                           ord.res.vec = ord.res.v,
+                           phi.hat.mat = phi.hat.m
+    )
+    return(model_com_m_obj)
+  }
+  
 }

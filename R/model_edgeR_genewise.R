@@ -2,6 +2,7 @@
 ## dispersion estimation: tagwise dispersion in edgeR (prior.df = 0) -- call "genewise"
 # this is entirely gene-wise dispersion: each gene has its unique dispersion,
 # without any weighting from shared APL towards a global dispersion trend
+# estimation method: adjusted profile likelihood (less bias than MLE)
 
 ################################################################################
 #' @title Modeling NB genewise dispersion model with the adjusted profile likelihood
@@ -44,26 +45,63 @@ model_edgeR_genewise <- function(counts, x, lib.sizes=colSums(counts)){
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
                    labels = seq(ncol(x)))
   d = DGEList(counts=counts, lib.size=lib.sizes, group = grp.ids)
-  design = model.matrix(~grp.ids, data=d$samples)
-  e.com = estimateGLMCommonDisp(d, design, verbose=TRUE)
-  e.gen = estimateGLMTagwiseDisp(e.com, design, prior.df=0)  # prior.df = 0
-  # e.gen: trend is FALSE since we didn't use estimateGLMTrendedDisp() beforehand
-  gen.fit = glmFit(d, design, dispersion=e.gen$tagwise.dispersion)
   
-  # extract quantities:
-  mu.hat.m = gen.fit$fitted.values   # mu may be close to 0
-  phi.hat.m = gen.fit$dispersion     # there may be NA's
-  v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
-  res.m = (counts - mu.hat.m) / sqrt(v) 
-  res.om = t(apply(res.m, 1, sort))  # order each row first! (a matrix still)
-  ord.res.v = as.vector(t(res.om))
+  # include fitting a single-intercept model, so separate into two parts:
   
-  # save as a list
-  model_gen_m_obj = list(mu.hat.mat = mu.hat.m,
-                         res.mat = res.m,
-                         res.omat = res.om,
-                         ord.res.vec = ord.res.v,
-                         phi.hat.mat = phi.hat.m
-  )
-  return(model_gen_m_obj)
+  # single-group case
+  if (length(unique(grp.ids)) == 1){   
+    design = matrix(as.numeric(as.character(grp.ids)))
+    e.com = estimateGLMCommonDisp(d, design, verbose=FALSE)
+    e.gen = estimateGLMTagwiseDisp(e.com, design, prior.df=0)  # prior.df = 0
+    # e.gen: trend is FALSE since we didn't use estimateGLMTrendedDisp() beforehand
+    gen.fit = glmFit(d, design, dispersion=e.gen$tagwise.dispersion)
+    
+    # extract quantities:
+    mu.hat.m = gen.fit$fitted.values   # mu may be close to 0
+    phi.hat.m = gen.fit$dispersion     # there may be NA's
+    v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
+    res.m = (counts - mu.hat.m) / sqrt(v) 
+    
+    # sort res.m with care!
+    res.om = t(apply(res.m, 1, sort))
+    ord.res.v = as.vector(t(res.om))
+    
+    # save as a list
+    model_gen_m_obj = list(mu.hat.mat = mu.hat.m,
+                           res.mat = res.m,
+                           res.omat = res.om,
+                           ord.res.vec = ord.res.v,
+                           phi.hat.mat = phi.hat.m
+    )
+    return(model_gen_m_obj)
+  }
+  
+  # multiple-group case
+  else { 
+    design = model.matrix(~grp.ids, data=d$samples)
+    e.com = estimateGLMCommonDisp(d, design, verbose=FALSE)
+    e.gen = estimateGLMTagwiseDisp(e.com, design, prior.df=0)  # prior.df = 0
+    # e.gen: trend is FALSE since we didn't use estimateGLMTrendedDisp() beforehand
+    gen.fit = glmFit(d, design, dispersion=e.gen$tagwise.dispersion)
+    
+    # extract quantities:
+    mu.hat.m = gen.fit$fitted.values   # mu may be close to 0
+    phi.hat.m = gen.fit$dispersion     # there may be NA's
+    v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
+    res.m = (counts - mu.hat.m) / sqrt(v) 
+    
+    # sort res.m with care!
+    res.om = t(apply(res.m, 1, sort.vec, grp.ids))
+    ord.res.v = as.vector(t(res.om))
+    
+    # save as a list
+    model_gen_m_obj = list(mu.hat.mat = mu.hat.m,
+                           res.mat = res.m,
+                           res.omat = res.om,
+                           ord.res.vec = ord.res.v,
+                           phi.hat.mat = phi.hat.m
+    )
+    return(model_gen_m_obj)
+  }
+
 }

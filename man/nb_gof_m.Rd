@@ -71,8 +71,8 @@ phi.nb2c = phi0 * pi^alpha1;  # == phi0
 cbind(mu[,1], phi.nb2c[,1])   # make sure phi's are in reasonable range
 y = rnbinom(n * r, mu=mu, size=1/phi.nb2c)  # response matrix
 dim(y) = dim(mu);
-rownames(y) = paste("g",seq(1,n),sep="")
-colnames(y) = paste("s",seq(1,r), sep="")
+rownames(y) = paste("g", seq(1,n), sep="")
+colnames(y) = paste("s", seq(1,r), sep="")
 
 ## specify a design matrix
 grp.ids = as.factor(c(rep(1,8), rep(2,4), rep(3,2)))

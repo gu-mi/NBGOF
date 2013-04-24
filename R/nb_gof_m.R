@@ -1,9 +1,12 @@
-
 ## Main function for GOF test for multivariate response
 
 # dispersion models expand to the following:
 # NB, NBP, edgeR-common, edgeR-genewise, edgeR-tagwise, edgeR-trended
 # ordered sim res matrix includes the original residual vector <--> (R+1) on denom.
+
+# even though we can eliminate zero counts in original dataset, there is no guarantee that
+# simulated datasets do not have zero counts. In order to proceed, we have to change those 
+# genes with all zero counts into something else, say assigning the first replicate as 1
 
 ################################################################################
 #' @title Main Function of Implementing Simulation-based Goodness-of-Fit Tests on a 
@@ -70,8 +73,8 @@
 #' cbind(mu[,1], phi.nb2c[,1])   # make sure phi's are in reasonable range
 #' y = rnbinom(n * r, mu=mu, size=1/phi.nb2c)  # response matrix
 #' dim(y) = dim(mu); 
-#' rownames(y) = paste("g",seq(1,n),sep="")
-#' colnames(y) = paste("s",seq(1,r), sep="")
+#' rownames(y) = paste("g", seq(1,n), sep="")
+#' colnames(y) = paste("s", seq(1,r), sep="")
 #' 
 #' ## specify a design matrix
 #' grp.ids = as.factor(c(rep(1,8), rep(2,4), rep(3,2)))
@@ -116,6 +119,9 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
   stopifnot(model.fit %in% c("NB","NBP","edgeR-common","edgeR-genewise",
                              "edgeR-tagwise","edgeR-trended"))
   
+  # we assume that genes with all zero counts have been removed to avoid zero variance
+  # the first argument, counts, should be already subsetted
+  
   m = dim(counts)[1]
   n = dim(counts)[2]
   N = m * n
@@ -138,6 +144,9 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
       setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
+      rownames(y.mat.h) = rownames(counts)
+      colnames(y.mat.h) = colnames(counts)
+      y.mat.h[rowSums(y.mat.h) == 0, 1] = 1   # subjective!
       mnb2.h = model_nb_m(y.mat.h, x, lib.sizes=lib.sizes)
       ord.res.sim.mat[i, ] = mnb2.h$ord.res.vec
     }
@@ -159,6 +168,7 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
+      y.mat.h[rowSums(y.mat.h) == 0, 1] = 1   # subjective!
       mnbp.h = model_nbp_m(y.mat.h, x, lib.sizes=lib.sizes)
       ord.res.sim.mat[i, ] = mnbp.h$ord.res.vec
     }
@@ -178,6 +188,9 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
       setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
+      rownames(y.mat.h) = rownames(counts)
+      colnames(y.mat.h) = colnames(counts)
+      y.mat.h[rowSums(y.mat.h) == 0, 1] = 1   # subjective!
       mcom.h = model_edgeR_common(y.mat.h, x, lib.sizes=lib.sizes)
       ord.res.sim.mat[i, ] = mcom.h$ord.res.vec
     }
@@ -197,6 +210,9 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
       setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
+      rownames(y.mat.h) = rownames(counts)
+      colnames(y.mat.h) = colnames(counts)
+      y.mat.h[rowSums(y.mat.h) == 0, 1] = 1   # subjective!
       mgen.h = model_edgeR_genewise(y.mat.h, x, lib.sizes=lib.sizes)
       ord.res.sim.mat[i, ] = mgen.h$ord.res.vec
     }
@@ -216,6 +232,9 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
       setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
+      rownames(y.mat.h) = rownames(counts)
+      colnames(y.mat.h) = colnames(counts)
+      y.mat.h[rowSums(y.mat.h) == 0, 1] = 1   # subjective!
       mtag.h = model_edgeR_tagwise(y.mat.h, x, lib.sizes=lib.sizes)
       ord.res.sim.mat[i, ] = mtag.h$ord.res.vec
     }
@@ -235,6 +254,9 @@ nb_gof_m <- function(counts, x, lib.sizes=colSums(counts), sim=199, model.fit="N
       setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
+      rownames(y.mat.h) = rownames(counts)
+      colnames(y.mat.h) = colnames(counts)
+      y.mat.h[rowSums(y.mat.h) == 0, 1] = 1   # subjective!
       mtrd.h = model_edgeR_trended(y.mat.h, x, lib.sizes=lib.sizes)
       ord.res.sim.mat[i, ] = mtrd.h$ord.res.vec
     }

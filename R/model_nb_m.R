@@ -31,21 +31,55 @@ model_nb_m <- function(counts, x, lib.sizes=colSums(counts)){
   # preconditions
   stopifnot(is.matrix(x), nc == dim(x)[1])
   
-  # NB2 fit and extract quantities
-  nb.fit = nb.regression.1(y=counts, s=lib.sizes, x=x, beta=NA)
-  mu.hat.m = nb.fit$mu
-  v.hat.m = nb.fit$v
-  phi.hat.m = nb.fit$phi
-  res.m = (counts - mu.hat.m) / sqrt(v.hat.m) 
-  res.om = t(apply(res.m, 1, sort))  # order each row first! (a matrix still)
-  ord.res.v = as.vector(t(res.om))   # the "V" vector of block-wise-ordered residuals
+  grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
+                   labels = seq(ncol(x)))
   
-  # save as a list
-  model_nb_m_obj = list(mu.hat.mat = mu.hat.m,
-                        res.mat = res.m,
-                        res.omat = res.om,
-                        ord.res.vec = ord.res.v,
-                        phi.hat.mat = phi.hat.m
-  )
-  return(model_nb_m_obj)
+  # include fitting a single-intercept model, so separate into two parts:
+  
+  # single-group case
+  if (length(unique(grp.ids)) == 1){   
+    # NB2 fit and extract quantities
+    nb.fit = nb.regression.1(y=counts, s=lib.sizes, x=x, beta=NA)
+    mu.hat.m = nb.fit$mu
+    v.hat.m = nb.fit$v
+    phi.hat.m = nb.fit$phi
+    res.m = (counts - mu.hat.m) / sqrt(v.hat.m) 
+    
+    # sort res.m with care!
+    res.om = t(apply(res.m, 1, sort))
+    ord.res.v = as.vector(t(res.om))   # the "V" vector of block-wise-ordered residuals
+    
+    # save as a list
+    model_nb_m_obj = list(mu.hat.mat = mu.hat.m,
+                          res.mat = res.m,
+                          res.omat = res.om,
+                          ord.res.vec = ord.res.v,
+                          phi.hat.mat = phi.hat.m
+    )
+    return(model_nb_m_obj)
+  }
+  
+  # multiple-group case
+  else { 
+    # NB2 fit and extract quantities
+    nb.fit = nb.regression.1(y=counts, s=lib.sizes, x=x, beta=NA)
+    mu.hat.m = nb.fit$mu
+    v.hat.m = nb.fit$v
+    phi.hat.m = nb.fit$phi
+    res.m = (counts - mu.hat.m) / sqrt(v.hat.m) 
+    
+    # sort res.m with care!
+    res.om = t(apply(res.m, 1, sort.vec, grp.ids))
+    ord.res.v = as.vector(t(res.om))   # the "V" vector of block-wise-ordered residuals
+    
+    # save as a list
+    model_nb_m_obj = list(mu.hat.mat = mu.hat.m,
+                          res.mat = res.m,
+                          res.omat = res.om,
+                          ord.res.vec = ord.res.v,
+                          phi.hat.mat = phi.hat.m
+    )
+    return(model_nb_m_obj)
+  }
+    
 }

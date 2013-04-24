@@ -2,9 +2,6 @@
 # This file is to be sourced for GOF test -- glm.nbp.1()
 # phi0 does NOT have to be specified beforehand (bug fixed)
 
-# source('utils.R');  # for printf() function
-# library(compiler)
-
 # log.likelihood.nb() will be used in apl.phi.alpha.1()
 # Negative Binomial (NB2) formulation, with kappa taking care of NBP
 log.likelihood.nb <- function(kappa, mu, y) {
@@ -156,42 +153,7 @@ irls.nb.1 = function(y, s, x, phi, beta0=rep(NA,p),
 }
 
 
-# irls.nb = function(y, s, x, phi, beta0, ..., print.level=0) {
-#   m = dim(y)[1];
-#   n = dim(y)[2];
-#   p = dim(x)[2];
-#   
-#   phi = matrix(phi, m, n, byrow=TRUE);
-#   
-#   if (print.level > 0)
-#     print("Estimating NB regression coefficients using IRLS.");
-#   
-#   res=list(mu=matrix(NA, m, n), beta=matrix(NA, m, p),
-#            conv=logical(m), iter=numeric(m));
-#   
-#   if (print.level > 1) {
-#     ## Set up progress bar
-#     pb=txtProgressBar(style=3);
-#   }
-#   
-#   for (i in 1:m) {
-#     if (print.level > 1) {
-#       setTxtProgressBar(pb, i/m);
-#     }
-#     
-#     res0 = irls.nb.1(y[i,], s, x, phi[i,], beta0,
-#                      ...,
-#                      print.level=print.level-1);
-#     res$mu[i,] =  res0$mu;
-#     res$beta[i,] = res0$beta;
-#     res$conv[i] = res0$conv;
-#     res$iter[i] = res0$iter;
-#   }
-#   
-#   if (print.level>1) close(pb);
-#   
-#   res;
-# }
+
 
 ##' Estimate the regression coefficients in an NBP GLM model for one gene
 ##'
@@ -317,36 +279,6 @@ irls.nbp.1 = function(y, s, x, phi0, alpha1, beta0=rep(NA, p),
 }
 
 
-# irls.nbp = function(y, s, x, phi0, alpha1,
-#                     maxit=50, tol.mu=0.01, print.level=0) {
-#   
-#   n = dim(y)[1];
-#   K = dim(x)[2];
-#   
-#   if (print.level > 0)
-#     print("Estimating NB regression coefficients using IRLS.");
-#   
-#   res=list(mu=y, beta=matrix(0, n, K), conv=rep(FALSE, n), iter=numeric(n));
-#   
-#   if (print.level > 0) pb = txtProgressBar(style=3);
-#   
-#   for (i in 1:n) {
-#     if (print.level > 0) {
-#       setTxtProgressBar(pb, i/n);
-#     }
-#     res0 = irls.nbp.1(y[i,], s, x, phi0, alpha1, maxit=maxit,
-#                       tol.mu=tol.mu, print.level=print.level-1);
-#     res$mu[i,] =  res0$mu;
-#     res$beta[i,] = res0$beta;
-#     res$conv[i] = res0$conv;
-#     res$iter[i] = res0$iter;
-#   }
-#   
-#   if (print.level>0) close(pb);
-#   
-#   res;
-# }
-
 
 ## -------------------------------------------------------------------------
 ## Log adjusted profile likelihood (APL) of parameters in dispersion model:
@@ -402,10 +334,12 @@ glm.nbp.1 <- function(y, s, x,
   ## Bounds for alpha0 and alpha1.
   ## We are mainly interested in alpha \in [0.5, 2.5]
   ## --> alpha1 \in [-1.5, 0.5]
+  ## for non-genetics data, we relax the bounds for alpha to [0.5, 3]
   
   ## alpha.bounds = c(1 - tol.alpha, 2 + tol.alpha);  # tol.alpha = 0.5
-  alpha1.bounds = c(-1.5, 0.5);
+  # alpha1.bounds = c(-1.5, 0.5);
   # 2 + alpha1 = alpha, so alpha \in [0.5, 2.5]
+  alpha1.bounds = c(-1.5, 1)   # so alpha \in [0.5, 3]
   alpha0.lower = -20;
   # alpha0 = log(phi0)  ---> phi0.lower = 2e-9 (+ over-disp)
   
@@ -473,8 +407,6 @@ glm.nbp.1 <- function(y, s, x,
   fit$l = l;
   # Pearson's residuals:
   fit$p.res = (y - fit$mu) / sqrt( fit$mu + fit$phi * fit$mu^2 );
-  # Pearson's GOF test statistic:
-  # fit$p.stat = sum((fit$p.res)^2);
   
   fit;
 }

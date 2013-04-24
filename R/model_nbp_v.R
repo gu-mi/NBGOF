@@ -15,7 +15,8 @@
 #' 
 #' @param y an n-by-1 vector of non-negative integers. For a typical RNA-Seq experiment, 
 #' this may represent the read counts for a single gene 
-#' @param x an n-by-p design matrix.
+#' @param x an n-by-p design matrix. If an intercept is desired in the model, you need to specify
+#' the first column of \code{x} as a vector of 1.
 #' @param lib.sizes library sizes of a RNA-Seq experiment. Default is 1 for all samples
 #' 
 #' @return A list of quantities to be used in the main \code{\link{nb_gof_v}} function.
@@ -35,9 +36,9 @@ model_nbp_v <- function(y, x, lib.sizes=NULL){
   
   # fit NBP model: glm.nbp.1()
   fit = glm.nbp.1(y=y, s=lib.sizes, x=x, print.level=0)
-  mu <- fit$mu
-  phi <- fit$phi
-  res.v <- fit$p.res
+  mu = fit$mu
+  phi = fit$phi
+  res.v = fit$p.res
   
   # save as a list
   model_nbp_v_obj = list(mu.hat.v = mu,
