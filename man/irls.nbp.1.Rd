@@ -4,8 +4,28 @@
 \usage{
   irls.nbp.1(y, s, x, phi0, alpha1, beta0 = rep(NA, p),
     maxit = 50, tol.mu = 0.001/length(y), print.level = 1)
+
+  irls.nbp.1(y, s, x, phi0, alpha1, beta0 = rep(NA, p),
+    maxit = 50, tol.mu = 0.001/length(y), print.level = 1)
 }
 \arguments{
+  \item{y}{an n vector of counts}
+
+  \item{s}{a scalar or an n vector of effective library
+  sizes}
+
+  \item{x}{a n by p design matrix}
+
+  \item{phi0}{}
+
+  \item{alpha1}{phi= phi0 (mu/s)^alpha1}
+
+  \item{beta0}{the regression coefficients: non-NA
+  components are hypothesized values of beta, NA components
+  are free components}
+
+  \item{tol.mu}{convergence criteria}
+
   \item{y}{an n vector of counts}
 
   \item{s}{a scalar or an n vector of effective library
@@ -28,12 +48,36 @@
   estimated regression coefficients mu, an n-vector of
   estimated mean values converged, logical. Was the IRLS
   algorithm judged to have converged?
+
+  a list of the following components: beta, a p-vector of
+  estimated regression coefficients mu, an n-vector of
+  estimated mean values converged, logical. Was the IRLS
+  algorithm judged to have converged?
 }
 \description{
   Estimate the regression coefficients in an NBP GLM model
   for one gene
+
+  Estimate the regression coefficients in an NBP GLM model
+  for one gene
 }
 \details{
+  This function estimate <beta> using iterative reweighted
+  least squares (IRLS) algorithm, which is equivalent to
+  Fisher scoring. We used the glm.fit code as a template.
+
+  Note that we will igore the dependence of the dispersion
+  parameter (reciprical of the shape parameter) on beta. In
+  other words, the estimate is the solution to
+
+  dl/dmu dmu/dbeta = 0
+
+  while we igored the contribution of
+
+  dl/dkappa dkappa/dbeta
+
+  to the score equation.
+
   This function estimate <beta> using iterative reweighted
   least squares (IRLS) algorithm, which is equivalent to
   Fisher scoring. We used the glm.fit code as a template.

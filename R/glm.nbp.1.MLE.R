@@ -2,7 +2,7 @@
 # This file is to be sourced for GOF test -- glm.nbp.1()
 # phi0 does NOT have to be specified beforehand (bug fixed)
 
-## THIS FUNCTION USES ADJUSTED PROFILE LIKELIHOOD METHOD!
+## THIS FUNCTION USES MAXIMUM LIKELIHOOD METHOD!
 
 # log.likelihood.nb() will be used in apl.phi.alpha.1()
 # Negative Binomial (NB2) formulation, with kappa taking care of NBP
@@ -283,9 +283,10 @@ irls.nbp.1 = function(y, s, x, phi0, alpha1, beta0=rep(NA, p),
 
 
 ## -------------------------------------------------------------------------
-## Log adjusted profile likelihood (APL) of parameters in dispersion model:
+## Log maximum likelood (MLE) of parameters in dispersion model:
 ## phi = phi0*p^alpha1
 ## -------------------------------------------------------------------------
+## note: we didn't change the function name here, but keep in mind that this is for MLE
 apl.phi.alpha.1 <- function(phi0, alpha1, y, lib.sizes, x, beta0,
                             print.level=0) {
   
@@ -297,27 +298,27 @@ apl.phi.alpha.1 <- function(phi0, alpha1, y, lib.sizes, x, beta0,
   ## Compute the information matrices
   mu.hat = fit$mu;
   v.hat = drop(mu.hat + fit$phi * mu.hat^2);
-  j.hat <- t(x) %*%
-    diag(mu.hat^2 * (y/mu.hat^2 - (y+kappa)/(mu.hat+kappa)^2) -
-           (y-mu.hat)*mu.hat/v.hat) %*% x;
+#   j.hat <- t(x) %*%
+#     diag(mu.hat^2 * (y/mu.hat^2 - (y+kappa)/(mu.hat+kappa)^2) -
+#            (y-mu.hat)*mu.hat/v.hat) %*% x;
   
   ## The likelihood of (kappa, mu) (different from the l.hat in
   ## irls.nb.1, which is the likelihood of mu).
-  l.hat = log.likelihood.nb(kappa, fit$mu, y);
+  l.hat = log.likelihood.nb(kappa, fit$mu, y);   # MLE
   
-  if (print.level>2) {
-    print(list(mu.hat=mu.hat, v.hat=v.hat, l.hat=l.hat, j.hat=j.hat));
-  }
-  l.hat - 0.5 * log(det(j.hat));
-  # equation (8) in paper -- adjusted profile likelihood
+#   if (print.level>2) {
+#     print(list(mu.hat=mu.hat, v.hat=v.hat, l.hat=l.hat, j.hat=j.hat));
+#   }
+#   l.hat - 0.5 * log(det(j.hat));
+  # equation (8) in paper -- adjusted profile likelihood (this l.hat is not used for MLE)
 }
 
 ## -------------------------------------------------------------------------
 ## Estimate the NBP dispsersioon model and fit NBP regression model
 ## -------------------------------------------------------------------------
-## this function uses APLE
-## for MLE, see glm.nbp.1.MLE()
-glm.nbp.1 <- function(y, s, x,
+## this function uses MLE
+## for APLE, see glm.nbp.1()
+glm.nbp.1.MLE <- function(y, s, x,
                       beta0 = rep(NA, dim(x)[2]),
                       alpha1=NA,
                       mu.lower=1,
@@ -382,7 +383,7 @@ glm.nbp.1 <- function(y, s, x,
     obj$objective
   }
   
-  ## Maximize the pl of alpha1
+  ## Maximize the pl of alpha1 (now ML of alpha1)
   if (is.na(alpha1)) {
     alpha1 = optimize(pl.alpha1, interval=alpha1.bounds,
                       tol=tol.alpha1, maximum=TRUE)$maximum;

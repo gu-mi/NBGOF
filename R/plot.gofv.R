@@ -24,15 +24,16 @@
 #' @author Gu Mi, Yanming Di, Daniel Schafer
 #'  
 plot.gofv = function(x, 
-                      conf.env=0.95, 
-                      data.note=NULL, 
-                      leg.cex=1, 
-                      ...){
+                     conf.env=0.95, 
+                     data.note=NULL, 
+                     leg.cex=1, 
+                     ...){
   
   ## quantities from a "gofv" object:
   model.fit = x$model.fit
   samp.size = x$samp.size
   pv.D = x$new.pval
+  pv.P = x$pear.pval
   sim = x$sim
   
   ord.res.sim.mat = x$ord.res.sim.mat
@@ -79,14 +80,16 @@ plot.gofv = function(x,
     legend("topleft",bty="n", legend=c(
       paste("# sample = ", samp.size),
       paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("Monte Carlo GOF p-value = ", pv.D)),
+      paste("M.C. GOF p-value (Pearson) =", pv.P),
+      paste("M.C. GOF p-value (Distance) = ", pv.D)),
            cex=leg.cex)
   }
   if (pv.D < 0.0001){
     legend("topleft",bty="n", legend=c(
       paste("# sample = ", samp.size),
       paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("Monte Carlo GOF p-value < 0.0001")),
+      paste("M.C. GOF p-value (Pearson) =", pv.P),
+      paste("M.C. GOF p-value (Distance) < 0.0001")),
            cex=leg.cex)
   }  
   ##  

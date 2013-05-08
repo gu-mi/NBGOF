@@ -1,9 +1,9 @@
 \name{model_nbp_v}
 \alias{model_nbp_v}
-\title{Modeling NBP regression model with MLE on original and simulated
+\title{Modeling NBP regression model with MLE or APLE on original and simulated
 datasets}
 \usage{
-  model_nbp_v(y, x, lib.sizes=NULL)
+  model_nbp_v(y, x, lib.sizes=NULL, est.method="MLE")
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a

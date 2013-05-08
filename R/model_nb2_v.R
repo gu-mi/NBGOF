@@ -37,7 +37,7 @@ model_nb2_v <- function(y, x, lib.sizes=NULL){
   # preconditions
   stopifnot(n == dim(x)[1], n == length(lib.sizes))
   
-  # fit NB2 model
+  # fit NB2 model using MLE
   nb2.fit = nb.regression.1(y=y, s=lib.sizes, x=x, beta=NA)
   mu.hat.v = nb2.fit$mu
   phi = nb2.fit$phi

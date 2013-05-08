@@ -1,0 +1,32 @@
+\name{chisq_gof}
+\alias{chisq_gof}
+\title{Based on p-values obtained, perform chi-square-like tests for overall GOF}
+\usage{
+  chisq_gof(x, ...)
+}
+\arguments{
+  \item{x}{an object of class \code{gofm}}
+
+  \item{...}{for future use}
+}
+\value{
+  P-values from different methods
+}
+\description{
+  This function is designed to provide different methods of
+  combining p-values
+}
+\details{
+  When the response is a count matrix, we can use this
+  function to test the goodness-of-fit of a specified
+  negative binomial dispersion model.
+}
+\author{
+  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+  Schafer
+}
+\references{
+  \url{https://github.com/gu-mi/NBGOF/wiki/}
+}
+\keyword{internal}
+

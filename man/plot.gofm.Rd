@@ -2,33 +2,27 @@
 \alias{plot.gofm}
 \title{Plot Methods for "gofm" Objects}
 \usage{
-  plot(x, conf.env=0.95, data.note=NULL, leg.cex=1, put.lab
-    = TRUE, ...)
+  plot(x, model=NULL, type="qq", logscale=TRUE, ...)
 }
 \arguments{
   \item{x}{an object of class "gofm" (from \link{nb_gof_m}
   output)}
 
-  \item{conf.env}{confidence level for the envelope}
+  \item{model}{the model used to fit the data}
 
-  \item{data.note}{a note on how data are simulated or the
-  source of data}
+  \item{type}{either a quantile-quantile uniform plot, or a
+  histogram}
 
-  \item{leg.cex}{size of the legend fonts}
-
-  \item{put.lab}{logical value: whether to put gene index
-  labels on the plot}
+  \item{logscale}{whether use logscale for the uniform Q-Q
+  plot (default is TRUE)}
 
   \item{...}{for future use}
 }
 \value{
-  A diagnostic plot for evaluating model adequacy. Each
-  gene index (row index) that falls outside a pre-specified
-  confidence envelope is in red color and labels (if
-  \code{put.lab=TRUE}).
+  A quantile-quantile uniform plot or a histogram
 }
 \description{
-  A plot method for empirical probability plot based on a
+  A plot method for evaluating the p-values based on a
   "gofm" object obtained from the \code{\link{nb_gof_m}}
   outputs
 }

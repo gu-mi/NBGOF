@@ -13,6 +13,9 @@
   \item{data.note}{a note on how data are simulated or the
   source of data}
 
+  \item{bin}{the number of bins used for calculating a
+  standard chi-square p-value}
+
   \item{...}{for future use}
 }
 \value{

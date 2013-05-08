@@ -1,5 +1,4 @@
 
-################################################################################
 #' @title Modeling NB genewise dispersion model with MLE on original and simulated 
 #' datasets
 #' 

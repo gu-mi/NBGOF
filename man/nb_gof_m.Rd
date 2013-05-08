@@ -4,7 +4,7 @@
 RNA-Seq Dataset}
 \usage{
   nb_gof_m(counts, x, lib.sizes=colSums(counts), sim=199,
-    model.fit="NB")
+    model.fit="NB", min.n=100)
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -21,18 +21,19 @@ RNA-Seq Dataset}
   \item{model.fit}{a string of characters specifying the
   negative binomial dispersion model used to fit the data.
   Currently the following dispersion models are available
-  to be checked for goodness-of-fit: \itemize{ \item NB
-  genewise dispersion model in the \code{\link{NBPSeq}}
-  package (\code{NB}) \item NBP dispersion model in the
-  \code{\link{NBPSeq}} package (\code{NBP}) \item NB common
+  to be checked for goodness-of-fit: \itemize{ \item NBP
+  dispersion model in the \code{\link{NBPSeq}} package
+  (\code{NBP}) \item NB common dispersion model in the
+  \code{\link{edgeR}} package (\code{edgeR-common}) \item
+  NB tagwise dispersion model in the \code{\link{edgeR}}
+  package (\code{edgeR-tagwise}) \item NB trended
   dispersion model in the \code{\link{edgeR}} package
-  (\code{edgeR-common}) \item NB tagwise dispersion model
-  in the \code{\link{edgeR}} package (\code{edgeR-tagwise})
-  \item NB trended dispersion model in the
-  \code{\link{edgeR}} package (\code{edgeR-trended}) }
-  Users are recommended to specify \strong{exactly} the
-  same characters as the ones in paratheses above for each
-  dispersion model.}
+  (\code{edgeR-trended}) } Users are recommended to specify
+  \strong{exactly} the same characters as the ones in
+  paratheses above for each dispersion model.}
+
+  \item{min.n}{for \code{edgeR} trended model only: specify
+  the minimim number of genes in a bin}
 }
 \value{
   An object of class "gofm" to which other methods (plot,
@@ -65,7 +66,7 @@ pi = mu/lib.sizes
 ## simulate an m-by-n count matrix mimicking a RNA-Seq dataset
 set.seed(seed)
 alpha1 = 0   # NB2 regression model
-phi0 <- 0.8  # == phi
+phi0 = 0.8  # == phi
 alpha0 = log(phi0);
 phi.nb2c = phi0 * pi^alpha1;  # == phi0
 cbind(mu[,1], phi.nb2c[,1])   # make sure phi's are in reasonable range
@@ -82,27 +83,17 @@ x = model.matrix(~grp.ids)
 ## CAUTION: may be time-consuming depending on the size of data and simulations
 
 ## consider all dispersion estimation methods:
-# pdf(file=file.path(path1,"gof-nb2comphi-95.pdf"), width=12, height=8)
-par(mfrow=c(2,3))
-#
 fnb2.nb2c = nb_gof_m(counts=y,x=x,lib.sizes=lib.sizes, sim=sim,model.fit="NB")
-plot(fnb2.nb2c, conf.env=conf.env, data.note="NB2", col="azure4", pch=".", cex=3)
 #
 fnbp.nb2c = nb_gof_m(counts=y,x=x,lib.sizes=lib.sizes, sim=sim,model.fit="NBP")
-plot(fnbp.nb2c, conf.env=conf.env, data.note="NB2", col="azure4", pch=".", cex=3)
 #
 fcom.nb2c = nb_gof_m(counts=y,x=x,lib.sizes=lib.sizes, sim=sim,model.fit="edgeR-common")
-plot(fcom.nb2c, conf.env=conf.env, data.note="NB2", col="azure4", pch=".", cex=3)
 #
 fgen.nb2c = nb_gof_m(counts=y,x=x,lib.sizes=lib.sizes, sim=sim,model.fit="edgeR-genewise")
-plot(fgen.nb2c, conf.env=conf.env, data.note="NB2", col="azure4", pch=".", cex=3)
 #
 ftag.nb2c = nb_gof_m(counts=y,x=x,lib.sizes=lib.sizes, sim=sim,model.fit="edgeR-tagwise")
-plot(ftag.nb2c, conf.env=conf.env, data.note="NB2", col="azure4", pch=".", cex=3)
 #
 ftrd.nb2c = nb_gof_m(counts=y,x=x,lib.sizes=lib.sizes, sim=sim,model.fit="edgeR-trended")
-plot(ftrd.nb2c, conf.env=conf.env, data.note="NB2", col="azure4", pch=".", cex=3)
-# dev.off()
 
 ## summarize the GOF test results:
 summary(fnb2.nb2c, conf.env=0.95, data.note="NB2 Common Dispersion Data")

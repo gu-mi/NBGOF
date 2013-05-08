@@ -4,7 +4,7 @@
 the regression of a univariate count response on one or more explanatory variables}
 \usage{
   nb_gof_v(y, x, lib.sizes=NULL, sim=999, model.fit =
-    "NB2")
+    "NB2", est.method="MLE")
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
@@ -27,6 +27,9 @@ the regression of a univariate count response on one or more explanatory variabl
   (\code{NBP}) } Users are recommended to specify
   \strong{exactly} the same characters as the ones in
   paratheses above for each NB regression model.}
+
+  \item{est.method}{either "MLE" or "APLE" for the
+  estimation methods used}
 }
 \value{
   An object of class "gofv" to which other methods (plot,
@@ -35,7 +38,8 @@ the regression of a univariate count response on one or more explanatory variabl
 \description{
   This function is designed to test goodness-of-fit of an
   NB2 or NBP negative binomial regression model with a
-  known design matrix.
+  known design matrix. Estimation methods for NBP model
+  fitting include MLE and APLE
 }
 \details{
   When the response is a vector, we can use this function

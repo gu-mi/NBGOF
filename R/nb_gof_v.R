@@ -6,7 +6,8 @@
 #' the regression of a univariate count response on one or more explanatory variables
 #' 
 #' @description This function is designed to test goodness-of-fit of an NB2 or NBP
-#' negative binomial regression model with a known design matrix. 
+#' negative binomial regression model with a known design matrix. Estimation methods
+#' for NBP model fitting include MLE and APLE
 #' 
 #' @param y an n-by-1 vector of non-negative integers. For a typical RNA-Seq experiment, 
 #' this may represent the read counts for a single gene 
@@ -22,6 +23,7 @@
 #' }
 #' Users are recommended to specify \strong{exactly} the same characters as the
 #' ones in paratheses above for each NB regression model.
+#' @param est.method either "MLE" or "APLE" for the estimation methods used
 #' 
 #' @return An object of class "gofv" to which other methods (plot, summary, etc.)
 #' can be applied.
@@ -30,7 +32,7 @@
 #' the goodness-of-fit of a specified negative binomial regression model. 
 #' 
 #' @usage 
-#' nb_gof_v(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2")
+#' nb_gof_v(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method="MLE")
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
@@ -74,7 +76,7 @@
 #' plot(gf.nb1.nbp, conf.env=0.95, data.note = "NB1", pch=".", cex=5)
 #' # dev.off()
 #' 
-nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2"){
+nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method="MLE"){
   
   n = length(y)
   p = dim(x)[2]
@@ -129,7 +131,7 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2"){
   #### -----------------------------------------------------------------
   if (model.fit == "NBP"){
     libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
-    mnbp.0 = model_nbp_v(y=y, x=x, lib.sizes=libs)  
+    mnbp.0 = model_nbp_v(y=y, x=x, lib.sizes=libs, est.method=est.method)  
     # NBP model fit on original data
     mu.hat.v0 = mnbp.0$mu.hat.v
     phi0 = mnbp.0$phi
@@ -139,7 +141,7 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2"){
     for (i in 1:sim){
       setTxtProgressBar(pb, i/sim)
       y.vec.h = rnbinom(n, mu = mu.hat.v0, size = 1/phi0)
-      mnbp.h = model_nbp_v(y=y.vec.h, x=x, lib.sizes=libs)  
+      mnbp.h = model_nbp_v(y=y.vec.h, x=x, lib.sizes=libs, est.method=est.method)  
       # NBP model fit on simulated data
       res.sim.mat[i, ] = mnbp.h$res.vec
     }
@@ -155,12 +157,17 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2"){
   #### -----------------------------------------------------------------
   ## calcualte test statistics (observed and simulated) and p-values
   stat0.P = sum(res.vec0^2)
-  stat0.D = sum( abs(ord.res.sim.mat[(sim+1), ] - ord.typ.res.sim) )
+  #stat0.D = sum( abs(ord.res.sim.mat[(sim+1), ] - ord.typ.res.sim) )
+  stat0.D = sum( (ord.res.sim.mat[(sim+1), ] - ord.typ.res.sim)^2 )
+  
   for (i in 1:sim){
     stat.sim.P[i] = sum( res.sim.mat[i, ]^2 )
-    stat.sim.D[i] = sum( abs(ord.res.sim.mat[i, ] - ord.typ.res.sim) )
+    #stat.sim.D[i] = sum( abs(ord.res.sim.mat[i, ] - ord.typ.res.sim) )
+    stat.sim.D[i] = sum( (ord.res.sim.mat[i, ] - ord.typ.res.sim)^2 )
   }
-  pval.P = (sum(stat.sim.P >= stat0.P) + 1) / (sim + 1)
+  #pval.P = (sum(stat.sim.P >= stat0.P) + 1) / (sim + 1)
+  pval.P = 2 * min( (sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1),
+                    1 - ( sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1) )  # TWO-SIDED
   pval.D = (sum(stat.sim.D >= stat0.D) + 1) / (sim + 1)
   pv.P = round(pval.P, 6)
   pv.D = round(pval.D, 6)

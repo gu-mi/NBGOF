@@ -1,5 +1,4 @@
 
-################################################################################
 #' @title Modeling NBP genewise dispersion model with the maximum likelihood estimator 
 #' (MLE) on original and simulated datasets
 #' 

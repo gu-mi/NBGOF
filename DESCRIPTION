@@ -5,7 +5,7 @@ Title: Goodness-of-Fit Tests and Model Diagnostics for
 Description: An R package for implementing goodness-of-fit
     tests for RNA-Seq data under different negative
     binomial dispersion models.
-Version: 0.1.7
+Version: 0.1.9
 License: GPL-2
 Author: Gu Mi <mig@stat.oregonstate.edu>, Yanming Di
     <diy@stat.oregonstate.edu>, Daniel Schafer
@@ -16,7 +16,7 @@ Depends:
 Imports:
     NBPSeq (>= 0.1.8),
     edgeR (>= 3.0.7),
-    calibrate (>= 1.7.1),
+    gap (>= 1.0-13),
     numDeriv (>= 2012.3-1)
 LazyData: yes
 LazyLoad: yes
@@ -24,6 +24,8 @@ URL: http://people.oregonstate.edu/~mig
 BugReports: https://github.com/gu-mi/NBGOF/issues
 Collate:
     'NBGOF-package.R'
+    'arab.R'
+    'glm.nbp.1.MLE.R'
     'glm.nbp.1.R'
     'helper.R'
     'model_edgeR_common.R'
@@ -41,3 +43,5 @@ Collate:
     'plot.gofm.R'
     'plot.gofv.R'
     'summary.gofm.R'
+    'plot.md.R'
+    'ks_gof.R'

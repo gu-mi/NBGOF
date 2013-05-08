@@ -21,9 +21,10 @@ estimator (APLE) on original and simulated datasets}
 }
 \description{
   This function is designed to fit an NB regression model
-  with a NB2 common dispersion using the adjusted profile
+  with a common dispersion using the adjusted profile
   likelihood estimator. See details below. The output of
-  this function will be passed to the main GOF function.
+  this function will be passed to the main GOF function
+  \code{\link{nb_gof_m}}.
 }
 \details{
   Under the NB model ... See the
@@ -37,5 +38,9 @@ estimator (APLE) on original and simulated datasets}
 }
 \references{
   \url{https://github.com/gu-mi/NBGOF/wiki/}
+}
+\seealso{
+  \code{\link{model_edgeR_tagwise}} and
+  \code{\link{model_edgeR_trended}}
 }
 

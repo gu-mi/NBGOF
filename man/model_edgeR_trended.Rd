@@ -14,6 +14,9 @@ estimator (APLE) on original and simulated datasets}
 
   \item{lib.sizes}{library sizes of a RNA-Seq experiment.
   Default is the column sums of the \code{counts} matrix.}
+
+  \item{min.n}{minimim number of genes in a bin. Default is
+  100. See \code{\link{dispBinTrend}} for details.}
 }
 \value{
   A list of quantities to be used in the main
@@ -30,12 +33,11 @@ estimator (APLE) on original and simulated datasets}
   can be used by fitting loess or spline curves on binned
   genes, or using locally weighted APL. See details below.
   The output of this function will be passed to the main
-  GOF function.
+  GOF function \code{\link{nb_gof_m}}.
 }
 \details{
   Under the NB model ... See the
-  \code{\link{estimateGLMCommonDisp}},
-  \code{\link{estimateGLMTagwiseDisp}} and
+  \code{\link{eestimateGLMTrendedDisp}} and
   \code{\link{glmFit}} functions in the \code{\link{edgeR}}
   package for more information.
 }
@@ -47,7 +49,7 @@ estimator (APLE) on original and simulated datasets}
   \url{https://github.com/gu-mi/NBGOF/wiki/}
 }
 \seealso{
-  \code{\link{model_edgeR_genewise}} for the non-shrinkage
-  version
+  \code{\link{model_edgeR_common}} and
+  \code{\link{model_edgeR_genewise}}
 }
 
