@@ -60,13 +60,25 @@ plot.gofv = function(x,
   p.hat = nout/n.pts
   
   ## plot epp:
-  plot(ord.typ.res.sim[!out.ind], ord.res.obs[!out.ind], 
-       xlim = c(min.x, max.x), 
-       ylim = c(min.y, max.y), 
-       xlab =  "Exp. Ordered Res. from NB (via Simulation)",
-       ylab =  "Ordered Pearson Residuals",
-       main = paste("Testing", model.fit, "Model Fit"),
-       ...)
+  if (model.fit == "NB2"){
+    plot(ord.typ.res.sim[!out.ind], ord.res.obs[!out.ind], 
+         xlim = c(min.x, max.x), 
+         ylim = c(min.y, max.y), 
+         xlab =  "Medians of Ordered MC Residuals (NB2)",
+         ylab =  "Ordered Pearson Residuals",
+         main = paste("Testing", model.fit, "Regression Fit"),
+         ...)
+  }
+  else if (model.fit == "NBP"){
+    plot(ord.typ.res.sim[!out.ind], ord.res.obs[!out.ind], 
+         xlim = c(min.x, max.x), 
+         ylim = c(min.y, max.y), 
+         xlab =  "Medians of Ordered MC Residuals (NBP)",
+         ylab =  "Ordered Pearson Residuals",
+         main = paste("Testing", model.fit, "Regression Fit"),
+         ...)
+  }
+  
   
   # highlight points outside:
   points(ord.typ.res.sim[out.ind], ord.res.obs[out.ind], col="red", ...)
@@ -76,24 +88,44 @@ plot.gofv = function(x,
   points(ord.typ.res.sim, quant[1, ], type="l", col="blue")
   points(ord.typ.res.sim, quant[2, ], type="l", col="blue")
   
-  if (pv.D > 0.0001){
+  if (pv.D > 0.01 & pv.P > 0.01){
     legend("topleft",bty="n", legend=c(
-      paste("# sample = ", samp.size),
-      paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("M.C. GOF p-value (Pearson) =", pv.P),
-      paste("M.C. GOF p-value (Distance) = ", pv.D)),
+      #paste("# sample = ", samp.size),
+      #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
+      paste("MC GOF p-value (Pear.Stat.) =", round(pv.P,2)),
+      paste("MC GOF p-value (Sq.Vert.Dist.) =", round(pv.D,2))),
            cex=leg.cex)
   }
-  if (pv.D < 0.0001){
+  #
+  if (pv.D < 0.005 & pv.P > 0.01){
     legend("topleft",bty="n", legend=c(
-      paste("# sample = ", samp.size),
-      paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("M.C. GOF p-value (Pearson) =", pv.P),
-      paste("M.C. GOF p-value (Distance) < 0.0001")),
+      #paste("# sample = ", samp.size),
+      #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
+      paste("MC GOF p-value (Pear.Stat.) =", round(pv.P,2)),
+      paste("MC GOF p-value (Sq.Vert.Dist.) < 0.01")),
+           cex=leg.cex)
+  }
+  #
+  if (pv.D > 0.01 & pv.P < 0.005){
+    legend("topleft",bty="n", legend=c(
+      #paste("# sample = ", samp.size),
+      #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
+      paste("MC GOF p-value (Pear.Stat.) < 0.01"),
+      paste("MC GOF p-value (Sq.Vert.Dist.) =", round(pv.D,2))),
+           cex=leg.cex)
+  } 
+  #
+  if (pv.D < 0.005 & pv.P < 0.005){
+    legend("topleft",bty="n", legend=c(
+      #paste("# sample = ", samp.size),
+      #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
+      paste("MC GOF p-value (Pear.Stat.) < 0.01"),
+      paste("MC GOF p-value (Sq.Vert.Dist.) < 0.01")),
            cex=leg.cex)
   }  
   ##  
-  legend("bottomright", bty="n", legend=c(data.note,
-    paste("(sim size = ", sim, ", CI = ", conf.env*100, "%)", sep="")),
-         cex=leg.cex)
+#   legend("bottomright", bty="n", legend=c(data.note,
+#     paste("(sim size = ", sim, ", CI = ", conf.env*100, "%)", sep="")),
+#          cex=leg.cex)
+  legend("bottomright", bty="n", legend=data.note, cex=leg.cex)
 }

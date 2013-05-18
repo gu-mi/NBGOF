@@ -58,7 +58,6 @@ plot.md = function(y, x, model = NULL, scatter = FALSE, legend = FALSE, data.typ
   ## begin plotting 
   if (scatter){
     plot(mu, phi, log="xy", pch=".", cex=4, 
-         main="Mean Dispersion Plot with Fitted NB Models",
          xlab="Average Number of Reads (log)", ylab="Estimated NB Dispersion Parameter (log)",
          ...)
   }
@@ -128,9 +127,9 @@ plot.md = function(y, x, model = NULL, scatter = FALSE, legend = FALSE, data.typ
     legend("bottomleft", bty="n", legend=c("common", "NBP", "trended", "tagwise"),
            lty=c(2,1,5,4), col=c("blue","red","cyan","magenta"),
            lwd=rep(2,4))
-    legend("topright", bty="n", legend=c(paste("plot",on.plot,"out of",total.pts,"points", 
-                                               sep=" "),
-                                         data.type = data.type))
+#     legend("topright", bty="n", legend=c(paste("plot",on.plot,"out of",total.pts,"points", 
+#                                                sep=" "),
+#                                          data.type = data.type))
   }
 }
 

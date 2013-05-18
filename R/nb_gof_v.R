@@ -157,12 +157,10 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method
   #### -----------------------------------------------------------------
   ## calcualte test statistics (observed and simulated) and p-values
   stat0.P = sum(res.vec0^2)
-  #stat0.D = sum( abs(ord.res.sim.mat[(sim+1), ] - ord.typ.res.sim) )
   stat0.D = sum( (ord.res.sim.mat[(sim+1), ] - ord.typ.res.sim)^2 )
   
   for (i in 1:sim){
     stat.sim.P[i] = sum( res.sim.mat[i, ]^2 )
-    #stat.sim.D[i] = sum( abs(ord.res.sim.mat[i, ] - ord.typ.res.sim) )
     stat.sim.D[i] = sum( (ord.res.sim.mat[i, ] - ord.typ.res.sim)^2 )
   }
   #pval.P = (sum(stat.sim.P >= stat0.P) + 1) / (sim + 1)

@@ -31,7 +31,7 @@
 #' 
 #' @references \url{https://github.com/gu-mi/NBGOF/wiki/}
 #' 
-model_nbp_m <- function(counts, x, lib.sizes=colSums(counts)){
+model_nbp_m = function(counts, x, lib.sizes=colSums(counts)){
   
   nc = dim(counts)[2]
   
@@ -46,12 +46,12 @@ model_nbp_m <- function(counts, x, lib.sizes=colSums(counts)){
   # single-group case
   if (length(unique(grp.ids)) == 1){   
     # data preparations
-    nb.data <- prepare.nb.data(counts, lib.sizes=lib.sizes)
-    fit <- estimate.dispersion(nb.data, x, print.level=0)
-    phi <- fit$models[[1]]$phi        # NBP "phi" --> mu+phi*mu^2
-    mu <- fit$models[[1]]$mu
-    v <- mu + phi * mu^2              # variance matrix
-    res.m <- (counts - mu) / sqrt(v)  # res. matrix
+    nb.data = prepare.nb.data(counts, lib.sizes=lib.sizes)
+    fit = estimate.dispersion(nb.data, x, print.level=0)
+    phi = fit$models[[1]]$phi        # NBP "phi" --> mu+phi*mu^2
+    mu = fit$models[[1]]$mu
+    v = mu + phi * mu^2              # variance matrix
+    res.m = (counts - mu) / sqrt(v)  # res. matrix
     
     # sort res.m with care!
     res.om = t(apply(res.m, 1, sort))
@@ -70,12 +70,12 @@ model_nbp_m <- function(counts, x, lib.sizes=colSums(counts)){
   # multiple-group case
   else { 
     # data preparations
-    nb.data <- prepare.nb.data(counts, lib.sizes=lib.sizes)
-    fit <- estimate.dispersion(nb.data, x, print.level=0)
-    phi <- fit$models[[1]]$phi        # NBP "phi" --> mu+phi*mu^2
-    mu <- fit$models[[1]]$mu
-    v <- mu + phi * mu^2              # variance matrix
-    res.m <- (counts - mu) / sqrt(v)  # res. matrix
+    nb.data = prepare.nb.data(counts, lib.sizes=lib.sizes)
+    fit = estimate.dispersion(nb.data, x, print.level=0)
+    phi = fit$models[[1]]$phi        # NBP "phi" --> mu+phi*mu^2
+    mu = fit$models[[1]]$mu
+    v = mu + phi * mu^2              # variance matrix
+    res.m = (counts - mu) / sqrt(v)  # res. matrix
     
     # sort res.m with care!
     res.om = t(apply(res.m, 1, sort.vec, grp.ids))

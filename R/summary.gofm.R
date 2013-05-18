@@ -33,45 +33,44 @@ summary.gofm = function(x,
   model.fit = x$model.fit
   counts.dim = x$counts.dim
   xx = x$design.mat
-  pv.Vert = x$pv.Vert
-  pv.Pear = x$pv.Pear
-  pval.pear.median = x$pval.pear.median
+#   pv.Vert = x$pv.Vert
+#   pv.Pear = x$pv.Pear
   sim.size = x$sim
   dist.mat = x$dist.mat
   pear.mat = x$pear.mat
   
   #### -----------------------------------------------------------------------------------------
   ## envelope method: Vertical distance
-  alpha = 1-conf.env
-  n.pts = dim(dist.mat)[2]  # i.e. number of genes, m
-  quant.95.vert = apply(dist.mat[1:sim.size, ], 2, quantile, probs=conf.env)  # on sim. data only!
-  out.ind.vert = dist.mat[(sim.size+1), ] > quant.95.vert
-  # indicator if d(obs.) > d(sim.95th), j=1,...,m
-  nout.vert = sum(out.ind.vert)
-  p.hat.vert = nout.vert/n.pts
-  # binom.test results: one-sided test
-  bt.vert = binom.test(x=nout.vert, n=n.pts, p=alpha, alternative="greater",
-                  conf.level=0.95)
-  bt.pval.vert = round(bt.vert$p.value, 6)
-  
-  ## envelope method: Pearson statistics
-  alpha = 1-conf.env
-  n.pts = dim(dist.mat)[2]  # i.e. number of genes, m
-  quant.95.pear = apply(pear.mat[1:sim.size, ], 2, quantile, probs=conf.env)  # on sim. data only!
-  out.ind.pear = pear.mat[(sim.size+1), ] > quant.95.pear
-  # indicator if d(obs.) > d(sim.95th), j=1,...,m
-  nout.pear = sum(out.ind.pear)
-  p.hat.pear = nout.pear/n.pts
-  # binom.test results: one-sided test
-  bt.pear = binom.test(x=nout.pear, n=n.pts, p=alpha, alternative="greater",
-                       conf.level=0.95)
-  bt.pval.pear = round(bt.pear$p.value, 6)
+#   alpha = 1-conf.env
+#   n.pts = dim(dist.mat)[2]  # i.e. number of genes, m
+#   quant.95.vert = apply(dist.mat[1:sim.size, ], 2, quantile, probs=conf.env)  # on sim. data only!
+#   out.ind.vert = dist.mat[(sim.size+1), ] > quant.95.vert
+#   # indicator if d(obs.) > d(sim.95th), j=1,...,m
+#   nout.vert = sum(out.ind.vert)
+#   p.hat.vert = nout.vert/n.pts
+#   # binom.test results: one-sided test
+#   bt.vert = binom.test(x=nout.vert, n=n.pts, p=alpha, alternative="greater",
+#                   conf.level=0.95)
+#   bt.pval.vert = round(bt.vert$p.value, 6)
+#   
+#   ## envelope method: Pearson statistics
+#   alpha = 1-conf.env
+#   n.pts = dim(dist.mat)[2]  # i.e. number of genes, m
+#   quant.95.pear = apply(pear.mat[1:sim.size, ], 2, quantile, probs=conf.env)  # on sim. data only!
+#   out.ind.pear = pear.mat[(sim.size+1), ] > quant.95.pear
+#   # indicator if d(obs.) > d(sim.95th), j=1,...,m
+#   nout.pear = sum(out.ind.pear)
+#   p.hat.pear = nout.pear/n.pts
+#   # binom.test results: one-sided test
+#   bt.pear = binom.test(x=nout.pear, n=n.pts, p=alpha, alternative="greater",
+#                        conf.level=0.95)
+#   bt.pval.pear = round(bt.pear$p.value, 6)
   
   #### -----------------------------------------------------------------------------------------
   ## Fisher's method:
   pv.fisher.vert = chisq_gof(x)$fisher.vert
-  pv.fisher.pear = chisq_gof(x)$fisher.pear
-  
+  pv.fisher.pear.1s = chisq_gof(x)$fisher.pear.1s
+  pv.fisher.pear.2s = chisq_gof(x)$fisher.pear.2s
   
   #### -----------------------------------------------------------------------------------------
   # summaries
@@ -79,18 +78,18 @@ summary.gofm = function(x,
   cat("| Data simulated: ", data.note, "\n")
   cat("| NB model used: ", model.fit, "\n")
   cat("| Simulation size: ", sim.size, "\n")
-  cat("| Count matrix dimension = ", counts.dim, "\n")
-  cat("| # pts. outside envelope (Pear.) = ", nout.pear, " (",round(p.hat.pear*100,2),"%)", 
-      sep="", "\n")
-  cat("| # pts. outside envelope (Vert.) = ", nout.vert, " (",round(p.hat.vert*100,2),"%)", 
-      sep="", "\n")
-  cat("| GOF exact binom.test p-value (Pear.Stat.) = ", bt.pval.pear, "\n")
-  cat("| GOF exact binom.test p-value (Vert.Dist.) = ", bt.pval.vert, "\n")
-  cat("| Monte Carlo GOF p-value (Pear.Stat.) = ", pv.Pear, "\n")
-  cat("| Monte Carlo GOF p-value (Vert.Dist.) = ", pv.Vert, "\n")
-  cat("| Monte Carlo GOF p-value (P.S.median) = ", pval.pear.median, "\n")
-  cat("| Fisher Method GOF p-value (Pear.Stat.) = ", pv.fisher.pear, "\n")
+#   cat("| Count matrix dimension = ", counts.dim, "\n")
+#   cat("| # pts. outside envelope (Pear.) = ", nout.pear, " (",round(p.hat.pear*100,2),"%)", 
+#       sep="", "\n")
+#   cat("| # pts. outside envelope (Vert.) = ", nout.vert, " (",round(p.hat.vert*100,2),"%)", 
+#       sep="", "\n")
+#   cat("| GOF exact binom.test p-value (Pear.Stat.2s) = ", bt.pval.pear, "\n")
+#   cat("| GOF exact binom.test p-value (Vert.Dist.) = ", bt.pval.vert, "\n")
+#   cat("| Monte Carlo GOF p-value (Pear.Stat.2s) = ", pv.Pear, "\n")
+#   cat("| Monte Carlo GOF p-value (Vert.Dist.) = ", pv.Vert, "\n")
   cat("| Fisher Method GOF p-value (Vert.Dist.) = ", pv.fisher.vert, "\n")
+  cat("| Fisher Method GOF p-value (Pear.Stat.(1s)) = ", pv.fisher.pear.1s, "\n")
+  cat("| Fisher Method GOF p-value (Pear.Stat.(2s)) = ", pv.fisher.pear.2s, "\n")
   cat("-------------------------------------------------------------- \n")  
 
 }

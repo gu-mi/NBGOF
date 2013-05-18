@@ -119,30 +119,32 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
   
   ## initialize simulation variables
   ord.res.sim.mat = matrix(0, nrow = (sim+1), ncol = N)   # ordered residual "big" matrix
+  phi.hat.sim.mat = matrix(0, nrow = (sim+1), ncol = m)   # phi hat "big" matrix
+  mu.hat.sim.mat = matrix(0, nrow = (sim+1), ncol = m)    # mu hat "big" matrix
   stat.sim.Vert = numeric(sim)   # sum of statistics from simulations (overall vertical distances)
   stat.sim.Pear = numeric(sim)   # based on Pearson statistics
   
   #### -----------------------------------------------------------------
-  if (model.fit == "NB"){
-    mnb2.0 = model_nb_m(counts, x, lib.sizes=colSums(counts))
-    mu.hat.mat0 = mnb2.0$mu.hat.mat
-    phi.hat.mat0 = mnb2.0$phi.hat.mat
-    res.omat0 = mnb2.0$res.omat
-    ord.res.vec0 = mnb2.0$ord.res.vec
-    ## simulate new datasets and re-fit
-    pb = txtProgressBar(style=3)
-    for (i in 1:sim){
-      setTxtProgressBar(pb, i/sim)
-      y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
-      dim(y.mat.h) = dim(counts)
-      rownames(y.mat.h) = rownames(counts)
-      colnames(y.mat.h) = colnames(counts)
-      mnb2.h = model_nb_m(y.mat.h, x, lib.sizes=colSums(y.mat.h))
-      ord.res.sim.mat[i, ] = mnb2.h$ord.res.vec
-    }
-    close(pb)
-    ord.res.sim.mat[(sim+1), ] = ord.res.vec0
-  }
+#   if (model.fit == "NB"){
+#     mnb2.0 = model_nb_m(counts, x, lib.sizes=colSums(counts))
+#     mu.hat.mat0 = mnb2.0$mu.hat.mat
+#     phi.hat.mat0 = mnb2.0$phi.hat.mat
+#     res.omat0 = mnb2.0$res.omat
+#     ord.res.vec0 = mnb2.0$ord.res.vec
+#     ## simulate new datasets and re-fit
+#     pb = txtProgressBar(style=3)
+#     for (i in 1:sim){
+#       setTxtProgressBar(pb, i/sim)
+#       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
+#       dim(y.mat.h) = dim(counts)
+#       rownames(y.mat.h) = rownames(counts)
+#       colnames(y.mat.h) = colnames(counts)
+#       mnb2.h = model_nb_m(y.mat.h, x, lib.sizes=colSums(y.mat.h))
+#       ord.res.sim.mat[i, ] = mnb2.h$ord.res.vec
+#     }
+#     close(pb)
+#     ord.res.sim.mat[(sim+1), ] = ord.res.vec0
+#   }
   #### -----------------------------------------------------------------
   if (model.fit == "NBP"){
     mnbp.0 = model_nbp_m(counts, x, lib.sizes=colSums(counts))
@@ -160,9 +162,13 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
       colnames(y.mat.h) = colnames(counts)
       mnbp.h = model_nbp_m(y.mat.h, x, lib.sizes=colSums(y.mat.h))
       ord.res.sim.mat[i, ] = mnbp.h$ord.res.vec
+      phi.hat.sim.mat[i, ] = mnbp.h$phi.hat.mat
+      mu.hat.sim.mat[i, ] = mnbp.h$mu.hat.mat[ ,1]
     }
     close(pb)
     ord.res.sim.mat[(sim+1), ] = ord.res.vec0
+    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+    mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   if (model.fit == "edgeR-common"){
@@ -181,9 +187,13 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
       colnames(y.mat.h) = colnames(counts)
       mcom.h = model_edgeR_common(y.mat.h, x, lib.sizes=colSums(y.mat.h), design=design)
       ord.res.sim.mat[i, ] = mcom.h$ord.res.vec
+      phi.hat.sim.mat[i, ] = mcom.h$phi.hat.mat
+      mu.hat.sim.mat[i, ] = mcom.h$mu.hat.mat[ ,1]
     }
     close(pb)
     ord.res.sim.mat[(sim+1), ] = ord.res.vec0
+    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+    mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   if (model.fit == "edgeR-genewise"){
@@ -202,13 +212,18 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
       colnames(y.mat.h) = colnames(counts)
       mgen.h = model_edgeR_genewise(y.mat.h, x, lib.sizes=colSums(y.mat.h), design=design)
       ord.res.sim.mat[i, ] = mgen.h$ord.res.vec
+      phi.hat.sim.mat[i, ] = mgen.h$phi.hat.mat
+      mu.hat.sim.mat[i, ] = mgen.h$mu.hat.mat[ ,1]
     }
     close(pb)
     ord.res.sim.mat[(sim+1), ] = ord.res.vec0
+    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+    mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   if (model.fit == "edgeR-tagwise"){
-    mtag.0 = model_edgeR_tagwise(counts, x, lib.sizes=colSums(counts), prior.df = prior.df, design=design)
+    mtag.0 = model_edgeR_tagwise(counts, x, lib.sizes=colSums(counts), 
+                                 prior.df = prior.df, design=design)
     mu.hat.mat0 = mtag.0$mu.hat.mat
     phi.hat.mat0 = mtag.0$phi.hat.mat
     res.omat0 = mtag.0$res.omat
@@ -221,11 +236,16 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      mtag.h = model_edgeR_tagwise(y.mat.h, x, lib.sizes=colSums(y.mat.h), prior.df = prior.df, design=design)
+      mtag.h = model_edgeR_tagwise(y.mat.h, x, lib.sizes=colSums(y.mat.h), 
+                                   prior.df = prior.df, design=design)
       ord.res.sim.mat[i, ] = mtag.h$ord.res.vec
+      phi.hat.sim.mat[i, ] = mtag.h$phi.hat.mat
+      mu.hat.sim.mat[i, ] = mtag.h$mu.hat.mat[ ,1]
     }
     close(pb)
     ord.res.sim.mat[(sim+1), ] = ord.res.vec0
+    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+    mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   if (model.fit == "edgeR-trended"){
@@ -244,77 +264,82 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
       colnames(y.mat.h) = colnames(counts)
       mtrd.h = model_edgeR_trended(y.mat.h, x, lib.sizes=colSums(y.mat.h), min.n=min.n, design=design)
       ord.res.sim.mat[i, ] = mtrd.h$ord.res.vec
+      phi.hat.sim.mat[i, ] = mtrd.h$phi.hat.mat
+      mu.hat.sim.mat[i, ] = mtrd.h$mu.hat.mat[ ,1]
     }
     close(pb)
     ord.res.sim.mat[(sim+1), ] = ord.res.vec0
+    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+    mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   
   # find the median of the big residual matrix (ordered): a vector
   ord.typ.res.sim = apply(ord.res.sim.mat[1:sim, ], 2, median)  # on simulated datasets ONLY!
   # subtract the typical residual vector from each row of the ordered residual matrix
-  #dists.mat.res =  abs(sweep(ord.res.sim.mat, 2, ord.typ.res.sim, "-"))
+  # dists.mat.res =  abs(sweep(ord.res.sim.mat, 2, ord.typ.res.sim, "-"))
   dists.mat.res = (sweep(ord.res.sim.mat, 2, ord.typ.res.sim, "-"))^2
   
   # construct new distance matrix D of dimension (R+1)-by-m
   grp.vec = ( seq_len( ncol(dists.mat.res) ) - 1 ) %/% n     # grouping vector
   dist.mat = t( rowsum(t(dists.mat.res), grp.vec) )    # vertical distance matrix (sim. + obs.)
-  # THIS dist.mat IS UN-SORTED!! WE CAN USE THIS MATRIX FOR THE ENVELOPE METHOD CALCULATIONS!!
+  # THIS dist.mat IS UN-SORTED!! WE CAN USE THIS MATRIX FOR THE ENVELOPE METHOD CALCULATIONS
   pear.mat = t( rowsum(t(ord.res.sim.mat)^2, grp.vec) )  # Pearson stats matrix (sim. + obs.)
-  
-  ## consider using the median of Pearson statistics for one row for M.C. p-value calculation
-  stat.sim.pear.medians = matrix(apply(pear.mat, 1, median))
   
   #### -----------------------------------------------------------------
   ## calcualte test statistics and p-values for Monte Carlo method (sum of each row of dist.mat)
-  stat0.Vert = sum(dist.mat[(sim+1), ])    # vertical distance
-  stat0.Pear = sum(pear.mat[(sim+1), ])  # Pearson statistic
+#   stat0.Vert = sum(dist.mat[(sim+1), ])  # squared vertical distance
+#   stat0.Pear = sum(pear.mat[(sim+1), ])  # Pearson statistic
   
-  for (i in 1:sim){
-    stat.sim.Vert[i] = sum(dist.mat[i, ])
-    stat.sim.Pear[i] = sum(pear.mat[i, ])
-  }
-  pval.Vert = (sum(stat.sim.Vert >= stat0.Vert) + 1) / (sim + 1)      # ONE-SIDED!!
-  #pval.Pear = (sum(stat.sim.Pear >= stat0.Pear) + 1) / (sim + 1)      # ONE-SIDED!!
-  pval.Pear = 2 * min( (sum(stat.sim.Pear >= stat0.Pear) + 1 ) / (sim + 1),
-                       1 - ( sum(stat.sim.Pear >= stat0.Pear) + 1 ) / (sim + 1) )  # TWO-SIDED
-  # median approach:
-  pval.pear.median = 2 * min( (sum(stat.sim.pear.medians[1:sim, ] >= stat.sim.pear.medians[(sim+1), ]) + 1 ) / (sim + 1),
-                       1 - ( sum(stat.sim.pear.medians[1:sim, ] >= stat.sim.pear.medians[(sim+1), ]) + 1 ) / (sim + 1) )  # TWO-SIDED
-  pv.Vert = round(pval.Vert, 6)  
-  pv.Pear = round(pval.Pear, 6)
-  pv.pear.median = round(pval.pear.median, 6)
+#   for (i in 1:sim){
+#     stat.sim.Vert[i] = sum(dist.mat[i, ])
+#     stat.sim.Pear[i] = sum(pear.mat[i, ])
+#   }
+#   pval.Vert = (sum(stat.sim.Vert >= stat0.Vert) + 1) / (sim + 1)      # ONE-SIDED!!
+#   pval.Pear = (sum(stat.sim.Pear >= stat0.Pear) + 1) / (sim + 1)      # ONE-SIDED!!
+#   pval.Pear = 2 * min( (sum(stat.sim.Pear >= stat0.Pear) + 1 ) / (sim + 1),
+#                        1 - ( sum(stat.sim.Pear >= stat0.Pear) + 1 ) / (sim + 1) )  # TWO-SIDED
+#   pv.Vert = round(pval.Vert, 6)  
+#   pv.Pear = round(pval.Pear, 6)
   
   #### -----------------------------------------------------------------
-  ## calcualte one p-value for each gene based on dist.mat, so a total of m p-values
-  ## this p-value is the Monte Carlo p-value simply from the univariate case
-  v.pvals = numeric(m)  # M.C. p-values based on vertical distances
-  p.pvals = numeric(m)  # M.C. p-values based on Pearson statistics
+  ## calcualte one p-value for each gene based on dist.mat or pear.mat, so a total of m p-values
+  ## this p-value is the Monte Carlo p-value simply from a single univariate case
+  v.pvals = numeric(m)     # M.C. p-values based on vertical distances
+  p.pvals.1s = numeric(m)  # M.C. p-values based on Pearson statistics (1-sided)
+  p.pvals.2s = numeric(m)  # M.C. p-values based on Pearson statistics (2-sided)
   for (i in 1:m){
     v.pvals[i] = (sum(dist.mat[1:sim,i] >= dist.mat[(sim+1),i]) + 1) / (sim + 1)
-    #p.pvals[i] = (sum(pear.mat[1:sim,i] >= pear.mat[(sim+1),i]) + 1) / (sim + 1)
-    p.pvals[i] = 2 * min( (sum(pear.mat[1:sim,i] >= pear.mat[(sim+1),i]) + 1) / (sim + 1),
+    p.pvals.1s[i] = (sum(pear.mat[1:sim,i] >= pear.mat[(sim+1),i]) + 1) / (sim + 1)
+    p.pvals.2s[i] = 2 * min( (sum(pear.mat[1:sim,i] >= pear.mat[(sim+1),i]) + 1) / (sim + 1),
                           1 - (sum(pear.mat[1:sim,i] >= pear.mat[(sim+1),i]) + 1) / (sim + 1) )
   }
+  # to avoid potential zero p-values
+  v.pvals[v.pvals == 0] = 1/sim
+  p.pvals.1s[p.pvals.1s == 0] = 1/sim
+  p.pvals.2s[p.pvals.2s == 0] = 2/sim
   
   #### -----------------------------------------------------------------
   ## save as a list
   gof.obj = list(model.fit = model.fit,
-                  counts.dim = counts.dim,
-                  design.mat = x,
-                  #lib.sizes = lib.sizes,
-                  pv.Vert = pv.Vert,
-                  pv.Pear = pv.Pear,
-                  v.pvals = v.pvals,
-                  p.pvals = p.pvals,
-                 pval.pear.median = pval.pear.median, 
-                  #mu.hat.m0 = mu.hat.mat0,
-                  #ord.dist.mat = ord.dist.mat,
-                  #ord.typ.dist  = ord.typ.dist,
-                  #dist.obs = dist.obs,
-                  dist.mat = dist.mat,
-                  pear.mat = pear.mat,
-                  sim = sim)
+                 counts.dim = counts.dim,
+                 design.mat = x,
+                 #lib.sizes = lib.sizes,
+                 #pv.Vert = pv.Vert,
+                 #pv.Pear = pv.Pear,
+                 v.pvals = v.pvals,
+                 p.pvals.1s = p.pvals.1s,
+                 p.pvals.2s = p.pvals.2s,
+                 #mu.hat.m0 = mu.hat.mat0,
+                 #ord.dist.mat = ord.dist.mat,
+                 #ord.typ.dist  = ord.typ.dist,
+                 #dist.obs = dist.obs,
+                 phi.hat.sim.mat = phi.hat.sim.mat,
+                 mu.hat.sim.mat = mu.hat.sim.mat,
+                 dist.mat = dist.mat,
+                 pear.mat = pear.mat,
+                 sim = sim
+                 )
   
   # save the object as a "gofm" class
   class(gof.obj) = "gofm"

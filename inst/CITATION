@@ -1,0 +1,26 @@
+citHeader("To cite the NBGOF package in publications, please use the first entry; To cite the statistical methods implemented in NBGOF, please use the second entry:")
+
+citEntry(entry = "manual",
+         title = "{NBGOF}: {P}ackage for Simulation-based Goodness-of-Fit Tests for Negative Binomial Regression and Dispersion Models",
+         author = "Gu Mi, Yanming Di and Daniel W. Schafer, with contributions from Jeff H. Chang",
+         organization = "Oregon State University",
+         address = "44 Kidder Hall, Oregon State University, Corvallis, OR 97331",
+         note = "R package version 0.1.6",
+         year = "2013",
+         url = "http://github.com/gu-mi/NBGOF",
+         textVersion  = paste("Gu Mi, Yanming Di and Daniel W. Schafer (2013).",
+                              "NBGOF: Package for Simulation-based Goodness-of-Fit Tests for Negative Binomial Regression and Dispersion Models.",
+                              "R package version 0.1.6.",
+                              "http://github.com/gu-mi/NBGOF")
+)
+
+citEntry(
+   entry="article",
+   title = "Goodness-of-Fit Tests and Model Diagnostics for Negative Binomial Regression of RNA sequencing Data",
+   author = "Gu Mi, Yanming Di and Daniel W. Schafer",
+   journal = "Biometrics",
+   volume = 00,
+   pages = 00,
+   year = 2013,
+  textVersion = "Mi G., Di Y., Schafer D.W. and Chang J.H. (2013). Goodness-of-Fit Tests and Model Diagnostics for Negative Binomial Regression of RNA sequencing Data. Biometrics (submitted)"
+)

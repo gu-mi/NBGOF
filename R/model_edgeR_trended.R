@@ -34,7 +34,7 @@
 #' 
 #' @references \url{https://github.com/gu-mi/NBGOF/wiki/}
 #' 
-model_edgeR_trended <- function(counts, x, lib.sizes=colSums(counts), min.n=min.n, design=design){
+model_edgeR_trended = function(counts, x, lib.sizes=colSums(counts), min.n=min.n, design=design){
   
   ## edgeR genewise dispersion:
   
@@ -58,8 +58,9 @@ model_edgeR_trended <- function(counts, x, lib.sizes=colSums(counts), min.n=min.
       # extract quantities:
       mu.hat.m = trd.fit$fitted.values   # mu may be close to 0
       phi.hat.m = trd.fit$dispersion     # there may be NA's
-      v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
-      res.m = (counts - mu.hat.m) / sqrt(v) 
+      v = mu.hat.m + phi.hat.m * mu.hat.m^2
+      res.m = (counts - mu.hat.m) / sqrt(v)
+      res.m[is.nan(res.m)] = 0
       
       # sort res.m with care!
       res.om = t(apply(res.m, 1, sort))
@@ -86,8 +87,9 @@ model_edgeR_trended <- function(counts, x, lib.sizes=colSums(counts), min.n=min.
       # extract quantities:
       mu.hat.m = trd.fit$fitted.values   # mu may be close to 0
       phi.hat.m = trd.fit$dispersion     # there may be NA's
-      v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
-      res.m = (counts - mu.hat.m) / sqrt(v) 
+      v = mu.hat.m + phi.hat.m * mu.hat.m^2
+      res.m = (counts - mu.hat.m) / sqrt(v)
+      res.m[is.nan(res.m)] = 0
       
       # sort res.m with care!
       res.om = t(apply(res.m, 1, sort.vec, grp.ids))
@@ -114,8 +116,9 @@ model_edgeR_trended <- function(counts, x, lib.sizes=colSums(counts), min.n=min.
     # extract quantities:
     mu.hat.m = trd.fit$fitted.values   # mu may be close to 0
     phi.hat.m = trd.fit$dispersion     # there may be NA's
-    v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
-    res.m = (counts - mu.hat.m) / sqrt(v) 
+    v = mu.hat.m + phi.hat.m * mu.hat.m^2
+    res.m = (counts - mu.hat.m) / sqrt(v)
+    res.m[is.nan(res.m)] = 0
     
     # sort res.m with care!
     res.om = t(apply(res.m, 1, sort.vec, grp.ids))

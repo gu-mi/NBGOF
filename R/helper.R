@@ -35,24 +35,47 @@ printf = function(...) cat(sprintf(...));
 chisq_gof = function(x, ...){
   
   ## extract quantities from "gofm" object
+  sim = x$sim
   v.pvals = x$v.pvals  # p-values based on vertical distances
-  p.pvals = x$p.pvals  # p-values based on Pearson statistics
+  p.pvals.1s = x$p.pvals.1s  # p-values based on Pearson statistics (1-sided)
+  p.pvals.2s = x$p.pvals.2s  # p-values based on Pearson statistics (2-sided)
+  ## to avoid p-value = 0 for a two-sided test (log(p) = -Inf, so Fisher fails)
+#   v.pvals[v.pvals == 0] = 1/sim
+#   p.pvals.1s[p.pvals.1s == 0] = 1/sim
+#   p.pvals.2s[p.pvals.2s == 0] = 2/sim
   m = length(v.pvals)
   
   ## Fisher's method of combining p-values
   Fisher.method.X2.vert = -2*sum(log(v.pvals))
   Fisher.method.p.vert = 1 - pchisq(Fisher.method.X2.vert, 2*m) 
   #
-  Fisher.method.X2.pear = -2*sum(log(p.pvals))
-  Fisher.method.p.pear = 1 - pchisq(Fisher.method.X2.pear, 2*m) 
+  Fisher.method.X2.pear.1s = -2*sum(log(p.pvals.1s))
+  Fisher.method.p.pear.1s = 1 - pchisq(Fisher.method.X2.pear.1s, 2*m) 
+  #
+  Fisher.method.X2.pear.2s = -2*sum(log(p.pvals.2s))
+  Fisher.method.p.pear.2s = 1 - pchisq(Fisher.method.X2.pear.2s, 2*m) 
   
   #
   results = list(fisher.vert = Fisher.method.p.vert,
-                 fisher.pear = Fisher.method.p.pear
+                 fisher.pear.1s = Fisher.method.p.pear.1s,
+                 fisher.pear.2s = Fisher.method.p.pear.2s
                  )
   return(results)
   
 }
+
+# Stouffer.test <- function(p, w) { # p is a vector of p-values
+#   if (missing(w)) {
+#     w <- rep(1, length(p))/length(p)
+#   } else {
+#     if (length(w) != length(p))
+#       stop("Length of p and w must equal!")
+#   }
+#   Zi <- qnorm(1-p) 
+#   Z  <- sum(w*Zi)/sqrt(sum(w^2))
+#   p.val <- 1-pnorm(Z)
+#   return(c(Z = Z, p.value = p.val))
+# }
 
 
 phi.line = function (mu, v, alpha = 2, all = TRUE, ...) 

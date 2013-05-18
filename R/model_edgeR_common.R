@@ -28,11 +28,13 @@
 #' 
 #' @references \url{https://github.com/gu-mi/NBGOF/wiki/}
 #' 
-model_edgeR_common <- function(counts, x, lib.sizes=colSums(counts), design = design){
+model_edgeR_common = function(counts, x, grp.ids=grp.ids, lib.sizes=colSums(counts), 
+                              design = design){
   
   ## edgeR common dispersion:
   
   # convert model matrix into group index
+  # NOTE: THIS WILL NOT WORK PROPERLY FOR MULTI-GROUP SITUATIONS! (TO DO IN NEXT RELEASE)
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
                    labels = seq(ncol(x)))
   d = DGEList(counts=counts, lib.size=lib.sizes, group = grp.ids)
@@ -50,8 +52,10 @@ model_edgeR_common <- function(counts, x, lib.sizes=colSums(counts), design = de
       # extract quantities:
       mu.hat.m = com.fit$fitted.values  # mu may be close to 0
       phi.hat.m = com.fit$dispersion    # there may be NA's
-      v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14  # add epsilon to avoid v == 0
-      res.m = (counts - mu.hat.m) / sqrt(v)   
+      #v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14  # add epsilon to avoid v == 0
+      v = mu.hat.m + phi.hat.m * mu.hat.m^2
+      res.m = (counts - mu.hat.m) / sqrt(v)   # res.m may contain an entire row of NaN
+      res.m[is.nan(res.m)] = 0    # replace NaN with 0
       # for 0 reads, sqrt(v) != 0 makes res.m == 0
       # make sure 0/0 = NaN never happens!
       
@@ -78,8 +82,9 @@ model_edgeR_common <- function(counts, x, lib.sizes=colSums(counts), design = de
       # extract quantities:
       mu.hat.m = com.fit$fitted.values 
       phi.hat.m = com.fit$dispersion  
-      v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
+      v = mu.hat.m + phi.hat.m * mu.hat.m^2
       res.m = (counts - mu.hat.m) / sqrt(v)    
+      res.m[is.nan(res.m)] = 0
       
       # sort res.m with care!
       res.om = t(apply(res.m, 1, sort.vec, grp.ids))  
@@ -104,8 +109,16 @@ model_edgeR_common <- function(counts, x, lib.sizes=colSums(counts), design = de
     # extract quantities:
     mu.hat.m = com.fit$fitted.values 
     phi.hat.m = com.fit$dispersion  
-    v = mu.hat.m + phi.hat.m * mu.hat.m^2 + 1e-14
-    res.m = (counts - mu.hat.m) / sqrt(v)    
+    v = mu.hat.m + phi.hat.m * mu.hat.m^2
+    res.m = (counts - mu.hat.m) / sqrt(v)
+#     if (typeof(res.m) == "list"){
+#       dimension = dim(res.m)
+#       unlist.res.m = unlist(res.m)
+#       unlist.res.m[ is.nan(unlist.res.m) ] = 0
+#       res.m = matrix( unlist.res.m, dimension )
+#     }
+#     else 
+      res.m[is.nan(res.m)] = 0
     
     # sort res.m with care!
     res.om = t(apply(res.m, 1, sort.vec, grp.ids))  
