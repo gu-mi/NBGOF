@@ -102,7 +102,7 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method
       setTxtProgressBar(pb, i/sim)
       y.vec.h = rpois(n, lambda=mu.hat.v0)
       mpoi.h = model_poi_v(y=y.vec.h, x=x, lib.sizes=libs)  
-      # NB2 model fit on simulated data
+      # Poisson model fit on simulated data
       res.sim.mat[i, ] = mpoi.h$res.vec
     }
     close(pb)
@@ -163,9 +163,9 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method
     stat.sim.P[i] = sum( res.sim.mat[i, ]^2 )
     stat.sim.D[i] = sum( (ord.res.sim.mat[i, ] - ord.typ.res.sim)^2 )
   }
-  #pval.P = (sum(stat.sim.P >= stat0.P) + 1) / (sim + 1)
-  pval.P = 2 * min( (sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1),
-                    1 - ( sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1) )  # TWO-SIDED
+  pval.P = (sum(stat.sim.P >= stat0.P) + 1) / (sim + 1)
+#   pval.P = 2 * min( (sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1),
+#                     1 - ( sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1) )  # TWO-SIDED
   pval.D = (sum(stat.sim.D >= stat0.D) + 1) / (sim + 1)
   pv.P = round(pval.P, 6)
   pv.D = round(pval.D, 6)

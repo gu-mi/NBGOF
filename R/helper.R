@@ -47,13 +47,13 @@ chisq_gof = function(x, ...){
   
   ## Fisher's method of combining p-values
   Fisher.method.X2.vert = -2*sum(log(v.pvals))
-  Fisher.method.p.vert = 1 - pchisq(Fisher.method.X2.vert, 2*m) 
+  Fisher.method.p.vert = pchisq(Fisher.method.X2.vert, 2*m, lower.tail=FALSE) 
   #
   Fisher.method.X2.pear.1s = -2*sum(log(p.pvals.1s))
-  Fisher.method.p.pear.1s = 1 - pchisq(Fisher.method.X2.pear.1s, 2*m) 
+  Fisher.method.p.pear.1s = pchisq(Fisher.method.X2.pear.1s, 2*m, lower.tail=FALSE) 
   #
   Fisher.method.X2.pear.2s = -2*sum(log(p.pvals.2s))
-  Fisher.method.p.pear.2s = 1 - pchisq(Fisher.method.X2.pear.2s, 2*m) 
+  Fisher.method.p.pear.2s = pchisq(Fisher.method.X2.pear.2s, 2*m, lower.tail=FALSE) 
   
   #
   results = list(fisher.vert = Fisher.method.p.vert,

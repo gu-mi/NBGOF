@@ -120,9 +120,9 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
   ## initialize simulation variables
   ord.res.sim.mat = matrix(0, nrow = (sim+1), ncol = N)   # ordered residual "big" matrix
   phi.hat.sim.mat = matrix(0, nrow = (sim+1), ncol = m)   # phi hat "big" matrix
-  mu.hat.sim.mat = matrix(0, nrow = (sim+1), ncol = m)    # mu hat "big" matrix
-  stat.sim.Vert = numeric(sim)   # sum of statistics from simulations (overall vertical distances)
-  stat.sim.Pear = numeric(sim)   # based on Pearson statistics
+#   mu.hat.sim.mat = matrix(0, nrow = (sim+1), ncol = m)    # mu hat "big" matrix
+#   stat.sim.Vert = numeric(sim)   # sum of statistics from simulations (overall vertical distances)
+#   stat.sim.Pear = numeric(sim)   # based on Pearson statistics
   
   #### -----------------------------------------------------------------
 #   if (model.fit == "NB"){
@@ -162,13 +162,13 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
       colnames(y.mat.h) = colnames(counts)
       mnbp.h = model_nbp_m(y.mat.h, x, lib.sizes=colSums(y.mat.h))
       ord.res.sim.mat[i, ] = mnbp.h$ord.res.vec
-      phi.hat.sim.mat[i, ] = mnbp.h$phi.hat.mat
-      mu.hat.sim.mat[i, ] = mnbp.h$mu.hat.mat[ ,1]
+      phi.hat.sim.mat[i, ] = mnbp.h$phi.hat.mat[ ,1]
+      #mu.hat.sim.mat[i, ] = mnbp.h$mu.hat.mat[ ,1]
     }
     close(pb)
     ord.res.sim.mat[(sim+1), ] = ord.res.vec0
-    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
-    mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
+    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0[ ,1]
+    #mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   if (model.fit == "edgeR-common"){
@@ -188,12 +188,12 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
       mcom.h = model_edgeR_common(y.mat.h, x, lib.sizes=colSums(y.mat.h), design=design)
       ord.res.sim.mat[i, ] = mcom.h$ord.res.vec
       phi.hat.sim.mat[i, ] = mcom.h$phi.hat.mat
-      mu.hat.sim.mat[i, ] = mcom.h$mu.hat.mat[ ,1]
+      #mu.hat.sim.mat[i, ] = mcom.h$mu.hat.mat[ ,1]
     }
     close(pb)
     ord.res.sim.mat[(sim+1), ] = ord.res.vec0
     phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
-    mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
+    #mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   if (model.fit == "edgeR-genewise"){
@@ -213,12 +213,12 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
       mgen.h = model_edgeR_genewise(y.mat.h, x, lib.sizes=colSums(y.mat.h), design=design)
       ord.res.sim.mat[i, ] = mgen.h$ord.res.vec
       phi.hat.sim.mat[i, ] = mgen.h$phi.hat.mat
-      mu.hat.sim.mat[i, ] = mgen.h$mu.hat.mat[ ,1]
+      #mu.hat.sim.mat[i, ] = mgen.h$mu.hat.mat[ ,1]
     }
     close(pb)
     ord.res.sim.mat[(sim+1), ] = ord.res.vec0
     phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
-    mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
+    #mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   if (model.fit == "edgeR-tagwise"){
@@ -240,12 +240,12 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
                                    prior.df = prior.df, design=design)
       ord.res.sim.mat[i, ] = mtag.h$ord.res.vec
       phi.hat.sim.mat[i, ] = mtag.h$phi.hat.mat
-      mu.hat.sim.mat[i, ] = mtag.h$mu.hat.mat[ ,1]
+      #mu.hat.sim.mat[i, ] = mtag.h$mu.hat.mat[ ,1]
     }
     close(pb)
     ord.res.sim.mat[(sim+1), ] = ord.res.vec0
     phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
-    mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
+    #mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   if (model.fit == "edgeR-trended"){
@@ -265,12 +265,12 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
       mtrd.h = model_edgeR_trended(y.mat.h, x, lib.sizes=colSums(y.mat.h), min.n=min.n, design=design)
       ord.res.sim.mat[i, ] = mtrd.h$ord.res.vec
       phi.hat.sim.mat[i, ] = mtrd.h$phi.hat.mat
-      mu.hat.sim.mat[i, ] = mtrd.h$mu.hat.mat[ ,1]
+      #mu.hat.sim.mat[i, ] = mtrd.h$mu.hat.mat[ ,1]
     }
     close(pb)
     ord.res.sim.mat[(sim+1), ] = ord.res.vec0
     phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
-    mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
+    #mu.hat.sim.mat[(sim+1), ] = mu.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   
@@ -335,7 +335,7 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model.fit="NB
                  #ord.typ.dist  = ord.typ.dist,
                  #dist.obs = dist.obs,
                  phi.hat.sim.mat = phi.hat.sim.mat,
-                 mu.hat.sim.mat = mu.hat.sim.mat,
+                 #mu.hat.sim.mat = mu.hat.sim.mat,
                  dist.mat = dist.mat,
                  pear.mat = pear.mat,
                  sim = sim
