@@ -1,32 +1,26 @@
 
-## For NB2 model fitting on the original & simulated datasets
-
-# the same function, nb.regression.1(), is used in NB2 fitting for matrix response
-# cf. model_nb2_m.R
-
-################################################################################
-#' @title Modeling NB2 regression model with MLE on original and simulated 
-#' datasets
+#' @title Modeling NB2 Regression Model with Maximum Likelihood (ML) on Original and Simulated 
+#' Datasets
 #' 
 #' @description This function is designed to fit an NB2 regression model. The output of
-#' this function will be passed to the main GOF function.
+#' this function will be passed to the main GOF function \code{\link{nb_gof_v}}.
 #' 
-#' @details Details here
+#' @details The \code{nb.regression.1} function is used for NB2 model fitting with MLE.
 #' 
 #' @usage
 #' model_nb2_v(y, x, lib.sizes=NULL)
 #' 
 #' @param y an n-by-1 vector of non-negative integers. For a typical RNA-Seq experiment, 
-#' this may represent the read counts for a single gene 
+#' this may represent the read counts for a single gene across n samples.
 #' @param x an n-by-p design matrix. If an intercept is desired in the model, you need to specify
 #' the first column of \code{x} as a vector of 1.
-#' @param lib.sizes library sizes of a RNA-Seq experiment. Default is 1 for all samples
+#' @param lib.sizes library sizes of a RNA-Seq experiment. Default is 1 for all samples.
 #' 
 #' @return A list of quantities to be used in the main \code{\link{nb_gof_v}} function.
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
-#' @references \url{https://github.com/gu-mi/NBGOF/wiki/}
+#' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
 model_nb2_v <- function(y, x, lib.sizes=NULL){
   

@@ -2,27 +2,32 @@
 #' @title Plot Methods for "gofv" Objects
 #'
 #' @description A plot method for empirical probability plot based on a "gofv" 
-#' object obtained from the \code{\link{nb_gof_v}} outputs
+#' object obtained from the \code{\link{nb_gof_v}} outputs.
 #' 
-#' @param x an object of class "gofv" (from \link{nb_gof_v} output)
-#' @param conf.env confidence level for the envelope
-#' @param data.note a note on how data are simulated or the source of data
-#' @param leg.cex size of the legend fonts
-#' @param ... for future use
+#' @param x an object of class "gofv" from the \code{\link{nb_gof_v}} output.
+#' @param conf.env confidence level for the envelope.
+#' @param data.note a note on how data are simulated or the source of data.
+#' @param leg.cex size of the legend fonts.
+#' @param ... for future use.
 #' @method plot gofv
 #' @rdname plot.gofv
 #' @export
 #' 
-#' @details This is a generic function for plotting goodness-of-fit test results.
+#' @details This is a generic function for plotting goodness-of-fit test results, when the
+#' response is a vector of counts.
+#' 
 #' @usage plot(x, conf.env=0.95, data.note=NULL, leg.cex=1, ...)
 #' 
 #' @return An empirical probability plot with points outside a pre-specified confidence
-#' envelope colored in red.
+#' envelope colored in red. GOF test p-values are also reported on the plot.
 #' 
-#' @seealso See \code{\link{nb_gof_v}} for simulated data examples
+#' @seealso \code{\link{nb_gof_v}} for simulated data examples, and \code{\link{earthquake}}
+#' for a real data example.
 #' 
-#' @author Gu Mi, Yanming Di, Daniel Schafer
-#'  
+#' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+#' 
+#' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
+#' 
 plot.gofv = function(x, 
                      conf.env=0.95, 
                      data.note=NULL, 
@@ -59,7 +64,7 @@ plot.gofv = function(x,
   nout = sum(out.ind)
   p.hat = nout/n.pts
   
-  ## plot epp:
+  ## empirical probability plots:
   if (model.fit == "NB2"){
     plot(ord.typ.res.sim[!out.ind], ord.res.obs[!out.ind], 
          xlim = c(min.x, max.x), 
@@ -69,7 +74,8 @@ plot.gofv = function(x,
          main = paste("Testing", model.fit, "Regression Fit"),
          ...)
   }
-  else if (model.fit == "NBP"){
+  #
+  if (model.fit == "NBP"){
     plot(ord.typ.res.sim[!out.ind], ord.res.obs[!out.ind], 
          xlim = c(min.x, max.x), 
          ylim = c(min.y, max.y), 
@@ -78,7 +84,16 @@ plot.gofv = function(x,
          main = paste("Testing", model.fit, "Regression Fit"),
          ...)
   }
-  
+  #
+  if (model.fit == "Poisson"){
+    plot(ord.typ.res.sim[!out.ind], ord.res.obs[!out.ind], 
+         xlim = c(min.x, max.x), 
+         ylim = c(min.y, max.y), 
+         xlab =  "Medians of Ordered MC Residuals (Poisson)",
+         ylab =  "Ordered Pearson Residuals",
+         main = paste("Testing", model.fit, "Regression Fit"),
+         ...)
+  }
   
   # highlight points outside:
   points(ord.typ.res.sim[out.ind], ord.res.obs[out.ind], col="red", ...)
@@ -88,44 +103,42 @@ plot.gofv = function(x,
   points(ord.typ.res.sim, quant[1, ], type="l", col="blue")
   points(ord.typ.res.sim, quant[2, ], type="l", col="blue")
   
-  if (pv.D > 0.01 & pv.P > 0.01){
+  # legends tailored for different p-values:
+  if (pv.D >= 0.01 & pv.P >= 0.01){
     legend("topleft",bty="n", legend=c(
       #paste("# sample = ", samp.size),
       #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("MC GOF p-value (Pear.Stat.) =", round(pv.P,2)),
-      paste("MC GOF p-value (Sq.Vert.Dist.) =", round(pv.D,2))),
+      paste("MC GOF p-value (Pear.Stat.(2s)) =", round(pv.P,2)),
+      paste("MC GOF p-value (Vert.Dist.(1s)) =", round(pv.D,2))),
            cex=leg.cex)
   }
   #
-  if (pv.D < 0.005 & pv.P > 0.01){
+  if (pv.D < 0.01 & pv.P >= 0.01){
     legend("topleft",bty="n", legend=c(
       #paste("# sample = ", samp.size),
       #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("MC GOF p-value (Pear.Stat.) =", round(pv.P,2)),
-      paste("MC GOF p-value (Sq.Vert.Dist.) < 0.01")),
+      paste("MC GOF p-value (Pear.Stat.(2s)) =", round(pv.P,2)),
+      paste("MC GOF p-value (Vert.Dist.(1s)) < 0.01")),
            cex=leg.cex)
   }
   #
-  if (pv.D > 0.01 & pv.P < 0.005){
+  if (pv.D >= 0.01 & pv.P < 0.01){
     legend("topleft",bty="n", legend=c(
       #paste("# sample = ", samp.size),
       #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("MC GOF p-value (Pear.Stat.) < 0.01"),
-      paste("MC GOF p-value (Sq.Vert.Dist.) =", round(pv.D,2))),
+      paste("MC GOF p-value (Pear.Stat.(2s)) < 0.01"),
+      paste("MC GOF p-value (Vert.Dist.(1s)) =", round(pv.D,2))),
            cex=leg.cex)
   } 
   #
-  if (pv.D < 0.005 & pv.P < 0.005){
+  if (pv.D < 0.01 & pv.P < 0.01){
     legend("topleft",bty="n", legend=c(
       #paste("# sample = ", samp.size),
       #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("MC GOF p-value (Pear.Stat.) < 0.01"),
-      paste("MC GOF p-value (Sq.Vert.Dist.) < 0.01")),
+      paste("MC GOF p-value (Pear.Stat.(2s)) < 0.01"),
+      paste("MC GOF p-value (Vert.Dist.(1s)) < 0.01")),
            cex=leg.cex)
   }  
   ##  
-#   legend("bottomright", bty="n", legend=c(data.note,
-#     paste("(sim size = ", sim, ", CI = ", conf.env*100, "%)", sep="")),
-#          cex=leg.cex)
   legend("bottomright", bty="n", legend=data.note, cex=leg.cex)
 }

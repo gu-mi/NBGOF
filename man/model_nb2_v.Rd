@@ -1,21 +1,21 @@
 \name{model_nb2_v}
 \alias{model_nb2_v}
-\title{Modeling NB2 regression model with MLE on original and simulated
-datasets}
+\title{Modeling NB2 Regression Model with Maximum Likelihood (ML) on Original and Simulated
+Datasets}
 \usage{
   model_nb2_v(y, x, lib.sizes=NULL)
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
   typical RNA-Seq experiment, this may represent the read
-  counts for a single gene}
+  counts for a single gene across n samples.}
 
   \item{x}{an n-by-p design matrix. If an intercept is
   desired in the model, you need to specify the first
   column of \code{x} as a vector of 1.}
 
   \item{lib.sizes}{library sizes of a RNA-Seq experiment.
-  Default is 1 for all samples}
+  Default is 1 for all samples.}
 }
 \value{
   A list of quantities to be used in the main
@@ -24,16 +24,18 @@ datasets}
 \description{
   This function is designed to fit an NB2 regression model.
   The output of this function will be passed to the main
-  GOF function.
+  GOF function \code{\link{nb_gof_v}}.
 }
 \details{
-  Details here
+  The \code{nb.regression.1} function is used for NB2 model
+  fitting with MLE.
 }
 \author{
   Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
   Schafer
 }
 \references{
-  \url{https://github.com/gu-mi/NBGOF/wiki/}
+  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+  details.
 }
 

@@ -1,42 +1,61 @@
 \name{plot.md}
 \alias{plot.md}
-\title{mean-dispersion plot (log-log) scale for paper use}
+\title{The Mean-Dispersion Plot (on Log-log Scale) with Fitted Curves}
 \usage{
   plot.md(y, x, model = NULL, scatter = FALSE, legend =
-    FALSE, data.type = NULL, ...)
+    FALSE, ...)
 }
 \arguments{
-  \item{y}{}
+  \item{y}{an m-by-n count matrix of non-negative integers.
+  For a typical RNA-Seq experiment, this is the read counts
+  with m genes and n samples.}
 
   \item{x}{an n-by-p design matrix.}
 
   \item{model}{a string of characters specifying the
   negative binomial model used to fit the data. Currently
-  the following dispersion models are available to be
-  checked for goodness-of-fit}
+  the following dispersion models are implemented: common,
+  NBP, trended (non-parametric), tagwise-common and
+  tagwise-trended.}
 
-  \item{scatter}{}
+  \item{scatter}{logical: plot the points (\code{TRUE} if
+  first invoking the plot). If \code{TRUE}, then a scatter
+  plot is drawn, and the fitted NBP curve is superimposed.}
 
-  \item{legend}{}
+  \item{legend}{logical: put the legend of dispersion
+  models on plot (\code{TRUE} when plotting the last
+  curve).}
 
-  \item{data.type}{}
+  \item{...}{for future use.}
 }
 \value{
-  An object
+  A mean-dispersion plot (log-log scale) with fitted curves
+  from the following NB dispersion models: common, NBP,
+  trended (non-parametric), tagwise-common and
+  tagwise-trended.
 }
 \description{
-  This function is designed to
+  This function provides a quick-and-dirty mean-dispersion
+  plot (log-log scale) with relative mean frequencies on
+  the x-axis and estimated NB dispersions on the y-axis.
+  Several fitted curves from NB dispersion models are
+  superimposed on the plot.
 }
 \details{
-  When the response is a vector, we can use this function
-  to test the goodness-of-fit of a specified negative
-  binomial regression model.
+  \strong{This function was originally used solely for
+  paper figure productions. In the final release of the R
+  package, it may be made invisible to end-users. Also,
+  current implementations are rather inflexible.}
 }
 \author{
   Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
   Schafer
 }
 \references{
-  \url{https://github.com/gu-mi/NBGOF/wiki/}
+  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+  details.
+}
+\seealso{
+  The Examples section of the \code{\link{arab}} dataset.
 }
 

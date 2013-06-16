@@ -1,63 +1,79 @@
 
-## Main function for GOF test for univariate response
-
-################################################################################
 #' @title Main Function of Implementing Simulation-based Goodness-of-Fit Tests on
-#' the regression of a univariate count response on one or more explanatory variables
+#' the Regression of a Univariate Count Response on One or More Explanatory Variables
 #' 
-#' @description This function is designed to test goodness-of-fit of an NB2 or NBP
-#' negative binomial regression model with a known design matrix. Estimation methods
-#' for NBP model fitting include MLE and APLE
+#' @description This function tests goodness-of-fit of an NB2 or NBP
+#' negative binomial regression model with a known design matrix. Estimation method 
+#' for the NB2 model fitting is maximum likelihood (ML). Estimation methods for NBP model fitting
+#' include both ML and adjusted profile likelihood (APL). This function
+#' can also test goodness-of-fit of a Poisson regression model.
 #' 
 #' @param y an n-by-1 vector of non-negative integers. For a typical RNA-Seq experiment, 
-#' this may represent the read counts for a single gene 
+#' this may represent the read counts for a single gene across n samples.
 #' @param x an n-by-p design matrix.
-#' @param lib.sizes library sizes of a RNA-Seq experiment. Default is 1 for all samples
+#' @param lib.sizes library sizes of a RNA-Seq experiment. Default is 1 for all samples.
 #' @param sim number of simulations performed.
-#' @param model.fit a string of characters specifying the negative binomial model used 
-#' to fit the data. Currently the following dispersion models are available to be checked
+#' @param model.fit a string of characters specifying the model (negative binomial or Poisson) 
+#' used to fit the data. Currently the following models are available to be checked
 #' for goodness-of-fit:
 #' \itemize{
 #' \item NB2: conventional NB2 regression model (\code{NB2})
-#' \item NBP: NBP regression model (see \code{\link{NBPSeq}}) package (\code{NBP})
+#' \item NBP: NBP regression model (\code{NBP})
+#' \item Poisson: Poisson regression model (\code{Poisson})
 #' }
-#' Users are recommended to specify \strong{exactly} the same characters as the
-#' ones in paratheses above for each NB regression model.
-#' @param est.method either "MLE" or "APLE" for the estimation methods used
+#' Users should specify \strong{exactly} the same characters as shown in paratheses above 
+#' for testing one of the regression models.
+#' @param est.method specify either "\code{ML}" or "\code{APL}" for the maximum likelihood
+#' and adjusted profile likelihood methods used, respectively, for the NBP model. ML is used
+#' for the NB2 model estimation.
 #' 
-#' @return An object of class "gofv" to which other methods (plot, summary, etc.)
-#' can be applied.
+#' @return An object of class "gofv" to which other methods can be applied.
 #' 
-#' @details When the response is a vector, we can use this function to test
-#' the goodness-of-fit of a specified negative binomial regression model. 
+#' @details When the response is a vector of counts, we can use this function to test
+#' the goodness-of-fit of a specified negative binomial or Poisson regression model. It returns
+#' an object with the test results, which can be further summarized and visualized using 
+#' appropriate methods.
+#' 
+#' This function calls \code{\link{model_nb2_v}} to fit the NB2 model, calls 
+#' \code{\link{model_nbp_v}} to fit the NBP model, and calls \code{\link{model_poi_v}} to fit
+#' the Poisson model.
 #' 
 #' @usage 
-#' nb_gof_v(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method="MLE")
+#' nb_gof_v(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method="ML")
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
 #' @export
 #' 
-#' @references \url{https://github.com/gu-mi/NBGOF/wiki/}
+#' @references 
+#' Mi G., Di Y. and Schafer D.W. (2013). Goodness-of-Fit Tests and Model Diagnostics
+#' for Negative Binomial Regression of RNA sequencing Data. \emph{Biometrics} (submitted).
+#' 
+#' Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The NBP Negative Binomial
+#' Model for Assessing Differential Gene Expression from RNA-Seq", \emph{Statistical 
+#' Applications in Genetics and Molecular Biology}, 10 (1).
+#' 
+#' See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
 #' @examples 
 #' 
-#' ## load package into session
+#' ## load package into session:
 #' library(NBGOF)
 #' 
-#' ## basic set-up of the model
-#' seed = 31513
+#' ## basic set-up of the model:
+#' seed = 315825
 #' n = 100
 #' beta.v = c(1, -3)
 #' 
-#' ## specify a design matrix
-#' X = cbind(rep(1,n),seq(1.5, 3.5, length=n))
+#' ## specify a design matrix:
+#' X = cbind(rep(1,n), seq(1.5, 3.5, length=n))
 #' s = rep(1e6, n)
 #' mu = s * exp(X %*% beta.v)
 #' pi = mu/s  # relative frequency
-#' sim = 499
+#' sim = 999
 #' 
-#' ## simulate an n-by-1 vector for the read counts of a single gene
+#' ## simulate an n-by-1 vector for the read counts of a single gene:
+#' # the data is simulated from NB1
 #' set.seed(seed)
 #' alpha1 = -1  # NB1 data
 #' phi0 = 0.0001
@@ -65,28 +81,34 @@
 #' phi.nb1 = phi0 * pi^alpha1
 #' y.nb1 = rnbinom(n, size=1/phi.nb1, mu=mu)
 #' 
-#' ## implement the GOF test for testing an NB regression model adequacy of NB2 and NBP models
+#' ## implement the GOF test for testing NB and Poisson model adequacy:
 #' # pdf("gofv-result.pdf", width=14, height=7)
-#' par(mfrow=c(1,2))
-#' # NB2 model fit
+#' par(mfrow=c(1,3))
+#' 
+#' # NB2 model fit using MLE:
 #' gf.nb1.nb2 = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NB2")
-#' plot(gf.nb1.nb2, conf.env=0.95, data.note = "NB1", pch=".", cex=5)
-#' # NBP model fit
-#' gf.nb1.nbp = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NBP")
-#' plot(gf.nb1.nbp, conf.env=0.95, data.note = "NB1", pch=".", cex=5)
+#' plot(gf.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+#' 
+#' # NBP model fit using MLE:
+#' gf.nb1.nbp = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NBP", est.method="ML")
+#' plot(gf.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+#' 
+#' # Poisson model fit:
+#' gf.nb1.poi = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="Poisson")
+#' plot(gf.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 #' # dev.off()
 #' 
-nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method="MLE"){
+nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method="ML"){
   
   n = length(y)
   p = dim(x)[2]
   
   # preconditions
-  stopifnot(model.fit %in% c("Poisson", "NB2", "NBP"))
+  stopifnot(model.fit %in% c("Poisson", "NB2", "NBP"), est.method %in% c("ML","APL"))
   
   ## initialize simulation variables
   res.sim.mat = matrix(0, nrow = (sim+1), ncol = n)  # residual matrix
-  stat.sim.P = numeric(sim)  # Pearson chi-sq test stat (NOT USED! for simulation only!)
+  stat.sim.P = numeric(sim)  # Pearson chi-sq test statistic
   stat.sim.D = numeric(sim)  # statistic based on the overall vertical distance
   
   #### -----------------------------------------------------------------
@@ -111,7 +133,7 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method
   #### -----------------------------------------------------------------
   if (model.fit == "NB2"){
     libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
-    mnb2.0 = model_nb2_v(y=y, x=x, lib.sizes=libs)  
+    mnb2.0 = model_nb2_v(y=y, x=x, lib.sizes=libs)  # MLE for NB2 models
     # NB2 model fit on original data
     mu.hat.v0 = mnb2.0$mu.hat.v
     phi0 = mnb2.0$phi
@@ -121,7 +143,7 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method
     for (i in 1:sim){
       setTxtProgressBar(pb, i/sim)
       y.vec.h = rnbinom(n, mu = mu.hat.v0, size = 1/phi0)
-      mnb2.h = model_nb2_v(y=y.vec.h, x=x, lib.sizes=libs)  
+      mnb2.h = model_nb2_v(y=y.vec.h, x=x, lib.sizes=libs)  # MLE for NB2 models
       # NB2 model fit on simulated data
       res.sim.mat[i, ] = mnb2.h$res.vec
     }
@@ -150,22 +172,25 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method
   }
   
   #### -----------------------------------------------------------------
-  ## row-wise sort residual matrix res.sim.mat
+  ## row-wise sort residual matrix res.sim.mat ("ordered")
   ord.res.sim.mat = t(apply(res.sim.mat, 1, sort))
-  ord.typ.res.sim = apply(ord.res.sim.mat[-(sim+1), ], 2, median)   # exclude the obs. row
+  ## get the typical residual vector from column medians
+  ## note: we do NOT include the observed residual vector in the calculation!
+  ord.typ.res.sim = apply(ord.res.sim.mat[-(sim+1), ], 2, median)
   
   #### -----------------------------------------------------------------
   ## calcualte test statistics (observed and simulated) and p-values
   stat0.P = sum(res.vec0^2)
   stat0.D = sum( (ord.res.sim.mat[(sim+1), ] - ord.typ.res.sim)^2 )
-  
+  #
   for (i in 1:sim){
     stat.sim.P[i] = sum( res.sim.mat[i, ]^2 )
     stat.sim.D[i] = sum( (ord.res.sim.mat[i, ] - ord.typ.res.sim)^2 )
   }
-  pval.P = (sum(stat.sim.P >= stat0.P) + 1) / (sim + 1)
-#   pval.P = 2 * min( (sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1),
-#                     1 - ( sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1) )  # TWO-SIDED
+  # 2-sided p-value for Pearson statistics
+  # 1-sided p-value for vertical distance measure
+  pval.P = 2 * min( (sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1),
+                    1 - ( sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1) )
   pval.D = (sum(stat.sim.D >= stat0.D) + 1) / (sim + 1)
   pv.P = round(pval.P, 6)
   pv.D = round(pval.D, 6)

@@ -1,39 +1,45 @@
 \name{plot.gofm}
 \alias{plot.gofm}
-\title{Plot Methods for "gofm" Objects}
+\title{Plot Methods for "gofm" Objects (Histograms and Q-Q Uniform Plots of P-values)}
 \usage{
   plot(x, model=NULL, type="qq", logscale=TRUE, ...)
 }
 \arguments{
-  \item{x}{an object of class "gofm" (from \link{nb_gof_m}
-  output)}
+  \item{x}{an object of class "gofm" from the
+  \code{\link{nb_gof_m}} output}
 
-  \item{model}{the model used to fit the data}
+  \item{model}{the model name used to fit the data (used
+  for histogram title)}
 
-  \item{type}{either a quantile-quantile uniform plot, or a
-  histogram}
+  \item{type}{either a quantile-quantile uniform plot
+  (\code{qq}), or a histogram (\code{hist})}
 
   \item{logscale}{whether use logscale for the uniform Q-Q
-  plot (default is TRUE)}
+  plot (default is TRUE) as recommended in the
+  \code{\link{gap}} package}
 
   \item{...}{for future use}
 }
 \value{
-  A quantile-quantile uniform plot or a histogram
+  A quantile-quantile uniform plot or a histogram of the
+  GOF p-values.
 }
 \description{
   A plot method for evaluating the p-values based on a
   "gofm" object obtained from the \code{\link{nb_gof_m}}
-  outputs
+  outputs.
 }
 \details{
   This is a generic function for plotting goodness-of-fit
-  test results.
+  test results. Users can specify either a
+  quantile-quantile (\code{qq}) uniform plot, or a
+  histogram (\code{hist}) of the GOF p-values.
 }
 \author{
-  Gu Mi, Yanming Di, Daniel Schafer
+  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+  Schafer
 }
 \seealso{
-  See \code{\link{nb_gof_m}} for simulated data examples
+  \code{\link{nb_gof_m}} for simulated data examples.
 }
 

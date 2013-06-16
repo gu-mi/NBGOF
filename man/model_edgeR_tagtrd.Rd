@@ -1,10 +1,10 @@
-\name{model_edgeR_genewise}
-\alias{model_edgeR_genewise}
-\title{Modeling NB Genewise Dispersion with the Adjusted Profile Likelihood
+\name{model_edgeR_tagtrd}
+\alias{model_edgeR_tagtrd}
+\title{Modeling NB Tagwise-Trended Dispersion with the Adjusted Profile Likelihood
 Estimator (APLE) on Original and Simulated Datasets}
 \usage{
-  model_edgeR_genewise(counts, x,
-    lib.sizes=colSums(counts), design=design)
+  model_edgeR_tagtrd(counts, x, lib.sizes=colSums(counts),
+    prior.df=prior.df, min.n=min.n, design=design)
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -15,6 +15,16 @@ Estimator (APLE) on Original and Simulated Datasets}
 
   \item{lib.sizes}{library sizes of an RNA-Seq experiment.
   Default is the column sums of the \code{counts} matrix.}
+
+  \item{prior.df}{prior degrees of freedom to control the
+  level of shrinkage (default is 10). This argument is
+  controlled by a higher level function
+  \code{\link{nb_gof_m}}.}
+
+  \item{min.n}{minimim number of genes in a bin. Default is
+  100. See \code{\link{dispBinTrend}} for details
+  (lower-level function of
+  \code{\link{estimateGLMTrendedDisp}}).}
 
   \item{design}{specifications of testing (1) a
   single-group model (\code{single}); (2) a multiple-group
@@ -31,21 +41,22 @@ Estimator (APLE) on Original and Simulated Datasets}
   \code{\link{nb_gof_m}} function.
 }
 \description{
-  This function fits an NB regression model with genewise
+  This function fits an NB regression model with tagwise
   dispersions using the adjusted profile likelihood
-  estimator. This function differs from the
-  \code{\link{model_edgeR_tagcom}} and
-  \code{\link{model_edgeR_tagtrd}} functions: the tagwise
-  model shrinks the dispersion towards a common dispersion
-  or a global dispersion trend, while the genewise model
-  (implemented by this function) applies \strong{no
-  shrinkage}. This model is \emph{not} recommended, and is
-  used for diagnostics only. See details below. The output
-  of this function will be passed to the main GOF function
-  \code{\link{nb_gof_m}}.
+  estimator (APLE). In \code{edgeR}, this tagwise
+  dispersion model lies between two extreme scenarios:
+  entirely individual \eqn{\phi_i} for each gene and
+  entirely shared values (i.e. common dispersion). The
+  function \code{estimateGLMTagwiseDisp} in \code{edgeR}
+  shrinks the dispersion towards a common dispersion or a
+  global dispersion trend. In our implementation, the
+  function \code{model_edgeR_tagtrd} shrinks the tagwise
+  dispersions towards the global dispersion trend. See
+  details below. The output of this function will be passed
+  to the main GOF function \code{\link{nb_gof_m}}.
 }
 \details{
-  In this genewise dispersion model, the dispersion
+  In this tagwise-trended dispersion model, the dispersion
   parameter \eqn{\phi_i} is estimated by maximizing a
   penalized log-likelihood \eqn{APL_g(\phi_g)} plus a
   weighted shared log-likelihood. The weight denoted by
@@ -59,12 +70,13 @@ Estimator (APLE) on Original and Simulated Datasets}
   \code{\link{dispCoxReidInterpolateTagwise}} in
   \code{edgeR}. The denominator "df" is the residual
   degrees of freedom (number of libraries minus the number
-  of distinct treatment groups). We set the value of
-  \code{prior.df} equals 0, so that no shrinkage is
-  applied. See the \code{\link{estimateGLMCommonDisp}},
+  of distinct treatment groups). We leave the default value
+  of \code{prior.df} at 10. See the
+  \code{\link{estimateGLMTrendedDisp}},
   \code{\link{estimateGLMTagwiseDisp}},
-  \code{\link{dispCoxReidInterpolateTagwise}} and
-  \code{\link{glmFit}} functions in the \code{edgeR}
+  \code{\link{dispCoxReidInterpolateTagwise}}, lower-level
+  functions for the \code{edgeR} trended dispersion models,
+  and \code{\link{glmFit}} functions in the \code{edgeR}
   package for more details.
 }
 \author{
@@ -76,8 +88,9 @@ Estimator (APLE) on Original and Simulated Datasets}
   details.
 }
 \seealso{
-  \code{\link{model_edgeR_tagcom}} and
-  \code{\link{model_edgeR_tagtrd}} for the shrinkage
-  versions.
+  \code{\link{model_edgeR_genewise}} for the non-shrinkage,
+  entirely genewise model, and
+  \code{\link{model_edgeR_tagcom}} for the tagwise model
+  that shrinks towards a common dispersion.
 }
 

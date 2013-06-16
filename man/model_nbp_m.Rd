@@ -1,7 +1,7 @@
 \name{model_nbp_m}
 \alias{model_nbp_m}
-\title{Modeling NBP genewise dispersion model with the maximum likelihood estimator
-(MLE) on original and simulated datasets}
+\title{Modeling NBP Genewise Dispersion with the Maximum Likelihood Estimator
+(MLE) on Original and Simulated Datasets}
 \usage{
   model_nbp_m(counts, x, lib.sizes=colSums(counts))
 }
@@ -12,7 +12,7 @@
 
   \item{x}{an n-by-p design matrix.}
 
-  \item{lib.sizes}{library sizes of a RNA-Seq experiment.
+  \item{lib.sizes}{library sizes of an RNA-Seq experiment.
   Default is the column sums of the \code{counts} matrix.}
 }
 \value{
@@ -20,10 +20,11 @@
   \code{\link{nb_gof_m}} function.
 }
 \description{
-  This function is designed to fit an NBP regression model
-  with genewise dispersions using the adjusted profile
-  likelihood estimator. See details below. The output of
-  this function will be passed to the main GOF function.
+  This function fits an NBP dispersion model where the
+  dispersion parameter is modeled as a linear function of
+  the relative means. See details below. The output of this
+  function will be passed to the main GOF function
+  \code{\link{nb_gof_m}}.
 }
 \details{
   Under the NB model, the mean-variance relationship of a
@@ -37,13 +38,19 @@
   \eqn{(\alpha_0, \alpha_1)} in this dispersion model are
   estimated by maximizing the adjusted profile likelihood.
   See the \code{\link{estimate.dispersion}} function in the
-  \code{\link{NBPSeq}} package for more information.
+  \code{NBPSeq} package for more information.
 }
 \author{
   Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
   Schafer
 }
 \references{
-  \url{https://github.com/gu-mi/NBGOF/wiki/}
+  Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The
+  NBP Negative Binomial Model for Assessing Differential
+  Gene Expression from RNA-Seq", \emph{Statistical
+  Applications in Genetics and Molecular Biology}, 10 (1).
+
+  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+  details.
 }
 

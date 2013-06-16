@@ -1,7 +1,7 @@
 \docType{data}
 \name{arab}
 \alias{arab}
-\title{The Arabidopsis RNA-Seq Data Set}
+\title{The Arabidopsis RNA-Seq Dataset}
 \format{A 26222 by 6 matrix of RNA-Seq read frequencies.}
 \description{
   An RNA-Seq dataset from a pilot study of the defense
@@ -32,45 +32,76 @@
 }
 \examples{
 ## Load the dataset into R session:
+library(NBGOF)
 data(arab)
 
-## simulation set-up
-seed = 315826
+## simulation set-up:
+seed = 315825
 sim = 999
 conf.env = 0.95
 set.seed(seed)
 
-## subset read counts to exclude all zero rows within each treatment
+## subset read counts to exclude all zero rows within each treatment:
 good.arab = arab[(rowSums(arab[ ,1:3]) != 0 & rowSums(arab[ ,4:6]) != 0), ]
-m = 500    # number of genes subsetted
+m = 500    # number of genes retained
 # consider a single group with 3 replicates
-samp.idx = sample(1:dim(good.arab)[1], m)  # sample m genes
+samp.idx = sample(1:dim(good.arab)[1], m)
 arab.sub = good.arab[samp.idx,1:3]
 lib.sizes = colSums(arab.sub)
+y = arab.sub
 
-# model matrix for arab.sub
+## model matrix for arab.sub:
 x = as.matrix(rep(1,3))
 x
 
-# GOF tests for different dispersion models
-fnbp.nbp = nb_gof_m(counts=y, x=x, sim=sim, model.fit="NBP")
-fcom.nbp = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-common")
-fgen.nbp = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-genewise")
-ftag.nbp = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-tagwise")
-ftrd.nbp = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-trended", min.n=100)
+## GOF tests for different dispersion models:
+fnbp.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="NBP")
+fcom.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-common")
+fgen.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-genewise")
+ftgc.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-tagcom", prior.df=10)
+ftgt.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-tagtrd", prior.df=10, min.n=100)
+ftrd.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-trended", min.n=100)
 
-# summarize the GOF test results
-summary(fnbp.nbp, conf.env=conf.env, data.note="arab")
-summary(fcom.nbp, conf.env=conf.env, data.note="arab")
-summary(fgen.nbp, conf.env=conf.env, data.note="arab")
-summary(ftag.nbp, conf.env=conf.env, data.note="arab")
-summary(ftrd.nbp, conf.env=conf.env, data.note="arab")
+## summarize the GOF test results:
+summary(fnbp.arab, conf.env=conf.env, data.note="arab")
+summary(fcom.arab, conf.env=conf.env, data.note="arab")
+summary(fgen.arab, conf.env=conf.env, data.note="arab")
+summary(ftgc.arab, conf.env=conf.env, data.note="arab")
+summary(ftgt.arab, conf.env=conf.env, data.note="arab")
+summary(ftrd.arab, conf.env=conf.env, data.note="arab")
+
+## mean-dispersion plot with some of the fitted dispersion models:
+
+# (1) based on the subsetted Arabidopsis dataset:
+# pdf(file="arab-md-plot-subset.pdf", width=7, height=7)
+plot.md(y, x, model = NULL, scatter = TRUE, legend = FALSE, cex=4,
+main="Mean-Dispersion Plot with Fitted NB Models (Arabidopsis Data)")
+plot.md(y, x, model = "edgeR-common")
+plot.md(y, x, model = "edgeR-trended")
+plot.md(y, x, model = "edgeR-tagcom")
+plot.md(y, x, model = "edgeR-tagtrd", legend=TRUE)
+# dev.off()
+
+# (2) based on the complete Arabidopsis dataset (may take longer to run):
+arab.all = good.arab[ ,1:3]
+y2 = arab.all
+# pdf(file="arab-md-plot.pdf", width=7, height=7)
+plot.md(y2, x, model = NULL, scatter = TRUE, legend = FALSE, cex=4,
+main="Mean-Dispersion Plot with Fitted NB Models (Arabidopsis Data)")
+plot.md(y2, x, model = "edgeR-common")
+plot.md(y2, x, model = "edgeR-trended")
+plot.md(y2, x, model = "edgeR-tagcom")
+plot.md(y2, x, model = "edgeR-tagtrd", legend=TRUE)
+# dev.off()
 }
 \references{
   Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The
   NBP Negative Binomial Model for Assessing Differential
-  Gene Expression from RNA-Seq", Statistical Applications
-  in Genetics and Molecular Biology, 10 (1).
+  Gene Expression from RNA-Seq", \emph{Statistical
+  Applications in Genetics and Molecular Biology}, 10 (1).
+
+  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+  details.
 }
 \keyword{datasets}
 
