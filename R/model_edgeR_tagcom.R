@@ -58,7 +58,7 @@ model_edgeR_tagcom = function(counts, x, lib.sizes=colSums(counts), prior.df = p
   
   ## edgeR tagwise-common dispersion:
   
-  stopifnot(design %in% c("simple", "multiple", "complex"))
+  stopifnot(design %in% c("single", "multiple", "complex"))
   
   # convert model matrix into group index (for multiple-group use)
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
@@ -66,7 +66,7 @@ model_edgeR_tagcom = function(counts, x, lib.sizes=colSums(counts), prior.df = p
   d = DGEList(counts=counts, lib.size=lib.sizes, group = grp.ids)
   
   ## the simplest model for a single group (single-intercept model)
-  if (design == "simple"){
+  if (design == "single"){
 
     design = matrix(as.numeric(as.character(grp.ids)))
     e.com = estimateGLMCommonDisp(d, design, verbose=FALSE)

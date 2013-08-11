@@ -36,8 +36,10 @@
 #'  
 #' See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-model_nbp_m = function(counts, x, lib.sizes=colSums(counts)){
-  
+####################################################################
+# model_nbp_m= function(counts, x, lib.sizes=colSums(counts)){
+model_nbp_m_1 <- function(counts, x, lib.sizes=colSums(counts), obs.fit=obs.fit){
+######################################################################
   nc = dim(counts)[2]
   
   # preconditions
@@ -48,17 +50,18 @@ model_nbp_m = function(counts, x, lib.sizes=colSums(counts)){
   
   # data preparations
   nb.data = prepare.nb.data(counts, lib.sizes=lib.sizes)
-  fit = estimate.dispersion(nb.data, x, print.level=0)
+##################################################################################### 
+#  fit = estimate.dispersion(nb.data, x, print.level=0)
+  # phi is obtained by estimator of alpha0, alpha1 from original data
+  # alpha0 and alpha1 are extracted from "obs.fit"
+  fit <-  estimate.disp.mapl.nbp.1(y=nb.data$counts, lib.sizes=lib.sizes, x=x, print.level=0,
+                                   obs.fit = obs.fit)
+##################################################################################### 
   phi = fit$models[[1]]$phi        # NBP "phi" --> mu+phi*mu^2
   mu = fit$models[[1]]$mu
   v = mu + phi * mu^2              # variance matrix
   res.m = (counts - mu) / sqrt(v)  # res. matrix
   
-  #### ---------------------- NEW CODES HERE ----------------------  ####
-  alpha0 = fit$models[[1]]$alpha0
-  alpha1 = fit$models[[1]]$alpha1
-  #### ---------------------- NEW CODES  END ----------------------  ####
-
   # sort res.m with care!
   res.om = t(apply(res.m, 1, sort))
   ord.res.v = as.vector(t(res.om))
@@ -68,9 +71,7 @@ model_nbp_m = function(counts, x, lib.sizes=colSums(counts)){
                          res.mat = res.m,
                          res.omat = res.om,
                          ord.res.vec = ord.res.v,
-                         phi.hat.mat = phi,
-                         alpha0.est = alpha0,
-                         alpha1.est = alpha1
+                         phi.hat.mat = phi
   )
   return(model_nbp_m_obj)
 

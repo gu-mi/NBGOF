@@ -46,13 +46,15 @@ model_edgeR_trended = function(counts, x, lib.sizes=colSums(counts), min.n=min.n
   
   ## edgeR trended (non-parametric) dispersion:
   
+  stopifnot(design %in% c("single", "multiple", "complex"))
+  
   # convert model matrix into group index
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
                    labels = seq(ncol(x)))
   d = DGEList(counts=counts, lib.size=lib.sizes, group = grp.ids)
   
   ## the simplest model for a single group (single-intercept model)
-  if (design == "simple"){
+  if (design == "single"){
       if (length(unique(grp.ids)) == 1){   
       design = matrix(as.numeric(as.character(grp.ids)))
       e.trd = estimateGLMTrendedDisp(d, design, min.n=min.n)

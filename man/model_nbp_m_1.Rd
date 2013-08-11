@@ -1,0 +1,56 @@
+\name{model_nbp_m_1}
+\alias{model_nbp_m_1}
+\title{Modeling NBP Genewise Dispersion with the Maximum Likelihood Estimator
+(MLE) on Original and Simulated Datasets}
+\usage{
+  model_nbp_m(counts, x, lib.sizes=colSums(counts))
+}
+\arguments{
+  \item{counts}{an m-by-n count matrix of non-negative
+  integers. For a typical RNA-Seq experiment, this is the
+  read counts with m genes and n samples.}
+
+  \item{x}{an n-by-p design matrix.}
+
+  \item{lib.sizes}{library sizes of an RNA-Seq experiment.
+  Default is the column sums of the \code{counts} matrix.}
+}
+\value{
+  A list of quantities to be used in the main
+  \code{\link{nb_gof_m}} function.
+}
+\description{
+  This function fits an NBP dispersion model where the
+  dispersion parameter is modeled as a linear function of
+  the relative means. See details below. The output of this
+  function will be passed to the main GOF function
+  \code{\link{nb_gof_m}}.
+}
+\details{
+  Under the NB model, the mean-variance relationship of a
+  single read count satisfies \eqn{\sigma_{ij}^2 = \mu_{ij}
+  + \phi_{ij} \mu_{ij}^2}. For applying the NBP model to
+  RNA-Seq data, we consider the "log-linear-rel-mean"
+  method assuming a parametric dispersion model
+  \eqn{\phi_{ij} = \alpha_0 + \alpha_1 \log(\pi_{ij})},
+  where \eqn{\pi_{ij} = \mu_{ij}/(N_j R_j)} is the relative
+  mean frequency after normalization. The parameters
+  \eqn{(\alpha_0, \alpha_1)} in this dispersion model are
+  estimated by maximizing the adjusted profile likelihood.
+  See the \code{\link{estimate.dispersion}} function in the
+  \code{NBPSeq} package for more information.
+}
+\author{
+  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+  Schafer
+}
+\references{
+  Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The
+  NBP Negative Binomial Model for Assessing Differential
+  Gene Expression from RNA-Seq", \emph{Statistical
+  Applications in Genetics and Molecular Biology}, 10 (1).
+
+  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+  details.
+}
+

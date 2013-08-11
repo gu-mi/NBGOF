@@ -41,6 +41,8 @@ model_edgeR_common = function(counts, x, lib.sizes=colSums(counts),
   
   ## edgeR common dispersion:
   
+  stopifnot(design %in% c("single", "multiple", "complex"))
+  
   # convert model matrix into group index
   # NOTE: THIS WILL NOT WORK PROPERLY FOR MULTI-GROUP SITUATIONS! (TO DO IN NEXT RELEASE)
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
@@ -48,7 +50,7 @@ model_edgeR_common = function(counts, x, lib.sizes=colSums(counts),
   d = DGEList(counts=counts, lib.size=lib.sizes, group = grp.ids)
   
   ## the simplest model for a single group (single-intercept model)
-  if (design == "simple"){    
+  if (design == "single"){    
     design = matrix(as.numeric(as.character(grp.ids)))
     e.com = estimateGLMCommonDisp(d, design, verbose=FALSE)
     com.fit = glmFit(d, design, dispersion=e.com$common.dispersion)
