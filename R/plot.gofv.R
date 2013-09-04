@@ -35,7 +35,7 @@ plot.gofv = function(x,
                      ...){
   
   ## quantities from a "gofv" object:
-  model.fit = x$model.fit
+  model = x$model
   samp.size = x$samp.size
   pv.D = x$new.pval
   pv.P = x$pear.pval
@@ -65,33 +65,33 @@ plot.gofv = function(x,
   p.hat = nout/n.pts
   
   ## empirical probability plots:
-  if (model.fit == "NB2"){
+  if (model == "NB2"){
     plot(ord.typ.res.sim[!out.ind], ord.res.obs[!out.ind], 
          xlim = c(min.x, max.x), 
          ylim = c(min.y, max.y), 
          xlab =  "Medians of Ordered MC Residuals (NB2)",
          ylab =  "Ordered Pearson Residuals",
-         main = paste("Testing", model.fit, "Regression Fit"),
+         main = paste("Testing", model, "Regression Fit"),
          ...)
   }
   #
-  if (model.fit == "NBP"){
+  if (model == "NBP"){
     plot(ord.typ.res.sim[!out.ind], ord.res.obs[!out.ind], 
          xlim = c(min.x, max.x), 
          ylim = c(min.y, max.y), 
          xlab =  "Medians of Ordered MC Residuals (NBP)",
          ylab =  "Ordered Pearson Residuals",
-         main = paste("Testing", model.fit, "Regression Fit"),
+         main = paste("Testing", model, "Regression Fit"),
          ...)
   }
   #
-  if (model.fit == "Poisson"){
+  if (model == "Poisson"){
     plot(ord.typ.res.sim[!out.ind], ord.res.obs[!out.ind], 
          xlim = c(min.x, max.x), 
          ylim = c(min.y, max.y), 
          xlab =  "Medians of Ordered MC Residuals (Poisson)",
          ylab =  "Ordered Pearson Residuals",
-         main = paste("Testing", model.fit, "Regression Fit"),
+         main = paste("Testing", model, "Regression Fit"),
          ...)
   }
   

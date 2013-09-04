@@ -1,9 +1,10 @@
 \name{model_nbp_m}
 \alias{model_nbp_m}
-\title{Modeling NBP Genewise Dispersion with the Maximum Likelihood Estimator
-(MLE) on Original and Simulated Datasets}
+\title{Modeling NBP Genewise Dispersion with the Maximum Ajdusted Profile Likelihood Estimator
+(MAPLE) on Original and Simulated Datasets}
 \usage{
-  model_nbp_m(counts, x, lib.sizes=colSums(counts))
+  model_nbp_m(counts, x, lib.sizes=colSums(counts),
+    method=method)
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -14,6 +15,8 @@
 
   \item{lib.sizes}{library sizes of an RNA-Seq experiment.
   Default is the column sums of the \code{counts} matrix.}
+
+  \item{method}{method for estimating dispersions.}
 }
 \value{
   A list of quantities to be used in the main

@@ -34,14 +34,14 @@ plot.gofm = function(x, model=NULL, type="qq", logscale=TRUE, ...){
   stopifnot(type %in% c("qq", "hist"))
   
   ## quantities from a "gofm" object:
-  model.fit = x$model.fit
+  model = x$model
   counts.dim = x$counts.dim
   sim.size = x$sim
   v.pvals = x$v.pvals
   
   ## plot qq-plot or histogram of m p-values
   if (type == "qq"){
-    qqunif(v.pvals, logscale=logscale, main=paste("Q-Q Uniform Plot of", model.fit))
+    qqunif(v.pvals, logscale=logscale, main=paste("Q-Q Uniform Plot of", model))
   }
   else if (type == "hist"){
     hist(v.pvals, main=paste("Model:", model), xlab="P-values")

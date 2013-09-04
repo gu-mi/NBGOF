@@ -61,12 +61,12 @@
 #' x
 #' 
 #' ## GOF tests for different dispersion models:
-#' fnbp.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="NBP")
-#' fcom.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-common")
-#' fgen.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-genewise")
-#' ftgc.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-tagcom", prior.df=10)
-#' ftgt.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-tagtrd", prior.df=10, min.n=100)
-#' ftrd.arab = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-trended", min.n=100)
+#' fnbp.arab = nb_gof_m(counts=y, x=x, sim=sim, model="NBP")
+#' fcom.arab = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-common")
+#' fgen.arab = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-genewise")
+#' ftgc.arab = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-tagcom", prior.df=10)
+#' ftgt.arab = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-tagtrd", prior.df=10, min.n=100)
+#' ftrd.arab = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-trended", min.n=100)
 #' 
 #' ## summarize the GOF test results:
 #' summary(fnbp.arab, conf.env=conf.env, data.note="arab")

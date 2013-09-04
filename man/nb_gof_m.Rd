@@ -4,8 +4,8 @@
 RNA-Seq Dataset}
 \usage{
   nb_gof_m(counts, x, lib.sizes=colSums(counts), sim=999,
-    model.fit="NBP", min.n=100, prior.df = 10, design =
-    "simple")
+    model="NBP", method="MAPL", min.n=100, prior.df = 10,
+    design = "single")
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -19,26 +19,31 @@ RNA-Seq Dataset}
 
   \item{sim}{number of simulations performed.}
 
-  \item{model.fit}{a string of characters specifying the
+  \item{model}{a string of characters specifying the
   negative binomial dispersion model used to fit the data.
   Currently the following dispersion models are available
   to be checked for goodness-of-fit: \itemize{ \item NBP
   dispersion model in the \code{NBPSeq} package
-  (\code{NBP}) \item NB common dispersion model in the
-  \code{\link{edgeR}} package (\code{edgeR-common}) \item
-  NB genewise dispersion model in the \code{\link{edgeR}}
-  package (\code{edgeR-genewise}) \item NB trended
-  (non-parametric) dispersion model in the
-  \code{\link{edgeR}} package (\code{edgeR-trended}) \item
-  NB tagwise-common dispersion model in the
-  \code{\link{edgeR}} package (\code{edgeR-tagcom}) \item
-  NB tagwise-trended dispersion model in the
-  \code{\link{edgeR}} package (\code{edgeR-tagtrd}) } Users
-  should specify \strong{exactly} the same characters as
-  the ones in paratheses above for each dispersion model.}
+  (\code{NBP}) \item NBQ dispersion model in the
+  \code{NBPSeq} pacakge (\code{NBQ}) \item NB common
+  dispersion model in the \code{\link{edgeR}} package
+  (\code{edgeR-common}) \item NB genewise dispersion model
+  in the \code{\link{edgeR}} package
+  (\code{edgeR-genewise}) \item NB trended (non-parametric)
+  dispersion model in the \code{\link{edgeR}} package
+  (\code{edgeR-trended}) \item NB tagwise-common dispersion
+  model in the \code{\link{edgeR}} package
+  (\code{edgeR-tagcom}) \item NB tagwise-trended dispersion
+  model in the \code{\link{edgeR}} package
+  (\code{edgeR-tagtrd}) } Users should specify
+  \strong{exactly} the same characters as the ones in
+  paratheses above for each dispersion model.}
+
+  \item{method}{method for estimating dispersions. MAPL:
+  maximum adjusted profile likelihood}
 
   \item{min.n}{for \code{edgeR-trended} model only: specify
-  the minimim number of genes in a bin (default is 10).}
+  the minimim number of genes in a bin (default is 100).}
 
   \item{prior.df}{control of the shrinkage applied for
   \code{edgeR} genewise, tagwise (and its variants)
@@ -75,8 +80,10 @@ RNA-Seq Dataset}
   function to test the goodness-of-fit of a specified
   negative binomial dispersion model. Specifically, this
   function calls \code{\link{model_nbp_m}} to fit the NBP
-  dispersion model, calls \code{\link{model_edgeR_common}}
-  to fit the common dispersion model, calls
+  dispersion model, calls \code{\link{model_nbq_m}} to fit
+  the NBQ dispersion model, calls
+  \code{\link{model_edgeR_common}} to fit the common
+  dispersion model, calls
   \code{\link{model_edgeR_genewise}} to fit the pure
   genewise dispersion model (without shrinkage), calls
   \code{\link{model_edgeR_trended}} to fit the
@@ -147,15 +154,17 @@ plot(mu, phi.noi, log="xy")
 
 ## GOF tests for different dispersion models:
 ## CAUTION: may be time-consuming depending on the size of data and simulations
-fnbp.noip = nb_gof_m(counts=y, x=x, sim=sim, model.fit="NBP")
-fcom.noip = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-common")
-fgen.noip = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-genewise")
-ftgc.noip = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-tagcom")
-ftgt.noip = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-tagtrd")
-ftrd.noip = nb_gof_m(counts=y, x=x, sim=sim, model.fit="edgeR-trended")
+fnbp.noip = nb_gof_m(counts=y, x=x, sim=sim, model="NBP")
+fnbq.noip = nb_gof_m(counts=y, x=x, sim=sim, model="NBQ")
+fcom.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-common")
+fgen.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-genewise")
+ftgc.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-tagcom")
+ftgt.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-tagtrd")
+ftrd.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-trended")
 
 ## summarize the GOF test results:
 summary(fnbp.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")
+summary(fnbq.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")
 summary(fcom.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")
 summary(fgen.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")
 summary(ftgc.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")

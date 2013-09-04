@@ -35,7 +35,7 @@ summary.gofm = function(x,
                         ...){
   
   ## quantities from a "gofm" object:
-  model.fit = x$model.fit
+  model = x$model
   counts.dim = x$counts.dim
   xx = x$design.mat
   sim.size = x$sim
@@ -50,7 +50,7 @@ summary.gofm = function(x,
   # summaries
   cat("--------------------------------------------------------------- \n")
   cat("| Data simulated/used:", data.note, "\n")
-  cat("| NB model used:", model.fit, "\n")
+  cat("| NB model used:", model, "\n")
   cat("| Simulation size:", sim.size, "\n")
   cat("| Count matrix dimension:", counts.dim, "\n")
   cat("| Fisher Method GOF p-value (Vert.Dist.(1s)) =", pv.fisher.vert, "\n")

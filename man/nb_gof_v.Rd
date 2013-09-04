@@ -3,8 +3,8 @@
 \title{Main Function of Implementing Simulation-based Goodness-of-Fit Tests on
 the Regression of a Univariate Count Response on One or More Explanatory Variables}
 \usage{
-  nb_gof_v(y, x, lib.sizes=NULL, sim=999, model.fit =
-    "NB2", est.method="ML")
+  nb_gof_v(y, x, lib.sizes=NULL, sim=999, model = "NB2",
+    est.method="ML")
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
@@ -18,9 +18,9 @@ the Regression of a Univariate Count Response on One or More Explanatory Variabl
 
   \item{sim}{number of simulations performed.}
 
-  \item{model.fit}{a string of characters specifying the
-  model (negative binomial or Poisson) used to fit the
-  data. Currently the following models are available to be
+  \item{model}{a string of characters specifying the model
+  (negative binomial or Poisson) used to fit the data.
+  Currently the following models are available to be
   checked for goodness-of-fit: \itemize{ \item NB2:
   conventional NB2 regression model (\code{NB2}) \item NBP:
   NBP regression model (\code{NBP}) \item Poisson: Poisson
@@ -89,15 +89,15 @@ y.nb1 = rnbinom(n, size=1/phi.nb1, mu=mu)
 par(mfrow=c(1,3))
 
 # NB2 model fit using MLE:
-gf.nb1.nb2 = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NB2")
+gf.nb1.nb2 = nb_gof_v(y.nb1, X, s, sim=sim, model="NB2")
 plot(gf.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 
 # NBP model fit using MLE:
-gf.nb1.nbp = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NBP", est.method="ML")
+gf.nb1.nbp = nb_gof_v(y.nb1, X, s, sim=sim, model="NBP", est.method="ML")
 plot(gf.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 
 # Poisson model fit:
-gf.nb1.poi = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="Poisson")
+gf.nb1.poi = nb_gof_v(y.nb1, X, s, sim=sim, model="Poisson")
 plot(gf.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 # dev.off()
 }

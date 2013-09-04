@@ -13,7 +13,7 @@
 #' @param x an n-by-p design matrix.
 #' @param lib.sizes library sizes of a RNA-Seq experiment. Default is 1 for all samples.
 #' @param sim number of simulations performed.
-#' @param model.fit a string of characters specifying the model (negative binomial or Poisson) 
+#' @param model a string of characters specifying the model (negative binomial or Poisson) 
 #' used to fit the data. Currently the following models are available to be checked
 #' for goodness-of-fit:
 #' \itemize{
@@ -39,7 +39,7 @@
 #' the Poisson model.
 #' 
 #' @usage 
-#' nb_gof_v(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method="ML")
+#' nb_gof_v(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML")
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
@@ -86,25 +86,25 @@
 #' par(mfrow=c(1,3))
 #' 
 #' # NB2 model fit using MLE:
-#' gf.nb1.nb2 = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NB2")
+#' gf.nb1.nb2 = nb_gof_v(y.nb1, X, s, sim=sim, model="NB2")
 #' plot(gf.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 #' 
 #' # NBP model fit using MLE:
-#' gf.nb1.nbp = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="NBP", est.method="ML")
+#' gf.nb1.nbp = nb_gof_v(y.nb1, X, s, sim=sim, model="NBP", est.method="ML")
 #' plot(gf.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 #' 
 #' # Poisson model fit:
-#' gf.nb1.poi = nb_gof_v(y.nb1, X, s, sim=sim, model.fit="Poisson")
+#' gf.nb1.poi = nb_gof_v(y.nb1, X, s, sim=sim, model="Poisson")
 #' plot(gf.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 #' # dev.off()
 #' 
-nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method="ML"){
+nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML"){
   
   n = length(y)
   p = dim(x)[2]
   
   # preconditions
-  stopifnot(model.fit %in% c("Poisson", "NB2", "NBP"), est.method %in% c("ML","APL"))
+  stopifnot(model %in% c("Poisson", "NB2", "NBP"), est.method %in% c("ML","APL"))
   
   ## initialize simulation variables
   res.sim.mat = matrix(0, nrow = (sim+1), ncol = n)  # residual matrix
@@ -112,7 +112,7 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method
   stat.sim.D = numeric(sim)  # statistic based on the overall vertical distance
   
   #### -----------------------------------------------------------------
-  if (model.fit == "Poisson"){
+  if (model == "Poisson"){
     libs = ifelse(is.null(lib.sizes), rep(0, n), lib.sizes)  # pay attention to the offset here!
     mpoi.0 = model_poi_v(y=y, x=x, lib.sizes=libs)  
     # Poisson model fit on original data
@@ -131,7 +131,7 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method
     res.sim.mat[(sim+1), ] = res.vec0
   }
   #### -----------------------------------------------------------------
-  if (model.fit == "NB2"){
+  if (model == "NB2"){
     libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
     mnb2.0 = model_nb2_v(y=y, x=x, lib.sizes=libs)  # MLE for NB2 models
     # NB2 model fit on original data
@@ -151,7 +151,7 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method
     res.sim.mat[(sim+1), ] = res.vec0
   }
   #### -----------------------------------------------------------------
-  if (model.fit == "NBP"){
+  if (model == "NBP"){
     libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
     mnbp.0 = model_nbp_v(y=y, x=x, lib.sizes=libs, est.method=est.method)  
     # NBP model fit on original data
@@ -197,7 +197,7 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model.fit = "NB2", est.method
   
   #### -----------------------------------------------------------------
   ## save as a list
-  gof.obj = list(model.fit = model.fit,
+  gof.obj = list(model = model,
                  design.mat = x,
                  samp.size = n,
                  num.pred = p,
