@@ -2,9 +2,9 @@
 #' @title Plot Methods for "gofv" Objects
 #'
 #' @description A plot method for empirical probability plot based on a "gofv" 
-#' object obtained from the \code{\link{nb_gof_v}} outputs.
+#' object obtained from the \code{\link{nb.gof.v}} outputs.
 #' 
-#' @param x an object of class "gofv" from the \code{\link{nb_gof_v}} output.
+#' @param x an object of class "gofv" from the \code{\link{nb.gof.v}} output.
 #' @param conf.env confidence level for the envelope.
 #' @param data.note a note on how data are simulated or the source of data.
 #' @param leg.cex size of the legend fonts.
@@ -21,7 +21,7 @@
 #' @return An empirical probability plot with points outside a pre-specified confidence
 #' envelope colored in red. GOF test p-values are also reported on the plot.
 #' 
-#' @seealso \code{\link{nb_gof_v}} for simulated data examples, and \code{\link{earthquake}}
+#' @seealso \code{\link{nb.gof.v}} for simulated data examples, and \code{\link{earthquake}}
 #' for a real data example.
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
@@ -108,8 +108,8 @@ plot.gofv = function(x,
     legend("topleft",bty="n", legend=c(
       #paste("# sample = ", samp.size),
       #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("MC GOF p-value (Pear.Stat.(2s)) =", round(pv.P,2)),
-      paste("MC GOF p-value (Vert.Dist.(1s)) =", round(pv.D,2))),
+      paste("MC GOF p-value (Pear.Stat.) =", round(pv.P,2)),
+      paste("MC GOF p-value (Sq.Vert.Dist.) =", round(pv.D,2))),
            cex=leg.cex)
   }
   #
@@ -117,8 +117,8 @@ plot.gofv = function(x,
     legend("topleft",bty="n", legend=c(
       #paste("# sample = ", samp.size),
       #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("MC GOF p-value (Pear.Stat.(2s)) =", round(pv.P,2)),
-      paste("MC GOF p-value (Vert.Dist.(1s)) < 0.01")),
+      paste("MC GOF p-value (Pear.Stat.) =", round(pv.P,2)),
+      paste("MC GOF p-value (Sq.Vert.Dist.) < 0.01")),
            cex=leg.cex)
   }
   #
@@ -126,8 +126,8 @@ plot.gofv = function(x,
     legend("topleft",bty="n", legend=c(
       #paste("# sample = ", samp.size),
       #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("MC GOF p-value (Pear.Stat.(2s)) < 0.01"),
-      paste("MC GOF p-value (Vert.Dist.(1s)) =", round(pv.D,2))),
+      paste("MC GOF p-value (Pear.Stat.) < 0.01"),
+      paste("MC GOF p-value (Sq.Vert.Dist.) =", round(pv.D,2))),
            cex=leg.cex)
   } 
   #
@@ -135,10 +135,12 @@ plot.gofv = function(x,
     legend("topleft",bty="n", legend=c(
       #paste("# sample = ", samp.size),
       #paste("# pts. outside envelope = ", nout, " (",round(p.hat*100,2),"%)", sep=""),
-      paste("MC GOF p-value (Pear.Stat.(2s)) < 0.01"),
-      paste("MC GOF p-value (Vert.Dist.(1s)) < 0.01")),
+      paste("MC GOF p-value (Pear.Stat.) < 0.01"),
+      paste("MC GOF p-value (Sq.Vert.Dist.) < 0.01")),
            cex=leg.cex)
   }  
   ##  
   legend("bottomright", bty="n", legend=data.note, cex=leg.cex)
 }
+
+

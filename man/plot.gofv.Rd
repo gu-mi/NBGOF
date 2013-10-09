@@ -6,7 +6,7 @@
 }
 \arguments{
   \item{x}{an object of class "gofv" from the
-  \code{\link{nb_gof_v}} output.}
+  \code{\link{nb.gof.v}} output.}
 
   \item{conf.env}{confidence level for the envelope.}
 
@@ -24,7 +24,7 @@
 }
 \description{
   A plot method for empirical probability plot based on a
-  "gofv" object obtained from the \code{\link{nb_gof_v}}
+  "gofv" object obtained from the \code{\link{nb.gof.v}}
   outputs.
 }
 \details{
@@ -40,7 +40,7 @@
   details.
 }
 \seealso{
-  \code{\link{nb_gof_v}} for simulated data examples, and
+  \code{\link{nb.gof.v}} for simulated data examples, and
   \code{\link{earthquake}} for a real data example.
 }
 

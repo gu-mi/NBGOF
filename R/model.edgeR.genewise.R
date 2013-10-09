@@ -4,12 +4,12 @@
 #' 
 #' @description This function fits an NB regression model with
 #' genewise dispersions using the adjusted profile likelihood estimator. This function
-#' differs from the \code{\link{model_edgeR_tagcom}} and \code{\link{model_edgeR_tagtrd}}
+#' differs from the \code{\link{model.edgeR.tagcom}} and \code{\link{model.edgeR.tagtrd}}
 #' functions: the tagwise model shrinks the dispersion towards a common dispersion or a global
 #' dispersion trend, while the genewise model (implemented by this function) applies 
 #' \strong{no shrinkage}. This model is \emph{not} recommended, and is used for diagnostics
 #' only. See details below. The output of this function 
-#' will be passed to the main GOF function \code{\link{nb_gof_m}}.
+#' will be passed to the main GOF function \code{\link{nb.gof.m}}.
 #' 
 #' @details In this genewise dispersion model, the dispersion parameter \eqn{\phi_i} is
 #' estimated by maximizing a penalized log-likelihood \eqn{APL_g(\phi_g)} plus a weighted shared 
@@ -27,7 +27,7 @@
 #' \code{edgeR} package for more details.
 #' 
 #' @usage
-#' model_edgeR_genewise(counts, x, lib.sizes=colSums(counts), design=design)
+#' model.edgeR.genewise(counts, x, lib.sizes=colSums(counts), design=design)
 #' 
 #' @param counts an m-by-n count matrix of non-negative integers. For a typical
 #' RNA-Seq experiment, this is the read counts with m genes and n samples.
@@ -41,16 +41,16 @@
 #' For the complex design with interactions, though we can pass the design matrix directly
 #' in edgeR, the results may not make any sense!}
 #' 
-#' @return A list of quantities to be used in the main \code{\link{nb_gof_m}} function.
+#' @return A list of quantities to be used in the main \code{\link{nb.gof.m}} function.
 #' 
-#' @seealso \code{\link{model_edgeR_tagcom}} and \code{\link{model_edgeR_tagtrd}} for the
+#' @seealso \code{\link{model.edgeR.tagcom}} and \code{\link{model.edgeR.tagtrd}} for the
 #' shrinkage versions.
 #'  
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
 #' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-model_edgeR_genewise = function(counts, x, lib.sizes=colSums(counts), design=design){
+model.edgeR.genewise = function(counts, x, lib.sizes=colSums(counts), design=design){
   
   ## edgeR genewise dispersion:
   
@@ -74,7 +74,10 @@ model_edgeR_genewise = function(counts, x, lib.sizes=colSums(counts), design=des
     phi.hat.m = gen.fit$dispersion     # there may be NA's
     v = mu.hat.m + phi.hat.m * mu.hat.m^2
     res.m = (counts - mu.hat.m) / sqrt(v)
-    res.m[is.nan(res.m)] = 0
+    
+    # make sure 0/0 (NaN) and 1/0 (Inf) won't appear in residual matrix (before sorting)
+    res.m[ is.nan(res.m) ] = 0
+    res.m[ is.infinite(res.m) ] = 0
     
     # sort res.m with care!
     res.om = t(apply(res.m, 1, sort))
@@ -91,8 +94,9 @@ model_edgeR_genewise = function(counts, x, lib.sizes=colSums(counts), design=des
   }
     
   ## multiple-group case (e.g. two-group comparisons)
-  if (design == "multiple-group") { 
-      design = model.matrix(~grp.ids, data=d$samples)
+  if (design == "multiple" | design == "complex") { 
+      #design = model.matrix(~grp.ids, data=d$samples)
+      design = x
       e.com = estimateGLMCommonDisp(d, design, verbose=FALSE)
       e.gen = estimateGLMTagwiseDisp(e.com, design, prior.df=0)  # prior.df = 0
       # e.gen: trend is FALSE since we didn't use estimateGLMTrendedDisp() beforehand
@@ -103,7 +107,10 @@ model_edgeR_genewise = function(counts, x, lib.sizes=colSums(counts), design=des
       phi.hat.m = gen.fit$dispersion     # there may be NA's
       v = mu.hat.m + phi.hat.m * mu.hat.m^2
       res.m = (counts - mu.hat.m) / sqrt(v)
-      res.m[is.nan(res.m)] = 0
+
+      # make sure 0/0 (NaN) and 1/0 (Inf) won't appear in residual matrix (before sorting)
+      res.m[ is.nan(res.m) ] = 0
+      res.m[ is.infinite(res.m) ] = 0
       
       # sort res.m with care!
       res.om = t(apply(res.m, 1, sort))
@@ -118,35 +125,6 @@ model_edgeR_genewise = function(counts, x, lib.sizes=colSums(counts), design=des
       )
       return(model_gen_m_obj)
     }
-  
-  ## complex design: passing x to the design matrix directly
-  ## CAUTION: results may not make any sense!
-  if (design == "complex"){
-    design = x
-    e.com = estimateGLMCommonDisp(counts, design, verbose=FALSE)
-    e.gen = estimateGLMTagwiseDisp(e.com, design, prior.df=0)  # prior.df = 0
-    gen.fit = glmFit(counts, design, dispersion=e.gen$tagwise.dispersion)
-    
-    # extract quantities:
-    mu.hat.m = gen.fit$fitted.values   # mu may be close to 0
-    phi.hat.m = gen.fit$dispersion     # there may be NA's
-    v = mu.hat.m + phi.hat.m * mu.hat.m^2
-    res.m = (counts - mu.hat.m) / sqrt(v)
-    res.m[is.nan(res.m)] = 0
-    
-    # sort res.m with care!
-    res.om = t(apply(res.m, 1, sort.vec, grp.ids))
-    ord.res.v = as.vector(t(res.om))
-    
-    # save as a list
-    model_gen_m_obj = list(mu.hat.mat = mu.hat.m,
-                           res.mat = res.m,
-                           res.omat = res.om,
-                           ord.res.vec = ord.res.v,
-                           phi.hat.mat = phi.hat.m
-    )
-    return(model_gen_m_obj) 
-  }
 }
 
   

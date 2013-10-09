@@ -6,7 +6,7 @@
 }
 \arguments{
   \item{x}{an object of class "gofm" from the
-  \code{\link{nb_gof_m}} output}
+  \code{\link{nb.gof.m}} output}
 
   \item{conf.env}{confidence level for the envelope}
 
@@ -22,7 +22,7 @@
 }
 \description{
   A summary method of GOF test results based on a "gofm"
-  object obtained from the \code{\link{nb_gof_m}} outputs
+  object obtained from the \code{\link{nb.gof.m}} outputs
 }
 \details{
   This is a generic function for summarizing
@@ -38,7 +38,7 @@
   details.
 }
 \seealso{
-  \code{\link{nb_gof_m}} for simulated data examples, and
+  \code{\link{nb.gof.m}} for simulated data examples, and
   \code{\link{arab}} for a real RNA-Seq data example.
 }
 

@@ -4,7 +4,7 @@
 #' 
 #' @description This function fits an NBQ dispersion model where the dispersion parameter
 #' is modeled as a linear function of the relative means, plus a quadratic term. See details below. 
-#' The output of this function will be passed to the main GOF function \code{\link{nb_gof_m}}.
+#' The output of this function will be passed to the main GOF function \code{\link{nb.gof.m}}.
 #' 
 #' @details Under the NB model, the mean-variance relationship of a single read count 
 #' satisfies \eqn{\sigma_{ij}^2 = \mu_{ij} + \phi_{ij} \mu_{ij}^2}. For applying the NBP 
@@ -18,7 +18,7 @@
 #' for more information.
 #' 
 #' @usage
-#' model_nbq_m(counts, x, lib.sizes=colSums(counts), method=method)
+#' model.nbq.m(counts, x, lib.sizes=colSums(counts), method=method)
 #' 
 #' @param counts an m-by-n count matrix of non-negative integers. For a typical
 #' RNA-Seq experiment, this is the read counts with m genes and n samples.
@@ -27,7 +27,7 @@
 #' sums of the \code{counts} matrix.
 #' @param method method for estimating dispersions.
 #' 
-#' @return A list of quantities to be used in the main \code{\link{nb_gof_m}} function.
+#' @return A list of quantities to be used in the main \code{\link{nb.gof.m}} function.
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
@@ -38,15 +38,15 @@
 #'  
 #' See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-model_nbq_m = function(counts, x, lib.sizes=colSums(counts), method=method){
+model.nbq.m = function(counts, x, lib.sizes=colSums(counts), method=method){
   
   nc = dim(counts)[2]
   
   # preconditions
   stopifnot(is.matrix(x), nc == dim(x)[1])
   
-  grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
-                   labels = seq(ncol(x)))
+#   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
+#                    labels = seq(ncol(x)))
   
   # data preparations
   nb.data = prepare.nb.data(counts, lib.sizes=lib.sizes)
@@ -67,6 +67,10 @@ model_nbq_m = function(counts, x, lib.sizes=colSums(counts), method=method){
   
   v = mu + phi * mu^2              # variance matrix
   res.m = (counts - mu) / sqrt(v)  # res. matrix
+  
+  # make sure 0/0 (NaN) and 1/0 (Inf) won't appear in residual matrix (before sorting)
+  res.m[ is.nan(res.m) ] = 0
+  res.m[ is.infinite(res.m) ] = 0
   
   # sort res.m with care!
   res.om = t(apply(res.m, 1, sort))

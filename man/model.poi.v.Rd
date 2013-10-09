@@ -1,8 +1,8 @@
-\name{model_poi_v}
-\alias{model_poi_v}
+\name{model.poi.v}
+\alias{model.poi.v}
 \title{Modeling Poisson Regression Model on Original and Simulated Datasets}
 \usage{
-  model_poi_v(y, x, lib.sizes=NULL)
+  model.poi.v(y, x, lib.sizes=NULL)
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
@@ -19,7 +19,7 @@
 }
 \value{
   A list of quantities to be used in the main
-  \code{\link{nb_gof_v}} function.
+  \code{\link{nb.gof.v}} function.
 }
 \description{
   This function is designed to fit a Poisson regression

@@ -1,9 +1,9 @@
-\name{nb_gof_v}
-\alias{nb_gof_v}
+\name{nb.gof.v}
+\alias{nb.gof.v}
 \title{Main Function of Implementing Simulation-based Goodness-of-Fit Tests on
 the Regression of a Univariate Count Response on One or More Explanatory Variables}
 \usage{
-  nb_gof_v(y, x, lib.sizes=NULL, sim=999, model = "NB2",
+  nb.gof.v(y, x, lib.sizes=NULL, sim=999, model = "NB2",
     est.method="ML")
 }
 \arguments{
@@ -54,9 +54,9 @@ the Regression of a Univariate Count Response on One or More Explanatory Variabl
   an object with the test results, which can be further
   summarized and visualized using appropriate methods.
 
-  This function calls \code{\link{model_nb2_v}} to fit the
-  NB2 model, calls \code{\link{model_nbp_v}} to fit the NBP
-  model, and calls \code{\link{model_poi_v}} to fit the
+  This function calls \code{\link{model.nb2.v}} to fit the
+  NB2 model, calls \code{\link{model.nbp.v}} to fit the NBP
+  model, and calls \code{\link{model.poi.v}} to fit the
   Poisson model.
 }
 \examples{
@@ -89,16 +89,16 @@ y.nb1 = rnbinom(n, size=1/phi.nb1, mu=mu)
 par(mfrow=c(1,3))
 
 # NB2 model fit using MLE:
-gf.nb1.nb2 = nb_gof_v(y.nb1, X, s, sim=sim, model="NB2")
-plot(gf.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+gof.nb1.nb2 = nb.gof.v(y.nb1, X, s, sim=sim, model="NB2")
+plot(gof.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 
 # NBP model fit using MLE:
-gf.nb1.nbp = nb_gof_v(y.nb1, X, s, sim=sim, model="NBP", est.method="ML")
-plot(gf.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+gof.nb1.nbp = nb.gof.v(y.nb1, X, s, sim=sim, model="NBP", est.method="ML")
+plot(gof.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 
 # Poisson model fit:
-gf.nb1.poi = nb_gof_v(y.nb1, X, s, sim=sim, model="Poisson")
-plot(gf.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+gof.nb1.poi = nb.gof.v(y.nb1, X, s, sim=sim, model="Poisson")
+plot(gof.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 # dev.off()
 }
 \author{

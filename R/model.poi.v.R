@@ -7,7 +7,7 @@
 #' @details The \code{glm} function with \code{family=poisson} is used for Poisson model fitting.
 #' 
 #' @usage
-#' model_poi_v(y, x, lib.sizes=NULL)
+#' model.poi.v(y, x, lib.sizes=NULL)
 #' 
 #' @param y an n-by-1 vector of non-negative integers. For a typical RNA-Seq experiment, 
 #' this may represent the read counts for a single gene across n samples.
@@ -15,13 +15,13 @@
 #' so if an intercept is desired, there is no need to include the first column of 1.
 #' @param lib.sizes library sizes of a RNA-Seq experiment. Default is 0 for all samples.
 #' 
-#' @return A list of quantities to be used in the main \code{\link{nb_gof_v}} function.
+#' @return A list of quantities to be used in the main \code{\link{nb.gof.v}} function.
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
 #' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-model_poi_v <- function(y, x, lib.sizes=NULL){
+model.poi.v <- function(y, x, lib.sizes=NULL){
   
   n = length(y)
   p = dim(x)[2]

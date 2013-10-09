@@ -43,24 +43,25 @@
 #' the modeling of dispersions in the multiple-group case is still under consideration!
 #' For the complex design with interactions, though we can pass the design matrix directly
 #' in edgeR, the results may not make any sense!}
+#' @param ncores number of CPU cores to use. If unspecified, use the total number of CPUs minus 1.
 #' 
 #' @return An object of class "gofm" to which other methods can be applied.
 #' 
 #' @details When the response is a count matrix, we can use this function to test
 #' the goodness-of-fit of a specified negative binomial dispersion model. Specifically,
-#' this function calls \code{\link{model_nbp_m}} to fit the NBP dispersion model, 
-#' calls \code{\link{model_nbq_m}} to fit the NBQ dispersion model, calls
-#' \code{\link{model_edgeR_common}} to fit the common dispersion model, calls
-#' \code{\link{model_edgeR_genewise}} to fit the pure genewise dispersion model (without
-#' shrinkage), calls \code{\link{model_edgeR_trended}} to fit the non-parametric trended
-#' dispersion model in \code{edgeR}, calls \code{\link{model_edgeR_tagcom}} to fit the tagwise
+#' this function calls \code{\link{model.nbp.m}} to fit the NBP dispersion model, 
+#' calls \code{\link{model.nbq.m}} to fit the NBQ dispersion model, calls
+#' \code{\link{model.edgeR.common}} to fit the common dispersion model, calls
+#' \code{\link{model.edgeR.genewise}} to fit the pure genewise dispersion model (without
+#' shrinkage), calls \code{\link{model.edgeR.trended}} to fit the non-parametric trended
+#' dispersion model in \code{edgeR}, calls \code{\link{model.edgeR.tagcom}} to fit the tagwise
 #' model with the dispersions shrinking towards a common dispersion, and calls
-#' \code{\link{model_edgeR_tagtrd}} to fit the tagwise model with the dispersions shrinking
+#' \code{\link{model.edgeR.tagtrd}} to fit the tagwise model with the dispersions shrinking
 #' towards the global dispersion trend.
 #' 
 #' @usage 
-#' nb_gof_m(counts, x, lib.sizes=colSums(counts), sim=999, model="NBP", method="MAPL", 
-#' min.n=100, prior.df = 10, design = "single")
+#' nb.gof.m(counts, x, lib.sizes=colSums(counts), sim=999, model="NBP", method="MAPL", 
+#' min.n=100, prior.df = 10, design = "single", ncores = NULL)
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
@@ -141,15 +142,16 @@
 #' colnames(y) = paste("s", seq(1,n), sep="")
 #' plot(mu, phi.noi, log="xy")
 #' 
-#' ## GOF tests for different dispersion models:
-#' ## CAUTION: may be time-consuming depending on the size of data and simulations
-#' fnbp.noip = nb_gof_m(counts=y, x=x, sim=sim, model="NBP")
-#' fnbq.noip = nb_gof_m(counts=y, x=x, sim=sim, model="NBQ")
-#' fcom.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-common")
-#' fgen.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-genewise")
-#' ftgc.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-tagcom")
-#' ftgt.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-tagtrd")
-#' ftrd.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-trended")
+#' ## GOF tests for different dispersion models, using parallel computing:
+#' ## CAUTION: may be time-consuming depending on the size of data and simulations\
+#' nc = detectCores() - 1
+#' fnbp.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBP", ncores=nc)
+#' fnbq.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBQ", ncores=nc)
+#' fcom.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-common", ncores=nc)
+#' fgen.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-genewise", ncores=nc)
+#' ftgc.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-tagcom", ncores=nc)
+#' ftgt.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-tagtrd", ncores=nc)
+#' ftrd.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-trended", ncores=nc)
 #' 
 #' ## summarize the GOF test results:
 #' summary(fnbp.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")
@@ -163,26 +165,32 @@
 #' ## evaluate GOF p-values using histograms and quantile-quantile uniform plots:
 #' # pdf(file="plots-NBP-01-1grp.pdf", width=8, height=24)
 #' par(mfrow=c(6,2))
-#' plot(fnbp.noip, model="NBP", type="hist")
-#' plot(fnbp.noip, model="NBP", type="qq")
-#' plot(fcom.noip, model="Common", type="hist")
-#' plot(fcom.noip, model="Common", type="qq")
-#' plot(fgen.noip, model="Genewise", type="hist")
-#' plot(fgen.noip, model="Genewise", type="qq")
-#' plot(ftgc.noip, model="Tagwise-Common", type="hist")
-#' plot(ftgc.noip, model="Tagwise-Common", type="qq")
-#' plot(ftgt.noip, model="Tagwise-Trended", type="hist")
-#' plot(ftgt.noip, model="Tagwise-Trended", type="qq")
-#' plot(ftrd.noip, model="Trended", type="hist")
-#' plot(ftrd.noip, model="Trended", type="qq")
+#' plot(fnbp.noip, type="hist")
+#' plot(fnbp.noip, type="qq", pch=21, bg="blue", bty="n")
+#' plot(fcom.noip, type="hist")
+#' plot(fcom.noip, type="qq", pch=21, bg="blue", bty="n")
+#' plot(fgen.noip, type="hist")
+#' plot(fgen.noip, type="qq", pch=21, bg="blue", bty="n")
+#' plot(ftgc.noip, type="hist")
+#' plot(ftgc.noip, type="qq", pch=21, bg="blue", bty="n")
+#' plot(ftgt.noip, type="hist")
+#' plot(ftgt.noip, type="qq", pch=21, bg="blue", bty="n")
+#' plot(ftrd.noip, type="hist")
+#' plot(ftrd.noip, type="qq", pch=21, bg="blue", bty="n")
 #' # dev.off()
 #' 
-nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model="NBP", 
-                    method = "MAPL", min.n=100, prior.df = 10, design = "single"){
+nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model="NBP", 
+                    method = "MAPL", min.n=100, prior.df = 10, design = "single", ncores = NULL){
   
-  stopifnot(model %in% c("NBP", "NBQ", "edgeR-common","edgeR-genewise","edgeR-trended",
-                             "edgeR-tagcom","edgeR-tagtrd"),
+  stopifnot(model %in% c("NBP", "NBQ", "edgeR-common", "edgeR-genewise", "edgeR-trended", "edgeR-tagcom", "edgeR-tagtrd"),
             design %in% c("single", "multiple", "complex"))
+  
+  # parallel computing: specify number of cores to use
+  if (is.null(ncores)){
+    ncores = detectCores() - 1
+  }
+  # register for foreach
+  registerDoMC(ncores)
   
   # We recommend that genes with all zero counts be removed in advance;
   # The first argument, counts, should be already subsetted before passing to the function
@@ -193,175 +201,168 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model="NBP",
   counts.dim = paste(m,"x",n)
   
   ## initialize simulation variables
-  ord.res.sim.mat = matrix(0, nrow = (sim+1), ncol = N)   # ordered residual "big" matrix
-  phi.hat.sim.mat = matrix(0, nrow = (sim+1), ncol = m)   # phi hat "big" matrix
+  #ord.res.sim.mat = matrix(0, nrow = (sim+1), ncol = N)   # ordered residual "big" matrix
+  #phi.hat.sim.mat = matrix(0, nrow = (sim+1), ncol = m)   # phi hat "big" matrix
   
   #### -----------------------------------------------------------------
   if (model == "NBP"){
-    mnbp.0 = model_nbp_m(counts, x, lib.sizes=colSums(counts), method=method)
+    mnbp.0 = model.nbp.m(counts, x, lib.sizes=colSums(counts), method=method)
     mu.hat.mat0 = mnbp.0$mu.hat.mat
     phi.hat.mat0 = mnbp.0$phi.hat.mat
     res.omat0 = mnbp.0$res.omat
     ord.res.vec0 = mnbp.0$ord.res.vec
     ## simulate new datasets and re-fit
-    pb = txtProgressBar(style=3)
-    for (i in 1:sim){
-      setTxtProgressBar(pb, i/sim)
+    #pb = txtProgressBar(style=3)
+    ## ---------------------------------
+    ## Parallel computing begins here ##
+    ## ---------------------------------
+    ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      mnbp.h = model_nbp_m(y.mat.h, x, lib.sizes=colSums(y.mat.h))
-      ord.res.sim.mat[i, ] = mnbp.h$ord.res.vec
-      phi.hat.sim.mat[i, ] = mnbp.h$phi.hat.mat[ ,1]
+      model.nbp.m(y.mat.h, x, lib.sizes=colSums(y.mat.h))$ord.res.vec
     }
-    close(pb)
-    ord.res.sim.mat[(sim+1), ] = ord.res.vec0
-    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0[ ,1]
+    #close(pb)
+    dimnames(ord.res.sim.mat.tmp) = NULL
+    ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
+    #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   if (model == "NBQ"){
-    mnbq.0 = model_nbq_m(counts, x, lib.sizes=colSums(counts), method=method)
+    mnbq.0 = model.nbq.m(counts, x, lib.sizes=colSums(counts), method=method)
     mu.hat.mat0 = mnbq.0$mu.hat.mat
     phi.hat.mat0 = mnbq.0$phi.hat.mat
     res.omat0 = mnbq.0$res.omat
     ord.res.vec0 = mnbq.0$ord.res.vec
     ## simulate new datasets and re-fit
-    pb = txtProgressBar(style=3)
-    for (i in 1:sim){
-      setTxtProgressBar(pb, i/sim)
+    #pb = txtProgressBar(style=3)
+    ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      mnbq.h = model_nbq_m(y.mat.h, x, lib.sizes=colSums(y.mat.h))
-      ord.res.sim.mat[i, ] = mnbq.h$ord.res.vec
-      phi.hat.sim.mat[i, ] = mnbq.h$phi.hat.mat[ ,1]
+      model.nbq.m(y.mat.h, x, lib.sizes=colSums(y.mat.h))$ord.res.vec
     }
-    close(pb)
-    ord.res.sim.mat[(sim+1), ] = ord.res.vec0
-    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0[ ,1]
+    #close(pb)
+    dimnames(ord.res.sim.mat.tmp) = NULL
+    ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
+    #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0[ ,1]
   }
   #### -----------------------------------------------------------------
   if (model == "edgeR-common"){
-    mcom.0 = model_edgeR_common(counts, x, lib.sizes=colSums(counts), design=design)
+    mcom.0 = model.edgeR.common(counts, x, lib.sizes=colSums(counts), design=design)
     mu.hat.mat0 = mcom.0$mu.hat.mat
     phi.hat.mat0 = mcom.0$phi.hat.mat
     res.omat0 = mcom.0$res.omat
     ord.res.vec0 = mcom.0$ord.res.vec
     ## simulate new datasets and re-fit
-    pb = txtProgressBar(style=3)
-    for (i in 1:sim){
-      setTxtProgressBar(pb, i/sim)
+    #pb = txtProgressBar(style=3)
+    ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      mcom.h = model_edgeR_common(y.mat.h, x, lib.sizes=colSums(y.mat.h), design=design)
-      ord.res.sim.mat[i, ] = mcom.h$ord.res.vec
-      phi.hat.sim.mat[i, ] = mcom.h$phi.hat.mat
+      model.edgeR.common(y.mat.h, x, lib.sizes=colSums(y.mat.h), design=design)$ord.res.vec
     }
-    close(pb)
-    ord.res.sim.mat[(sim+1), ] = ord.res.vec0
-    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+    #close(pb)
+    dimnames(ord.res.sim.mat.tmp) = NULL
+    ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
+    #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
   }
   #### -----------------------------------------------------------------
   if (model == "edgeR-genewise"){
-    mgen.0 = model_edgeR_genewise(counts, x, lib.sizes=colSums(counts), design=design)
+    mgen.0 = model.edgeR.genewise(counts, x, lib.sizes=colSums(counts), design=design)
     mu.hat.mat0 = mgen.0$mu.hat.mat
     phi.hat.mat0 = mgen.0$phi.hat.mat
     res.omat0 = mgen.0$res.omat
     ord.res.vec0 = mgen.0$ord.res.vec
     ## simulate new datasets and re-fit
-    pb = txtProgressBar(style=3)
-    for (i in 1:sim){
-      setTxtProgressBar(pb, i/sim)
+    #pb = txtProgressBar(style=3)
+    ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      mgen.h = model_edgeR_genewise(y.mat.h, x, lib.sizes=colSums(y.mat.h), design=design)
-      ord.res.sim.mat[i, ] = mgen.h$ord.res.vec
-      phi.hat.sim.mat[i, ] = mgen.h$phi.hat.mat
+      model.edgeR.genewise(y.mat.h, x, lib.sizes=colSums(y.mat.h), design=design)$ord.res.vec
     }
-    close(pb)
-    ord.res.sim.mat[(sim+1), ] = ord.res.vec0
-    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+    #close(pb)
+    dimnames(ord.res.sim.mat.tmp) = NULL
+    ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
+    #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
   }
   #### -----------------------------------------------------------------
   if (model == "edgeR-trended"){
-    mtrd.0 = model_edgeR_trended(counts, x, lib.sizes=colSums(counts), 
+    mtrd.0 = model.edgeR.trended(counts, x, lib.sizes=colSums(counts), 
                                  min.n=min.n, design=design)
     mu.hat.mat0 = mtrd.0$mu.hat.mat
     phi.hat.mat0 = mtrd.0$phi.hat.mat
     res.omat0 = mtrd.0$res.omat
     ord.res.vec0 = mtrd.0$ord.res.vec
     ## simulate new datasets and re-fit
-    pb = txtProgressBar(style=3)
-    for (i in 1:sim){
-      setTxtProgressBar(pb, i/sim)
+    #pb = txtProgressBar(style=3)
+    ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      mtrd.h = model_edgeR_trended(y.mat.h, x, lib.sizes=colSums(y.mat.h), 
-                                   min.n=min.n, design=design)
-      ord.res.sim.mat[i, ] = mtrd.h$ord.res.vec
-      phi.hat.sim.mat[i, ] = mtrd.h$phi.hat.mat
+      mtrd.h = model.edgeR.trended(y.mat.h, x, lib.sizes=colSums(y.mat.h), min.n=min.n, design=design)$ord.res.vec
     }
-    close(pb)
-    ord.res.sim.mat[(sim+1), ] = ord.res.vec0
-    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+    #close(pb)
+    dimnames(ord.res.sim.mat.tmp) = NULL
+    ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
+    #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
   }
   #### -----------------------------------------------------------------
   if (model == "edgeR-tagcom"){
-    mtgc.0 = model_edgeR_tagcom(counts, x, lib.sizes=colSums(counts), 
+    mtgc.0 = model.edgeR.tagcom(counts, x, lib.sizes=colSums(counts), 
                                  prior.df = prior.df, design=design)
     mu.hat.mat0 = mtgc.0$mu.hat.mat
     phi.hat.mat0 = mtgc.0$phi.hat.mat
     res.omat0 = mtgc.0$res.omat
     ord.res.vec0 = mtgc.0$ord.res.vec
     ## simulate new datasets and re-fit
-    pb = txtProgressBar(style=3)
-    for (i in 1:sim){
-      setTxtProgressBar(pb, i/sim)
+    #pb = txtProgressBar(style=3)
+    ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      mtgc.h = model_edgeR_tagcom(y.mat.h, x, lib.sizes=colSums(y.mat.h), 
-                                   prior.df = prior.df, design=design)
-      ord.res.sim.mat[i, ] = mtgc.h$ord.res.vec
-      phi.hat.sim.mat[i, ] = mtgc.h$phi.hat.mat
+      mtgc.h = model.edgeR.tagcom(y.mat.h, x, lib.sizes=colSums(y.mat.h), prior.df = prior.df, design=design)$ord.res.vec
     }
-    close(pb)
-    ord.res.sim.mat[(sim+1), ] = ord.res.vec0
-    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+    #close(pb)
+    dimnames(ord.res.sim.mat.tmp) = NULL
+    ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
+    #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
   }
   #### -----------------------------------------------------------------
   if (model == "edgeR-tagtrd"){
-    mtgt.0 = model_edgeR_tagtrd(counts, x, lib.sizes=colSums(counts), min.n=min.n,
+    mtgt.0 = model.edgeR.tagtrd(counts, x, lib.sizes=colSums(counts), min.n=min.n,
                                  prior.df = prior.df, design=design)
     mu.hat.mat0 = mtgt.0$mu.hat.mat
     phi.hat.mat0 = mtgt.0$phi.hat.mat
     res.omat0 = mtgt.0$res.omat
     ord.res.vec0 = mtgt.0$ord.res.vec
     ## simulate new datasets and re-fit
-    pb = txtProgressBar(style=3)
-    for (i in 1:sim){
-      setTxtProgressBar(pb, i/sim)
+    #pb = txtProgressBar(style=3)
+    ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      mtgt.h = model_edgeR_tagtrd(y.mat.h, x, lib.sizes=colSums(y.mat.h), min.n=min.n,
-                                   prior.df = prior.df, design=design)
-      ord.res.sim.mat[i, ] = mtgt.h$ord.res.vec
-      phi.hat.sim.mat[i, ] = mtgt.h$phi.hat.mat
+      mtgt.h = model.edgeR.tagtrd(y.mat.h, x, lib.sizes=colSums(y.mat.h), min.n=min.n, prior.df = prior.df, design=design)$ord.res.vec
     }
-    close(pb)
-    ord.res.sim.mat[(sim+1), ] = ord.res.vec0
-    phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+    #close(pb)
+    dimnames(ord.res.sim.mat.tmp) = NULL
+    ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
+    #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
   }
 
   #### -----------------------------------------------------------------
@@ -404,12 +405,11 @@ nb_gof_m = function(counts, x, lib.sizes=colSums(counts), sim=999, model="NBP",
                  v.pvals = v.pvals,
                  p.pvals.1s = p.pvals.1s,
                  p.pvals.2s = p.pvals.2s,
-                 phi.hat.sim.mat = phi.hat.sim.mat,
+                 #phi.hat.sim.mat = phi.hat.sim.mat,
                  dist.mat = dist.mat,
                  pear.mat = pear.mat,
                  sim = sim
                  )
-  
   # save the object as a "gofm" class
   class(gof.obj) = "gofm"
   return(gof.obj)

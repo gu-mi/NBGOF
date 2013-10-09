@@ -2,21 +2,18 @@
 \alias{plot.gofm}
 \title{Plot Methods for "gofm" Objects (Histograms and Q-Q Uniform Plots of P-values)}
 \usage{
-  plot(x, model=NULL, type="qq", logscale=TRUE, ...)
+  plot(x, type="qq", logscale=TRUE, ...)
 }
 \arguments{
   \item{x}{an object of class "gofm" from the
-  \code{\link{nb_gof_m}} output}
-
-  \item{model}{the model name used to fit the data (used
-  for histogram title)}
+  \code{\link{nb.gof.m}} output}
 
   \item{type}{either a quantile-quantile uniform plot
   (\code{qq}), or a histogram (\code{hist})}
 
   \item{logscale}{whether use logscale for the uniform Q-Q
-  plot (default is TRUE) as recommended in the
-  \code{\link{gap}} package}
+  plot (default is TRUE) as recommended in the \code{gap}
+  package}
 
   \item{...}{for future use}
 }
@@ -26,7 +23,7 @@
 }
 \description{
   A plot method for evaluating the p-values based on a
-  "gofm" object obtained from the \code{\link{nb_gof_m}}
+  "gofm" object obtained from the \code{\link{nb.gof.m}}
   outputs.
 }
 \details{
@@ -40,6 +37,6 @@
   Schafer
 }
 \seealso{
-  \code{\link{nb_gof_m}} for simulated data examples.
+  \code{\link{nb.gof.m}} for simulated data examples.
 }
 

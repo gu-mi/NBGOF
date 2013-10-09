@@ -34,10 +34,10 @@
 #' ## GOF test of NB2, NBP and Poisson models:
 #' y = earthquake$Frequency
 #' x = as.matrix(cbind(rep(1,length(y)), earthquake$Magnitude))
-#' gf.nb2 = nb_gof_v(y, x, sim=999, model="NB2")
-#' gf.nbp = nb_gof_v(y, x, sim=999, model="NBP", est.method="ML")
+#' gf.nb2 = nb.gof.v(y, x, sim=999, model="NB2")
+#' gf.nbp = nb.gof.v(y, x, sim=999, model="NBP", est.method="ML")
 #' x2 = x[,2]
-#' gf.poi = nb_gof_v(y, x2, sim=999, model="Poisson")
+#' gf.poi = nb.gof.v(y, x2, sim=999, model="Poisson")
 #' 
 #' ## empirical probability plots:
 #' # pdf(file=file.path(path1, "eqk-nb-models-12.pdf"), width=8, height=4)

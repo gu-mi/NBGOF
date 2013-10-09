@@ -1,9 +1,9 @@
-\name{model_edgeR_common}
-\alias{model_edgeR_common}
+\name{model.edgeR.common}
+\alias{model.edgeR.common}
 \title{Modeling NB2 Common Dispersion with the Adjusted Profile Likelihood
 Estimator (APLE) on Original and Simulated Datasets}
 \usage{
-  model_edgeR_common(counts, x, lib.sizes=colSums(counts),
+  model.edgeR.common(counts, x, lib.sizes=colSums(counts),
     design=design)
 }
 \arguments{
@@ -28,14 +28,14 @@ Estimator (APLE) on Original and Simulated Datasets}
 }
 \value{
   A list of quantities to be used in the main
-  \code{\link{nb_gof_m}} function.
+  \code{\link{nb.gof.m}} function.
 }
 \description{
   This function fits an NB regression model with a common
   dispersion using the adjusted profile likelihood
   estimator. See details below. The output of this function
   will be passed to the main GOF function
-  \code{\link{nb_gof_m}}.
+  \code{\link{nb.gof.m}}.
 }
 \details{
   This function calls the
@@ -56,7 +56,7 @@ Estimator (APLE) on Original and Simulated Datasets}
   details.
 }
 \seealso{
-  \code{\link{model_edgeR_tagcom}} and
-  \code{\link{model_edgeR_genewise}}
+  \code{\link{model.edgeR.tagcom}} and
+  \code{\link{model.edgeR.genewise}}
 }
 

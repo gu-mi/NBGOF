@@ -34,12 +34,12 @@
 #' an object with the test results, which can be further summarized and visualized using 
 #' appropriate methods.
 #' 
-#' This function calls \code{\link{model_nb2_v}} to fit the NB2 model, calls 
-#' \code{\link{model_nbp_v}} to fit the NBP model, and calls \code{\link{model_poi_v}} to fit
+#' This function calls \code{\link{model.nb2.v}} to fit the NB2 model, calls 
+#' \code{\link{model.nbp.v}} to fit the NBP model, and calls \code{\link{model.poi.v}} to fit
 #' the Poisson model.
 #' 
 #' @usage 
-#' nb_gof_v(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML")
+#' nb.gof.v(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML")
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
@@ -86,19 +86,19 @@
 #' par(mfrow=c(1,3))
 #' 
 #' # NB2 model fit using MLE:
-#' gf.nb1.nb2 = nb_gof_v(y.nb1, X, s, sim=sim, model="NB2")
-#' plot(gf.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+#' gof.nb1.nb2 = nb.gof.v(y.nb1, X, s, sim=sim, model="NB2")
+#' plot(gof.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 #' 
 #' # NBP model fit using MLE:
-#' gf.nb1.nbp = nb_gof_v(y.nb1, X, s, sim=sim, model="NBP", est.method="ML")
-#' plot(gf.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+#' gof.nb1.nbp = nb.gof.v(y.nb1, X, s, sim=sim, model="NBP", est.method="ML")
+#' plot(gof.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 #' 
 #' # Poisson model fit:
-#' gf.nb1.poi = nb_gof_v(y.nb1, X, s, sim=sim, model="Poisson")
-#' plot(gf.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+#' gof.nb1.poi = nb.gof.v(y.nb1, X, s, sim=sim, model="Poisson")
+#' plot(gof.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 #' # dev.off()
 #' 
-nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML"){
+nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML", ncores = NULL){
   
   n = length(y)
   p = dim(x)[2]
@@ -106,69 +106,88 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML
   # preconditions
   stopifnot(model %in% c("Poisson", "NB2", "NBP"), est.method %in% c("ML","APL"))
   
+  # parallel computing: specify number of cores to use
+  if (is.null(ncores)){
+    ncores = detectCores() - 1
+  }
+  # register for foreach
+  registerDoMC(ncores)
+  
   ## initialize simulation variables
-  res.sim.mat = matrix(0, nrow = (sim+1), ncol = n)  # residual matrix
+  # res.sim.mat = matrix(0, nrow = (sim+1), ncol = n)  # residual matrix
   stat.sim.P = numeric(sim)  # Pearson chi-sq test statistic
   stat.sim.D = numeric(sim)  # statistic based on the overall vertical distance
   
   #### -----------------------------------------------------------------
   if (model == "Poisson"){
     libs = ifelse(is.null(lib.sizes), rep(0, n), lib.sizes)  # pay attention to the offset here!
-    mpoi.0 = model_poi_v(y=y, x=x, lib.sizes=libs)  
+    mpoi.0 = model.poi.v(y=y, x=x, lib.sizes=libs)  
     # Poisson model fit on original data
     mu.hat.v0 = mpoi.0$mu.hat.v
     res.vec0 = mpoi.0$res.vec
     ## simulate new datasets and re-fit
-    pb = txtProgressBar(style=3)
-    for (i in 1:sim){
-      setTxtProgressBar(pb, i/sim)
+    #pb = txtProgressBar(style=3)
+    ## ---------------------------------
+    ## Parallel computing begins here ##
+    ## ---------------------------------    
+    res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
       y.vec.h = rpois(n, lambda=mu.hat.v0)
-      mpoi.h = model_poi_v(y=y.vec.h, x=x, lib.sizes=libs)  
+      mpoi.h = model.poi.v(y=y.vec.h, x=x, lib.sizes=libs)  
       # Poisson model fit on simulated data
-      res.sim.mat[i, ] = mpoi.h$res.vec
+      mpoi.h$res.vec
     }
-    close(pb)
-    res.sim.mat[(sim+1), ] = res.vec0
+    #close(pb)
+    dimnames(res.sim.mat.tmp) = NULL
+    res.sim.mat = rbind(res.sim.mat.tmp, res.vec0)
   }
   #### -----------------------------------------------------------------
   if (model == "NB2"){
     libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
-    mnb2.0 = model_nb2_v(y=y, x=x, lib.sizes=libs)  # MLE for NB2 models
+    mnb2.0 = model.nb2.v(y=y, x=x, lib.sizes=libs)  # MLE for NB2 models
     # NB2 model fit on original data
     mu.hat.v0 = mnb2.0$mu.hat.v
     phi0 = mnb2.0$phi
     res.vec0 = mnb2.0$res.vec
     ## simulate new datasets and re-fit
-    pb = txtProgressBar(style=3)
-    for (i in 1:sim){
-      setTxtProgressBar(pb, i/sim)
+    #pb = txtProgressBar(style=3)
+    ## ---------------------------------
+    ## Parallel computing begins here ##
+    ## ---------------------------------    
+    res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
       y.vec.h = rnbinom(n, mu = mu.hat.v0, size = 1/phi0)
-      mnb2.h = model_nb2_v(y=y.vec.h, x=x, lib.sizes=libs)  # MLE for NB2 models
+      mnb2.h = model.nb2.v(y=y.vec.h, x=x, lib.sizes=libs)  # MLE for NB2 models
       # NB2 model fit on simulated data
-      res.sim.mat[i, ] = mnb2.h$res.vec
+      mnb2.h$res.vec
     }
-    close(pb)
-    res.sim.mat[(sim+1), ] = res.vec0
+    #close(pb)
+    dimnames(res.sim.mat.tmp) = NULL
+    res.sim.mat = rbind(res.sim.mat.tmp, res.vec0)
   }
   #### -----------------------------------------------------------------
   if (model == "NBP"){
     libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
-    mnbp.0 = model_nbp_v(y=y, x=x, lib.sizes=libs, est.method=est.method)  
+    mnbp.0 = model.nbp.v(y=y, x=x, lib.sizes=libs, est.method=est.method)  
     # NBP model fit on original data
     mu.hat.v0 = mnbp.0$mu.hat.v
     phi0 = mnbp.0$phi
     res.vec0 = mnbp.0$res.vec
     ## simulate new datasets and re-fit
-    pb = txtProgressBar(style=3)
-    for (i in 1:sim){
-      setTxtProgressBar(pb, i/sim)
+    #pb = txtProgressBar(style=3)
+    ## ---------------------------------
+    ## Parallel computing begins here ##
+    ## ---------------------------------    
+    res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
       y.vec.h = rnbinom(n, mu = mu.hat.v0, size = 1/phi0)
-      mnbp.h = model_nbp_v(y=y.vec.h, x=x, lib.sizes=libs, est.method=est.method)  
+      mnbp.h = model.nbp.v(y=y.vec.h, x=x, lib.sizes=libs, est.method=est.method)  
       # NBP model fit on simulated data
-      res.sim.mat[i, ] = mnbp.h$res.vec
+      mnbp.h$res.vec
     }
-    close(pb)
-    res.sim.mat[(sim+1), ] = res.vec0
+    #close(pb)
+    dimnames(res.sim.mat.tmp) = NULL
+    res.sim.mat = rbind(res.sim.mat.tmp, res.vec0)
   }
   
   #### -----------------------------------------------------------------
@@ -208,6 +227,7 @@ nb_gof_v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML
                  ord.typ.res.sim = ord.typ.res.sim,
                  sim = sim
   )
+  # save the object as a "gofv" class
   class(gof.obj) = "gofv"
   return(gof.obj)
 }

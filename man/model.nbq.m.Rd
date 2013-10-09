@@ -1,9 +1,9 @@
-\name{model_nbq_m}
-\alias{model_nbq_m}
+\name{model.nbq.m}
+\alias{model.nbq.m}
 \title{Modeling NBQ Genewise Dispersion with the Maximum Ajdusted Profile Likelihood Estimator
 (MAPLE) on Original and Simulated Datasets}
 \usage{
-  model_nbq_m(counts, x, lib.sizes=colSums(counts),
+  model.nbq.m(counts, x, lib.sizes=colSums(counts),
     method=method)
 }
 \arguments{
@@ -20,14 +20,14 @@
 }
 \value{
   A list of quantities to be used in the main
-  \code{\link{nb_gof_m}} function.
+  \code{\link{nb.gof.m}} function.
 }
 \description{
   This function fits an NBQ dispersion model where the
   dispersion parameter is modeled as a linear function of
   the relative means, plus a quadratic term. See details
   below. The output of this function will be passed to the
-  main GOF function \code{\link{nb_gof_m}}.
+  main GOF function \code{\link{nb.gof.m}}.
 }
 \details{
   Under the NB model, the mean-variance relationship of a

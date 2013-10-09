@@ -2,9 +2,9 @@
 #' @title Report Summaries of the GOF Test Results for NB Dispersion Models
 #'
 #' @description A summary method of GOF test results based on a "gofm" 
-#' object obtained from the \code{\link{nb_gof_m}} outputs
+#' object obtained from the \code{\link{nb.gof.m}} outputs
 #' 
-#' @param x an object of class "gofm" from the \code{\link{nb_gof_m}} output
+#' @param x an object of class "gofm" from the \code{\link{nb.gof.m}} output
 #' @param conf.env confidence level for the envelope
 #' @param data.note a note on how data are simulated or the source of data
 #' @param ... for future use
@@ -21,7 +21,7 @@
 #' @return Information of the dataset, simulation parameter specifications, exact binomial test
 #' results, and Monte Carlo GOF p-values.
 #' 
-#' @seealso \code{\link{nb_gof_m}} for simulated data examples, and \code{\link{arab}} for 
+#' @seealso \code{\link{nb.gof.m}} for simulated data examples, and \code{\link{arab}} for 
 #' a real RNA-Seq data example.
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer

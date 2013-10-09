@@ -1,24 +1,31 @@
 Package: NBGOF
 Type: Package
-Title: Goodness-of-Fit Tests and Model Diagnostics for
-    Negative Binomial Regression of RNA Sequencing Data
-Description: An R package for implementing goodness-of-fit
-    tests for negative binomial (NB) distributions and NB
-    dispersion models, with applications in RNA-Seq data
-    analysis.
-Version: 0.2.1
+Title: Goodness-of-Fit Tests and Model Diagnostics for Negative Binomial
+    Regression of RNA Sequencing Data
+Description: An R package for implementing goodness-of-fit tests for negative
+    binomial (NB) distributions and NB dispersion models, with applications in
+    RNA-Seq data analysis.
+Version: 0.2.5
+Date: 2013-10-09
 License: GPL-2
+Authors@R: c(person(given = 'Gu', family = 'Mi', role = c('aut', 'cre'), email
+    = 'mig@stat.oregonstate.edu'), person(given = 'Yanming', family = 'Di',
+    role = c('aut', 'ths'), email = 'diy@stat.oregonstate.edu'), person(give =
+    'Daniel', family = 'Schafer', role = c('ctb', 'ths'), email =
+    'schafer@science.oregonstate.edu') )
 Author: Gu Mi <mig@stat.oregonstate.edu>, Yanming Di
     <diy@stat.oregonstate.edu>, Daniel Schafer
     <schafer@science.oregonstate.edu>
 Maintainer: Gu Mi <mig@stat.oregonstate.edu>
 Depends:
-    R (>= 2.15.2)
+    R (>= 2.15.2),
+    doMC (>= 1.3.0)
 Imports:
     NBPSeq (>= 0.2.1),
     edgeR (>= 3.0.7),
-    gap (>= 1.0-13),
-    numDeriv (>= 2012.3-1)
+    numDeriv (>= 2012.3-1),
+    parallel (>= 3.0.1),
+    foreach (>= 1.4.1)
 LazyData: yes
 LazyLoad: yes
 URL: http://people.oregonstate.edu/~mig
@@ -30,19 +37,19 @@ Collate:
     'glm.nbp.1.MLE.R'
     'glm.nbp.1.R'
     'helper.R'
-    'model_edgeR_common.R'
-    'model_edgeR_genewise.R'
-    'model_edgeR_tagcom.R'
-    'model_edgeR_tagtrd.R'
-    'model_edgeR_trended.R'
-    'model_nb2_v.R'
-    'model_nbp_m.R'
-    'model_nbp_v.R'
-    'model_nbq_m.R'
-    'model_poi_v.R'
+    'model.edgeR.common.R'
+    'model.edgeR.genewise.R'
+    'model.edgeR.tagcom.R'
+    'model.edgeR.tagtrd.R'
+    'model.edgeR.trended.R'
+    'model.nb2.v.R'
+    'model.nbp.m.R'
+    'model.nbp.v.R'
+    'model.nbq.m.R'
+    'model.poi.v.R'
+    'nb.gof.m.R'
+    'nb.gof.v.R'
     'nb.regression.1.R'
-    'nb_gof_m.R'
-    'nb_gof_v.R'
     'plot.gofm.R'
     'plot.gofv.R'
     'plot.md.R'

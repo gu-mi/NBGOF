@@ -5,7 +5,7 @@
 #' @description This function fits an NB regression model with
 #' a common dispersion using the adjusted profile likelihood estimator. See details
 #' below. The output of this function will be passed to the main GOF function 
-#' \code{\link{nb_gof_m}}.
+#' \code{\link{nb.gof.m}}.
 #' 
 #' @details This function calls the \code{\link{estimateGLMCommonDisp}} function in
 #' \code{edgeR}, with the default estimation method using Cox-Reid adjusted profile likelihood
@@ -14,7 +14,7 @@
 #' \code{\link{edgeR}} package for more information.
 #' 
 #' @usage
-#' model_edgeR_common(counts, x, lib.sizes=colSums(counts), design=design)
+#' model.edgeR.common(counts, x, lib.sizes=colSums(counts), design=design)
 #' 
 #' @param counts an m-by-n count matrix of non-negative integers. For a typical
 #' RNA-Seq experiment, this is the read counts with m genes and n samples.
@@ -28,23 +28,22 @@
 #' For the complex design with interactions, though we can pass the design matrix directly
 #' in edgeR, the results may not make any sense!}
 #' 
-#' @return A list of quantities to be used in the main \code{\link{nb_gof_m}} function.
+#' @return A list of quantities to be used in the main \code{\link{nb.gof.m}} function.
 #' 
-#' @seealso \code{\link{model_edgeR_tagcom}} and \code{\link{model_edgeR_genewise}}
+#' @seealso \code{\link{model.edgeR.tagcom}} and \code{\link{model.edgeR.genewise}}
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
 #' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-model_edgeR_common = function(counts, x, lib.sizes=colSums(counts), 
-                              design = design){
+model.edgeR.common = function(counts, x, lib.sizes=colSums(counts), design = design){
   
   ## edgeR common dispersion:
   
   stopifnot(design %in% c("single", "multiple", "complex"))
   
   # convert model matrix into group index
-  # NOTE: THIS WILL NOT WORK PROPERLY FOR MULTI-GROUP SITUATIONS! (TO DO IN NEXT RELEASE)
+  # NOTE: THIS WILL NOT WORK PROPERLY FOR MULTI-GROUP SITUATIONS!
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
                    labels = seq(ncol(x)))
   d = DGEList(counts=counts, lib.size=lib.sizes, group = grp.ids)
@@ -60,9 +59,13 @@ model_edgeR_common = function(counts, x, lib.sizes=colSums(counts),
     phi.hat.m = com.fit$dispersion    # there may be NA's
     v = mu.hat.m + phi.hat.m * mu.hat.m^2
     res.m = (counts - mu.hat.m) / sqrt(v)   # res.m may contain an entire row of NaN
-    res.m[is.nan(res.m)] = 0    # replace NaN with 0
+    #res.m[is.nan(res.m)] = 0    # replace NaN with 0
     # for 0 reads, sqrt(v) != 0 makes res.m == 0
     # make sure 0/0 = NaN never happens!
+    
+    # make sure 0/0 (NaN) and 1/0 (Inf) won't appear in residual matrix (before sorting)
+    res.m[ is.nan(res.m) ] = 0
+    res.m[ is.infinite(res.m) ] = 0
     
     # sort res.m with care!
     res.om = t(apply(res.m, 1, sort))  # if NaN is produced in res.m: error when sorting!
@@ -95,10 +98,14 @@ model_edgeR_common = function(counts, x, lib.sizes=colSums(counts),
       dimension = dim(res.m)
       unlist.res.m = unlist(res.m)
       unlist.res.m[ is.nan(unlist.res.m) ] = 0
+      unlist.res.m[ is.infinite(unlist.res.m) ] = 0
       res.m = matrix( unlist.res.m, dimension )
     }
-    else 
-      res.m[is.nan(res.m)] = 0
+    else {
+      # make sure 0/0 (NaN) and 1/0 (Inf) won't appear in residual matrix (before sorting)
+      res.m[ is.nan(res.m) ] = 0
+      res.m[ is.infinite(res.m) ] = 0
+    }
     
     # sort res.m with care!
     # res.om = t(apply(res.m, 1, sort.vec, grp.ids)) 

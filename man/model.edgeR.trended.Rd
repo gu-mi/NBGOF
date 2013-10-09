@@ -1,9 +1,9 @@
-\name{model_edgeR_trended}
-\alias{model_edgeR_trended}
+\name{model.edgeR.trended}
+\alias{model.edgeR.trended}
 \title{Modeling NB Trended (Non-parametric) Dispersion with the Adjusted Profile
 Likelihood estimator (APLE) on Original and Simulated Datasets}
 \usage{
-  model_edgeR_trended(counts, x, lib.sizes=colSums(counts),
+  model.edgeR.trended(counts, x, lib.sizes=colSums(counts),
     min.n=min.n, design=design)
 }
 \arguments{
@@ -33,7 +33,7 @@ Likelihood estimator (APLE) on Original and Simulated Datasets}
 }
 \value{
   A list of quantities to be used in the main
-  \code{\link{nb_gof_m}} function.
+  \code{\link{nb.gof.m}} function.
 }
 \description{
   This function fits an NB regression model with trended
@@ -46,7 +46,7 @@ Likelihood estimator (APLE) on Original and Simulated Datasets}
   can be used by fitting loess or spline curves on binned
   genes, or using locally weighted APL. See details below.
   The output of this function will be passed to the main
-  GOF function \code{\link{nb_gof_m}}.
+  GOF function \code{\link{nb.gof.m}}.
 }
 \details{
   In this trended non-parametric model, \eqn{\phi_{ij}} is

@@ -2,13 +2,12 @@
 #' @title Plot Methods for "gofm" Objects (Histograms and Q-Q Uniform Plots of P-values)
 #'
 #' @description A plot method for evaluating the p-values based on a "gofm" 
-#' object obtained from the \code{\link{nb_gof_m}} outputs.
+#' object obtained from the \code{\link{nb.gof.m}} outputs.
 #' 
-#' @param x an object of class "gofm" from the \code{\link{nb_gof_m}} output
-#' @param model the model name used to fit the data (used for histogram title)
+#' @param x an object of class "gofm" from the \code{\link{nb.gof.m}} output
 #' @param type either a quantile-quantile uniform plot (\code{qq}), or a histogram (\code{hist})
 #' @param logscale whether use logscale for the uniform Q-Q plot (default is TRUE) as recommended
-#' in the \code{\link{gap}} package
+#' in the \code{gap} package
 #' @param ... for future use
 #' 
 #' @method plot gofm
@@ -21,15 +20,15 @@
 #' specify either a quantile-quantile (\code{qq}) uniform plot, or a histogram (\code{hist})
 #' of the GOF p-values.
 #' 
-#' @usage plot(x, model=NULL, type="qq", logscale=TRUE, ...)
+#' @usage plot(x, type="qq", logscale=TRUE, ...)
 #' 
 #' @return A quantile-quantile uniform plot or a histogram of the GOF p-values.
 #' 
-#' @seealso \code{\link{nb_gof_m}} for simulated data examples.
+#' @seealso \code{\link{nb.gof.m}} for simulated data examples.
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
-plot.gofm = function(x, model=NULL, type="qq", logscale=TRUE, ...){
+plot.gofm = function(x, type="qq", logscale=TRUE, ...){
   
   stopifnot(type %in% c("qq", "hist"))
   
@@ -44,7 +43,7 @@ plot.gofm = function(x, model=NULL, type="qq", logscale=TRUE, ...){
     qqunif(v.pvals, logscale=logscale, main=paste("Q-Q Uniform Plot of", model))
   }
   else if (type == "hist"){
-    hist(v.pvals, main=paste("Model:", model), xlab="P-values")
+    hist(v.pvals, main=paste("Histogram of", model, "Model"), xlab="P-values")
   }
   
 }

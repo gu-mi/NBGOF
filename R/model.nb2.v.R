@@ -3,12 +3,12 @@
 #' Datasets
 #' 
 #' @description This function is designed to fit an NB2 regression model. The output of
-#' this function will be passed to the main GOF function \code{\link{nb_gof_v}}.
+#' this function will be passed to the main GOF function \code{\link{nb.gof.v}}.
 #' 
 #' @details The \code{nb.regression.1} function is used for NB2 model fitting with MLE.
 #' 
 #' @usage
-#' model_nb2_v(y, x, lib.sizes=NULL)
+#' model.nb2.v(y, x, lib.sizes=NULL)
 #' 
 #' @param y an n-by-1 vector of non-negative integers. For a typical RNA-Seq experiment, 
 #' this may represent the read counts for a single gene across n samples.
@@ -16,13 +16,13 @@
 #' the first column of \code{x} as a vector of 1.
 #' @param lib.sizes library sizes of a RNA-Seq experiment. Default is 1 for all samples.
 #' 
-#' @return A list of quantities to be used in the main \code{\link{nb_gof_v}} function.
+#' @return A list of quantities to be used in the main \code{\link{nb.gof.v}} function.
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
 #' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-model_nb2_v <- function(y, x, lib.sizes=NULL){
+model.nb2.v <- function(y, x, lib.sizes=NULL){
   
   n = length(y)
   p = dim(x)[2]

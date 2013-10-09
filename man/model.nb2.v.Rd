@@ -1,9 +1,9 @@
-\name{model_nb2_v}
-\alias{model_nb2_v}
+\name{model.nb2.v}
+\alias{model.nb2.v}
 \title{Modeling NB2 Regression Model with Maximum Likelihood (ML) on Original and Simulated
 Datasets}
 \usage{
-  model_nb2_v(y, x, lib.sizes=NULL)
+  model.nb2.v(y, x, lib.sizes=NULL)
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
@@ -19,12 +19,12 @@ Datasets}
 }
 \value{
   A list of quantities to be used in the main
-  \code{\link{nb_gof_v}} function.
+  \code{\link{nb.gof.v}} function.
 }
 \description{
   This function is designed to fit an NB2 regression model.
   The output of this function will be passed to the main
-  GOF function \code{\link{nb_gof_v}}.
+  GOF function \code{\link{nb.gof.v}}.
 }
 \details{
   The \code{nb.regression.1} function is used for NB2 model

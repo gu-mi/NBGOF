@@ -1,11 +1,11 @@
-\name{nb_gof_m}
-\alias{nb_gof_m}
+\name{nb.gof.m}
+\alias{nb.gof.m}
 \title{Main Function of Implementing Simulation-based Goodness-of-Fit Tests on an
 RNA-Seq Dataset}
 \usage{
-  nb_gof_m(counts, x, lib.sizes=colSums(counts), sim=999,
+  nb.gof.m(counts, x, lib.sizes=colSums(counts), sim=999,
     model="NBP", method="MAPL", min.n=100, prior.df = 10,
-    design = "single")
+    design = "single", ncores = NULL)
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -63,6 +63,9 @@ RNA-Seq Dataset}
   still under consideration! For the complex design with
   interactions, though we can pass the design matrix
   directly in edgeR, the results may not make any sense!}}
+
+  \item{ncores}{number of CPU cores to use. If unspecified,
+  use the total number of CPUs minus 1.}
 }
 \value{
   An object of class "gofm" to which other methods can be
@@ -79,18 +82,18 @@ RNA-Seq Dataset}
   When the response is a count matrix, we can use this
   function to test the goodness-of-fit of a specified
   negative binomial dispersion model. Specifically, this
-  function calls \code{\link{model_nbp_m}} to fit the NBP
-  dispersion model, calls \code{\link{model_nbq_m}} to fit
+  function calls \code{\link{model.nbp.m}} to fit the NBP
+  dispersion model, calls \code{\link{model.nbq.m}} to fit
   the NBQ dispersion model, calls
-  \code{\link{model_edgeR_common}} to fit the common
+  \code{\link{model.edgeR.common}} to fit the common
   dispersion model, calls
-  \code{\link{model_edgeR_genewise}} to fit the pure
+  \code{\link{model.edgeR.genewise}} to fit the pure
   genewise dispersion model (without shrinkage), calls
-  \code{\link{model_edgeR_trended}} to fit the
+  \code{\link{model.edgeR.trended}} to fit the
   non-parametric trended dispersion model in \code{edgeR},
-  calls \code{\link{model_edgeR_tagcom}} to fit the tagwise
+  calls \code{\link{model.edgeR.tagcom}} to fit the tagwise
   model with the dispersions shrinking towards a common
-  dispersion, and calls \code{\link{model_edgeR_tagtrd}} to
+  dispersion, and calls \code{\link{model.edgeR.tagtrd}} to
   fit the tagwise model with the dispersions shrinking
   towards the global dispersion trend.
 }
@@ -152,15 +155,16 @@ rownames(y) = paste("g", seq(1,m), sep="")
 colnames(y) = paste("s", seq(1,n), sep="")
 plot(mu, phi.noi, log="xy")
 
-## GOF tests for different dispersion models:
-## CAUTION: may be time-consuming depending on the size of data and simulations
-fnbp.noip = nb_gof_m(counts=y, x=x, sim=sim, model="NBP")
-fnbq.noip = nb_gof_m(counts=y, x=x, sim=sim, model="NBQ")
-fcom.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-common")
-fgen.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-genewise")
-ftgc.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-tagcom")
-ftgt.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-tagtrd")
-ftrd.noip = nb_gof_m(counts=y, x=x, sim=sim, model="edgeR-trended")
+## GOF tests for different dispersion models, using parallel computing:
+## CAUTION: may be time-consuming depending on the size of data and simulations\\
+nc = detectCores() - 1
+fnbp.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBP", ncores=nc)
+fnbq.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBQ", ncores=nc)
+fcom.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-common", ncores=nc)
+fgen.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-genewise", ncores=nc)
+ftgc.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-tagcom", ncores=nc)
+ftgt.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-tagtrd", ncores=nc)
+ftrd.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-trended", ncores=nc)
 
 ## summarize the GOF test results:
 summary(fnbp.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")
@@ -174,18 +178,18 @@ summary(ftrd.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")
 ## evaluate GOF p-values using histograms and quantile-quantile uniform plots:
 # pdf(file="plots-NBP-01-1grp.pdf", width=8, height=24)
 par(mfrow=c(6,2))
-plot(fnbp.noip, model="NBP", type="hist")
-plot(fnbp.noip, model="NBP", type="qq")
-plot(fcom.noip, model="Common", type="hist")
-plot(fcom.noip, model="Common", type="qq")
-plot(fgen.noip, model="Genewise", type="hist")
-plot(fgen.noip, model="Genewise", type="qq")
-plot(ftgc.noip, model="Tagwise-Common", type="hist")
-plot(ftgc.noip, model="Tagwise-Common", type="qq")
-plot(ftgt.noip, model="Tagwise-Trended", type="hist")
-plot(ftgt.noip, model="Tagwise-Trended", type="qq")
-plot(ftrd.noip, model="Trended", type="hist")
-plot(ftrd.noip, model="Trended", type="qq")
+plot(fnbp.noip, type="hist")
+plot(fnbp.noip, type="qq", pch=21, bg="blue", bty="n")
+plot(fcom.noip, type="hist")
+plot(fcom.noip, type="qq", pch=21, bg="blue", bty="n")
+plot(fgen.noip, type="hist")
+plot(fgen.noip, type="qq", pch=21, bg="blue", bty="n")
+plot(ftgc.noip, type="hist")
+plot(ftgc.noip, type="qq", pch=21, bg="blue", bty="n")
+plot(ftgt.noip, type="hist")
+plot(ftgt.noip, type="qq", pch=21, bg="blue", bty="n")
+plot(ftrd.noip, type="hist")
+plot(ftrd.noip, type="qq", pch=21, bg="blue", bty="n")
 # dev.off()
 }
 \author{

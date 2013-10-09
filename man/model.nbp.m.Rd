@@ -1,9 +1,9 @@
-\name{model_nbp_m}
-\alias{model_nbp_m}
+\name{model.nbp.m}
+\alias{model.nbp.m}
 \title{Modeling NBP Genewise Dispersion with the Maximum Ajdusted Profile Likelihood Estimator
 (MAPLE) on Original and Simulated Datasets}
 \usage{
-  model_nbp_m(counts, x, lib.sizes=colSums(counts),
+  model.nbp.m(counts, x, lib.sizes=colSums(counts),
     method=method)
 }
 \arguments{
@@ -20,14 +20,14 @@
 }
 \value{
   A list of quantities to be used in the main
-  \code{\link{nb_gof_m}} function.
+  \code{\link{nb.gof.m}} function.
 }
 \description{
   This function fits an NBP dispersion model where the
   dispersion parameter is modeled as a linear function of
   the relative means. See details below. The output of this
   function will be passed to the main GOF function
-  \code{\link{nb_gof_m}}.
+  \code{\link{nb.gof.m}}.
 }
 \details{
   Under the NB model, the mean-variance relationship of a

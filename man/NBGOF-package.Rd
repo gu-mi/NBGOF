@@ -16,16 +16,18 @@ RNA Sequencing Data}
   negative binomial dispersion models in popular
   R/Bioconductor packages, including \itemize{ \item NBP
   dispersion model in the \code{NBPSeq} package
-  (\code{NBP}) \item NB common dispersion model in the
-  \code{\link{edgeR}} package (\code{edgeR-common}) \item
-  NB genewise dispersion model in the \code{\link{edgeR}}
-  package (\code{edgeR-genewise}) \item NB trended
-  (non-parametric) dispersion model in the
-  \code{\link{edgeR}} package (\code{edgeR-trended}) \item
-  NB tagwise-common dispersion model in the
-  \code{\link{edgeR}} package (\code{edgeR-tagcom}) \item
-  NB tagwise-trended dispersion model in the
-  \code{\link{edgeR}} package (\code{edgeR-tagtrd}) }
+  (\code{NBP}) \item NBQ dispersion model in the
+  \code{NBPSeq} package (\code{NBQ}) \item NB common
+  dispersion model in the \code{\link{edgeR}} package
+  (\code{edgeR-common}) \item NB genewise dispersion model
+  in the \code{\link{edgeR}} package
+  (\code{edgeR-genewise}) \item NB trended (non-parametric)
+  dispersion model in the \code{\link{edgeR}} package
+  (\code{edgeR-trended}) \item NB tagwise-common dispersion
+  model in the \code{\link{edgeR}} package
+  (\code{edgeR-tagcom}) \item NB tagwise-trended dispersion
+  model in the \code{\link{edgeR}} package
+  (\code{edgeR-tagtrd}) }
 }
 \author{
   Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
@@ -38,7 +40,7 @@ RNA Sequencing Data}
   details.
 }
 \seealso{
-  See \code{\link{nb_gof_v}} and \code{\link{nb_gof_m}} for
+  See \code{\link{nb.gof.v}} and \code{\link{nb.gof.m}} for
   examples on simulated datasets. See
   \code{\link{earthquake}} and \code{\link{arab}} for real
   data examples.

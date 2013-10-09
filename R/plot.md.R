@@ -37,23 +37,32 @@
 #' 
 #' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-plot.md = function(y, x, model = NULL, scatter = FALSE, legend = FALSE, ...){
+plot.md = function(counts, x, model = NULL, scatter = FALSE, legend = FALSE, ...){
   
   ## begin plotting the points and NBP fitted curve
   if (scatter){
-    nb.data1 = prepare.nb.data(counts=y)
-    nbpf = estimate.dispersion(nb.data1, x, print.level = 0)
+    m = dim(counts)[1]
+    n = dim(counts)[2]
+    nb.data = prepare.nb.data(counts = counts, 
+                              lib.sizes = colSums(counts), 
+                              norm.factors = rep(1, n))  
+    nb.disp = estimate.dispersion(nb.data = nb.data, 
+                                  x = x, 
+                                  model = "NBP",
+                                  method = "MAPL")    
+    nbreg.fit = NBPSeq:::estimate.disp.mapl.nbp(y=counts, lib.sizes=colSums(counts), x=x)
+    mu.hat = nbreg.fit$mu
+    phi.hat = (1.5*rowSums((counts - mu.hat)^2) - rowSums(mu.hat))/rowSums(mu.hat^2)
+    re.freq = (mu.hat / (matrix(1, m, 1) %*% matrix(colSums(counts), 1, n)))[ ,1]   
+    id = (phi.hat > 0)  # may discard some phi.hat here not in the plotting
     #
-    mu.hat = nbpf$models[[1]]$mu;
-    phi.hat = (1.5*rowSums((y - mu.hat)^2) - rowSums(mu.hat))/rowSums(mu.hat^2);  # a vector
-    re.freq = nbpf$models[[1]]$e[,1]  # a vector
-    id = (phi.hat > 0) 
-    #sum(id)  # 871
+    # scatterplot
+    #
     plot(re.freq[id], phi.hat[id], log="xy", pch=".",
          xlab="Estimated Relative Frequency (log)", 
          ylab="Estimated NB Dispersion Parameter (log)",
          ...)
-    lines(re.freq, nbpf$models[[1]]$phi[,1], col="red", lwd=2, lty=1)
+    lines(re.freq[id], nbreg.fit$phi[id,1], col="red", lwd=2, lty=1) 
   }
   #
   else if (!scatter){   

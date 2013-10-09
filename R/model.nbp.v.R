@@ -3,13 +3,13 @@
 #' Likelihood (APL) on Original and Simulated Datasets
 #' 
 #' @description This function is designed to fit an NBP regression model. The output of
-#' this function will be passed to the main GOF function \code{\link{nb_gof_v}}.
+#' this function will be passed to the main GOF function \code{\link{nb.gof.v}}.
 #' 
 #' @details The \code{glm.nbp.1.MLE} function is used for NBP model fitting with MLE.
 #' The \code{glm.nbp.1} function is used for NBP model fitting with APLE.
 #' 
 #' @usage
-#' model_nbp_v(y, x, lib.sizes=NULL, est.method="ML")
+#' model.nbp.v(y, x, lib.sizes=NULL, est.method="ML")
 #' 
 #' @param y an n-by-1 vector of non-negative integers. For a typical RNA-Seq experiment, 
 #' this may represent the read counts for a single gene across n samples.
@@ -19,7 +19,7 @@
 #' @param est.method estimation method for NBP model fit. Either maximum likelihood (\code{ML})
 #' or adjusted profile likelihood (\code{APL}). Default is \code{ML}.
 #' 
-#' @return A list of quantities to be used in the main \code{\link{nb_gof_v}} function.
+#' @return A list of quantities to be used in the main \code{\link{nb.gof.v}} function.
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
@@ -30,7 +30,7 @@
 #' 
 #' See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-model_nbp_v <- function(y, x, lib.sizes=NULL, est.method = "ML"){
+model.nbp.v <- function(y, x, lib.sizes=NULL, est.method = "ML"){
   
   n = length(y)
   p = dim(x)[2]

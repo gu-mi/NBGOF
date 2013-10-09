@@ -1,9 +1,9 @@
-\name{model_nbp_v}
-\alias{model_nbp_v}
+\name{model.nbp.v}
+\alias{model.nbp.v}
 \title{Modeling NBP Regression Model with Maximum Likelihood (ML) or Adjusted Profile
 Likelihood (APL) on Original and Simulated Datasets}
 \usage{
-  model_nbp_v(y, x, lib.sizes=NULL, est.method="ML")
+  model.nbp.v(y, x, lib.sizes=NULL, est.method="ML")
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
@@ -23,12 +23,12 @@ Likelihood (APL) on Original and Simulated Datasets}
 }
 \value{
   A list of quantities to be used in the main
-  \code{\link{nb_gof_v}} function.
+  \code{\link{nb.gof.v}} function.
 }
 \description{
   This function is designed to fit an NBP regression model.
   The output of this function will be passed to the main
-  GOF function \code{\link{nb_gof_v}}.
+  GOF function \code{\link{nb.gof.v}}.
 }
 \details{
   The \code{glm.nbp.1.MLE} function is used for NBP model

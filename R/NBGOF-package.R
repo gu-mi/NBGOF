@@ -34,6 +34,7 @@
 #' dispersion models in popular R/Bioconductor packages, including
 #' \itemize{
 #' \item NBP dispersion model in the \code{NBPSeq} package (\code{NBP})
+#' \item NBQ dispersion model in the \code{NBPSeq} package (\code{NBQ})
 #' \item NB common dispersion model in the \code{\link{edgeR}} package (\code{edgeR-common})
 #' \item NB genewise dispersion model in the \code{\link{edgeR}} package (\code{edgeR-genewise})
 #' \item NB trended (non-parametric) dispersion model in the \code{\link{edgeR}} package
@@ -47,12 +48,14 @@
 #' @name NBGOF-package
 #' @aliases NBGOF-package NBGOF
 #' @docType package
-#' @import NBPSeq edgeR
+#' @import NBPSeq edgeR numDeriv parallel foreach
+#' @importFrom gap qqunif
+#' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
 #' Maintainer: Gu Mi <http://people.oregonstate.edu/~mig>
 #' 
-#' @seealso See \code{\link{nb_gof_v}} and \code{\link{nb_gof_m}} for examples on simulated
+#' @seealso See \code{\link{nb.gof.v}} and \code{\link{nb.gof.m}} for examples on simulated
 #' datasets. See \code{\link{earthquake}} and \code{\link{arab}} for real data examples.
 #' 
 #' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
@@ -61,9 +64,17 @@
 NULL
 
 .onLoad <- function(libname, pkgname){
-  message <- "\n The NBGOF package is experimental but under active development: 
-  Function syntax may have minor changes in future versions.
-  See https://github.com/gu-mi/NBGOF for more information. \n"
-  packageStartupMessage(message)
+  
+  # suppress loading package messages
+  suppressMessages(library(doMC))
+  suppressMessages(library(foreach))
+  suppressMessages(library(iterators))
+  suppressMessages(library(parallel))
+  #
+  # startup message of our own package
+#   packageStartupMessage("Loading NBGOF ...", appendLF = FALSE)
+#   Sys.sleep(1)
+#   packageStartupMessage(" done")
+  message("\n For updates of the NBGOF package, please visit https://github.com/gu-mi/NBGOF \n")
 }  
 
