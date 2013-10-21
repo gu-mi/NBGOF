@@ -23,23 +23,23 @@
 #' }
 #' Users should specify \strong{exactly} the same characters as shown in paratheses above 
 #' for testing one of the regression models.
-#' @param est.method specify either "\code{ML}" or "\code{APL}" for the maximum likelihood
-#' and adjusted profile likelihood methods used, respectively, for the NBP model. ML is used
-#' for the NB2 model estimation.
+#' @param method specify either "\code{ML}" or "\code{APL}" for the maximum likelihood
+#' and adjusted profile likelihood methods used, respectively, for the NBP model estimations. ML is used
+#' for the NB2 model estimations.
 #' 
 #' @return An object of class "gofv" to which other methods can be applied.
 #' 
 #' @details When the response is a vector of counts, we can use this function to test
 #' the goodness-of-fit of a specified negative binomial or Poisson regression model. It returns
 #' an object with the test results, which can be further summarized and visualized using 
-#' appropriate methods.
+#' appropriate methods, e.g. \code{\link{EPPlot}}.
 #' 
 #' This function calls \code{\link{model.nb2.v}} to fit the NB2 model, calls 
 #' \code{\link{model.nbp.v}} to fit the NBP model, and calls \code{\link{model.poi.v}} to fit
 #' the Poisson model.
 #' 
 #' @usage 
-#' nb.gof.v(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML")
+#' nb.gof.v(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML")
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
@@ -47,7 +47,7 @@
 #' 
 #' @references 
 #' Mi G., Di Y. and Schafer D.W. (2013). Goodness-of-Fit Tests and Model Diagnostics
-#' for Negative Binomial Regression of RNA sequencing Data. \emph{Biometrics} (submitted).
+#' for Negative Binomial Regression of RNA sequencing Data. \emph{Biometrics} (revision invited).
 #' 
 #' Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The NBP Negative Binomial
 #' Model for Assessing Differential Gene Expression from RNA-Seq", \emph{Statistical 
@@ -61,7 +61,7 @@
 #' library(NBGOF)
 #' 
 #' ## basic set-up of the model:
-#' seed = 315825
+#' seed = 539768
 #' n = 100
 #' beta.v = c(1, -3)
 #' 
@@ -87,24 +87,24 @@
 #' 
 #' # NB2 model fit using MLE:
 #' gof.nb1.nb2 = nb.gof.v(y.nb1, X, s, sim=sim, model="NB2")
-#' plot(gof.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+#' EPPlot(gof.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 #' 
 #' # NBP model fit using MLE:
-#' gof.nb1.nbp = nb.gof.v(y.nb1, X, s, sim=sim, model="NBP", est.method="ML")
-#' plot(gof.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+#' gof.nb1.nbp = nb.gof.v(y.nb1, X, s, sim=sim, model="NBP", method="ML")
+#' EPPlot(gof.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 #' 
 #' # Poisson model fit:
 #' gof.nb1.poi = nb.gof.v(y.nb1, X, s, sim=sim, model="Poisson")
-#' plot(gof.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+#' EPPlot(gof.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 #' # dev.off()
 #' 
-nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML", ncores = NULL){
+nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", ncores = NULL){
   
   n = length(y)
   p = dim(x)[2]
   
   # preconditions
-  stopifnot(model %in% c("Poisson", "NB2", "NBP"), est.method %in% c("ML","APL"))
+  stopifnot(model %in% c("Poisson", "NB2", "NBP"), method %in% c("ML","APL"))
   
   # parallel computing: specify number of cores to use
   if (is.null(ncores)){
@@ -168,7 +168,7 @@ nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML
   #### -----------------------------------------------------------------
   if (model == "NBP"){
     libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
-    mnbp.0 = model.nbp.v(y=y, x=x, lib.sizes=libs, est.method=est.method)  
+    mnbp.0 = model.nbp.v(y=y, x=x, lib.sizes=libs, method=method)  
     # NBP model fit on original data
     mu.hat.v0 = mnbp.0$mu.hat.v
     phi0 = mnbp.0$phi
@@ -181,7 +181,7 @@ nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", est.method="ML
     res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
       #setTxtProgressBar(pb, i/sim)
       y.vec.h = rnbinom(n, mu = mu.hat.v0, size = 1/phi0)
-      mnbp.h = model.nbp.v(y=y.vec.h, x=x, lib.sizes=libs, est.method=est.method)  
+      mnbp.h = model.nbp.v(y=y.vec.h, x=x, lib.sizes=libs, method=method)  
       # NBP model fit on simulated data
       mnbp.h$res.vec
     }

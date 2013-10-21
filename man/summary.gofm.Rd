@@ -1,4 +1,5 @@
 \name{summary.gofm}
+\alias{summary}
 \alias{summary.gofm}
 \title{Report Summaries of the GOF Test Results for NB Dispersion Models}
 \usage{

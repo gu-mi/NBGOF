@@ -11,6 +11,7 @@
 #' 
 #' @method summary gofm
 #' @rdname summary.gofm
+#' @aliases summary
 #' @export
 #' 
 #' @details This is a generic function for summarizing goodness-of-fit test results of testing

@@ -1,22 +1,16 @@
 
-#' @title Plot Methods for "gofv" Objects
+#' @title Empirical Probability Plot for Univariate Negative Binomial Regression Model Diagnostics
 #'
-#' @description A plot method for empirical probability plot based on a "gofv" 
-#' object obtained from the \code{\link{nb.gof.v}} outputs.
+#' @description Empirical probability plot based on a "gofv" object obtained from the \code{\link{nb.gof.v}} outputs.
 #' 
 #' @param x an object of class "gofv" from the \code{\link{nb.gof.v}} output.
 #' @param conf.env confidence level for the envelope.
 #' @param data.note a note on how data are simulated or the source of data.
 #' @param leg.cex size of the legend fonts.
 #' @param ... for future use.
-#' @method plot gofv
-#' @rdname plot.gofv
 #' @export
 #' 
-#' @details This is a generic function for plotting goodness-of-fit test results, when the
-#' response is a vector of counts.
-#' 
-#' @usage plot(x, conf.env=0.95, data.note=NULL, leg.cex=1, ...)
+#' @usage EPPlot(x, conf.env=0.95, data.note=NULL, leg.cex=1, ...)
 #' 
 #' @return An empirical probability plot with points outside a pre-specified confidence
 #' envelope colored in red. GOF test p-values are also reported on the plot.
@@ -28,11 +22,11 @@
 #' 
 #' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-plot.gofv = function(x, 
-                     conf.env=0.95, 
-                     data.note=NULL, 
-                     leg.cex=1, 
-                     ...){
+EPPlot = function(x, 
+                  conf.env=0.95, 
+                  data.note=NULL, 
+                  leg.cex=1, 
+                  ...){
   
   ## quantities from a "gofv" object:
   model = x$model

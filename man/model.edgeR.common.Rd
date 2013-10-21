@@ -4,7 +4,7 @@
 Estimator (APLE) on Original and Simulated Datasets}
 \usage{
   model.edgeR.common(counts, x, lib.sizes=colSums(counts),
-    design=design)
+    method=method)
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -16,15 +16,10 @@ Estimator (APLE) on Original and Simulated Datasets}
   \item{lib.sizes}{library sizes of an RNA-Seq experiment.
   Default is the column sums of the \code{counts} matrix.}
 
-  \item{design}{specifications of testing (1) a
-  single-group model (\code{single}); (2) a multiple-group
-  model (\code{multiple}); (3) complex design with
-  interactions (\code{complex}). \strong{The codes are only
-  tested for single- and multiple-group cases, and the
-  modeling of dispersions in the multiple-group case is
-  still under consideration! For the complex design with
-  interactions, though we can pass the design matrix
-  directly in edgeR, the results may not make any sense!}}
+  \item{method}{method for estimating the common
+  dispersion, including "CoxReid", "Pearson" and
+  "deviance". If NULL, then use the "CoxReid" method. See
+  \code{\link{estimateGLMCommonDisp}} for more details.}
 }
 \value{
   A list of quantities to be used in the main

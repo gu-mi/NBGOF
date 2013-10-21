@@ -49,7 +49,6 @@
 #' @aliases NBGOF-package NBGOF
 #' @docType package
 #' @import NBPSeq edgeR numDeriv parallel foreach
-#' @importFrom gap qqunif
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 

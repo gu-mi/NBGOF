@@ -1,8 +1,8 @@
-\name{plot.gofv}
-\alias{plot.gofv}
-\title{Plot Methods for "gofv" Objects}
+\name{EPPlot}
+\alias{EPPlot}
+\title{Empirical Probability Plot for Univariate Negative Binomial Regression Model Diagnostics}
 \usage{
-  plot(x, conf.env=0.95, data.note=NULL, leg.cex=1, ...)
+  EPPlot(x, conf.env=0.95, data.note=NULL, leg.cex=1, ...)
 }
 \arguments{
   \item{x}{an object of class "gofv" from the
@@ -23,13 +23,8 @@
   test p-values are also reported on the plot.
 }
 \description{
-  A plot method for empirical probability plot based on a
-  "gofv" object obtained from the \code{\link{nb.gof.v}}
-  outputs.
-}
-\details{
-  This is a generic function for plotting goodness-of-fit
-  test results, when the response is a vector of counts.
+  Empirical probability plot based on a "gofv" object
+  obtained from the \code{\link{nb.gof.v}} outputs.
 }
 \author{
   Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel

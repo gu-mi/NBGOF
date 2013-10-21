@@ -4,7 +4,7 @@
 Estimator (APLE) on Original and Simulated Datasets}
 \usage{
   model.edgeR.tagtrd(counts, x, lib.sizes=colSums(counts),
-    prior.df=prior.df, min.n=min.n, design=design)
+    prior.df=prior.df, min.n=min.n, method=method)
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -17,8 +17,9 @@ Estimator (APLE) on Original and Simulated Datasets}
   Default is the column sums of the \code{counts} matrix.}
 
   \item{prior.df}{prior degrees of freedom to control the
-  level of shrinkage (default is 10). This argument is
-  controlled by a higher level function
+  level of shrinkage (default is 10). See
+  \code{\link{estimateGLMTagwiseDisp}} for more details.
+  This argument is controlled by a higher level function
   \code{\link{nb.gof.m}}.}
 
   \item{min.n}{minimim number of genes in a bin. Default is
@@ -26,15 +27,11 @@ Estimator (APLE) on Original and Simulated Datasets}
   (lower-level function of
   \code{\link{estimateGLMTrendedDisp}}).}
 
-  \item{design}{specifications of testing (1) a
-  single-group model (\code{single}); (2) a multiple-group
-  model (\code{multiple}); (3) complex design with
-  interactions (\code{complex}). \strong{The codes are only
-  tested for single- and multiple-group cases, and the
-  modeling of dispersions in the multiple-group case is
-  still under consideration! For the complex design with
-  interactions, though we can pass the design matrix
-  directly in edgeR, the results may not make any sense!}}
+  \item{method}{method for estimating the trended
+  dispersion, including "auto", "bin.spline", "bin.loess",
+  "power" and "spline". If NULL, then the "auto" method.
+  See \code{\link{estimateGLMTrendedDisp}} for more
+  details.}
 }
 \value{
   A list of quantities to be used in the main

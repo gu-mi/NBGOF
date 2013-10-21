@@ -4,8 +4,8 @@
 RNA-Seq Dataset}
 \usage{
   nb.gof.m(counts, x, lib.sizes=colSums(counts), sim=999,
-    model="NBP", method="MAPL", min.n=100, prior.df = 10,
-    design = "single", ncores = NULL)
+    model=NULL, method=NULL, min.n=100, prior.df = 10,
+    ncores = NULL, model.func = NULL, ...)
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -26,21 +26,24 @@ RNA-Seq Dataset}
   dispersion model in the \code{NBPSeq} package
   (\code{NBP}) \item NBQ dispersion model in the
   \code{NBPSeq} pacakge (\code{NBQ}) \item NB common
-  dispersion model in the \code{\link{edgeR}} package
+  dispersion model in the \code{edgeR} package
   (\code{edgeR-common}) \item NB genewise dispersion model
-  in the \code{\link{edgeR}} package
-  (\code{edgeR-genewise}) \item NB trended (non-parametric)
-  dispersion model in the \code{\link{edgeR}} package
-  (\code{edgeR-trended}) \item NB tagwise-common dispersion
-  model in the \code{\link{edgeR}} package
-  (\code{edgeR-tagcom}) \item NB tagwise-trended dispersion
-  model in the \code{\link{edgeR}} package
+  in the \code{edgeR} package (\code{edgeR-genewise}) \item
+  NB trended (non-parametric) dispersion model in the
+  \code{edgeR} package (\code{edgeR-trended}) \item NB
+  tagwise-common dispersion model in the \code{edgeR}
+  package (\code{edgeR-tagcom}) \item NB tagwise-trended
+  dispersion model in the \code{edgeR} package
   (\code{edgeR-tagtrd}) } Users should specify
   \strong{exactly} the same characters as the ones in
-  paratheses above for each dispersion model.}
+  paratheses above for each dispersion model. If passing
+  "new" to \code{model}, then a user-defined model function
+  (\code{model.func}) is also required. See the
+  \code{model.func} for more details.}
 
   \item{method}{method for estimating dispersions. MAPL:
-  maximum adjusted profile likelihood}
+  maximum adjusted profile likelihood; other estimation
+  methods from \code{edgeR} can also be specified.}
 
   \item{min.n}{for \code{edgeR-trended} model only: specify
   the minimim number of genes in a bin (default is 100).}
@@ -54,18 +57,16 @@ RNA-Seq Dataset}
   dispersion (\code{edgeR-tagcom}) or the global dispersion
   trend (\code{edgeR-tagtrd}).}
 
-  \item{design}{specifications of testing (1) a
-  single-group model (\code{single}); (2) a multiple-group
-  model (\code{multiple}); (3) complex design with
-  interactions (\code{complex}). \strong{The codes are only
-  tested for single- and multiple-group cases, and the
-  modeling of dispersions in the multiple-group case is
-  still under consideration! For the complex design with
-  interactions, though we can pass the design matrix
-  directly in edgeR, the results may not make any sense!}}
-
   \item{ncores}{number of CPU cores to use. If unspecified,
   use the total number of CPUs minus 1.}
+
+  \item{model.func}{this argument lets end-users pass a
+  pre-defined function that outputs at least two matrices,
+  mu and phi, from a particular new model not included in
+  the \code{model} argument.}
+
+  \item{...}{(optional arguments to be passed to the new
+  model function defined in \code{model.func}).}
 }
 \value{
   An object of class "gofm" to which other methods can be
@@ -102,7 +103,7 @@ RNA-Seq Dataset}
 library(NBGOF)
 
 ## basic set-up of the model:
-seed = 315825
+seed = 539768
 sim = 999
 conf.env = 0.95
 
@@ -125,9 +126,9 @@ x
 
 ## specify mean levels:
 mu = round(t(s * exp(x \%*\% t(beta))));
-sum(rowSums(mu) == 0)   # 4
+sum(rowSums(mu) == 0)
 mu[rowSums(mu) == 0, ] = 1
-sum(rowSums(mu) == 0)   # 0
+sum(rowSums(mu) == 0)
 pi = mu/s
 
 ## simulate an m-by-n count matrix mimicking a RNA-Seq dataset:
@@ -156,7 +157,7 @@ colnames(y) = paste("s", seq(1,n), sep="")
 plot(mu, phi.noi, log="xy")
 
 ## GOF tests for different dispersion models, using parallel computing:
-## CAUTION: may be time-consuming depending on the size of data and simulations\\
+## CAUTION: may be time-consuming depending on the size of data and simulations!
 nc = detectCores() - 1
 fnbp.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBP", ncores=nc)
 fnbq.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBQ", ncores=nc)
@@ -176,20 +177,22 @@ summary(ftgt.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")
 summary(ftrd.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")
 
 ## evaluate GOF p-values using histograms and quantile-quantile uniform plots:
-# pdf(file="plots-NBP-01-1grp.pdf", width=8, height=24)
-par(mfrow=c(6,2))
-plot(fnbp.noip, type="hist")
-plot(fnbp.noip, type="qq", pch=21, bg="blue", bty="n")
-plot(fcom.noip, type="hist")
-plot(fcom.noip, type="qq", pch=21, bg="blue", bty="n")
-plot(fgen.noip, type="hist")
-plot(fgen.noip, type="qq", pch=21, bg="blue", bty="n")
-plot(ftgc.noip, type="hist")
-plot(ftgc.noip, type="qq", pch=21, bg="blue", bty="n")
-plot(ftgt.noip, type="hist")
-plot(ftgt.noip, type="qq", pch=21, bg="blue", bty="n")
-plot(ftrd.noip, type="hist")
-plot(ftrd.noip, type="qq", pch=21, bg="blue", bty="n")
+# pdf("plots-NBP-01-1grp.pdf", width=20, height=20)
+h1 = diagPlot(fnbp.noip, type="hist", binwidth=0.1)
+q1 = diagPlot(fnbp.noip, type="qq", envelope=0.95)
+h2 = diagPlot(fnbq.noip, type="hist", binwidth=0.1)
+q2 = diagPlot(fnbq.noip, type="qq", envelope=0.95)
+h3 = diagPlot(fcom.noip, type="hist", binwidth=0.1)
+q3 = diagPlot(fcom.noip, type="qq", envelope=0.95)
+h4 = diagPlot(fgen.noip, type="hist", binwidth=0.1)
+q4 = diagPlot(fgen.noip, type="qq", envelope=0.95)
+h5 = diagPlot(ftgc.noip, type="hist", binwidth=0.1)
+q5 = diagPlot(ftgc.noip, type="qq", envelope=0.95)
+h6 = diagPlot(ftgt.noip, type="hist", binwidth=0.1)
+q6 = diagPlot(ftgt.noip, type="qq", envelope=0.95)
+h7 = diagPlot(ftrd.noip, type="hist", binwidth=0.1)
+q7 = diagPlot(ftrd.noip, type="qq", envelope=0.95)
+multiplot(h1, q1, h2, q2, h3, q3, h4, q4, h5, q5, h6, q6, h7, q7, cols=4, layout=matrix(seq(1,16), nrow=4, byrow=TRUE))
 # dev.off()
 }
 \author{
@@ -199,7 +202,8 @@ plot(ftrd.noip, type="qq", pch=21, bg="blue", bty="n")
 \references{
   Mi G, Di Y and Schafer DW (2013). Goodness-of-Fit Tests
   and Model Diagnostics for Negative Binomial Regression of
-  RNA sequencing Data. \emph{Biometrics} (submitted).
+  RNA sequencing Data. \emph{Biometrics} (revision
+  invited).
 
   Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The
   NBP Negative Binomial Model for Assessing Differential

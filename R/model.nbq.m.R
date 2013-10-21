@@ -45,26 +45,17 @@ model.nbq.m = function(counts, x, lib.sizes=colSums(counts), method=method){
   # preconditions
   stopifnot(is.matrix(x), nc == dim(x)[1])
   
-#   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
-#                    labels = seq(ncol(x)))
-  
   # data preparations
   nb.data = prepare.nb.data(counts, lib.sizes=lib.sizes)
-  
-  # since NBPSeq v0.2.1
-  # estimate.dispersion = function(nb.data, x, model="NBQ", method="MAPL", ...)
   fit = estimate.dispersion(nb.data, x, model = "NBQ", method = "MAPL", print.level=0)
   
-  phi = fit$estimates        # NBQ "phi" --> mu+phi*mu^2 (changed since v0.1.8)
+  # extract quantities
+  phi = fit$estimates        # NBQ "phi" --> mu+phi*mu^2
   mu = irls.nb(y = nb.data$counts,
                s = nb.data$eff.lib.sizes, 
                x = x,
                phi = phi,
                beta0 = rep(NA, dim(x)[2]))$mu
-  
-  # phi = fit$models[[1]]$phi
-  # mu = fit$models[[1]]$mu
-  
   v = mu + phi * mu^2              # variance matrix
   res.m = (counts - mu) / sqrt(v)  # res. matrix
   
@@ -84,5 +75,6 @@ model.nbq.m = function(counts, x, lib.sizes=colSums(counts), method=method){
                          phi.hat.mat = phi
   )
   return(model_nbq_m_obj)
-  
 }
+
+

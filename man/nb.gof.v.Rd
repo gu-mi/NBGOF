@@ -4,7 +4,7 @@
 the Regression of a Univariate Count Response on One or More Explanatory Variables}
 \usage{
   nb.gof.v(y, x, lib.sizes=NULL, sim=999, model = "NB2",
-    est.method="ML")
+    method="ML")
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
@@ -29,10 +29,10 @@ the Regression of a Univariate Count Response on One or More Explanatory Variabl
   paratheses above for testing one of the regression
   models.}
 
-  \item{est.method}{specify either "\code{ML}" or
-  "\code{APL}" for the maximum likelihood and adjusted
-  profile likelihood methods used, respectively, for the
-  NBP model. ML is used for the NB2 model estimation.}
+  \item{method}{specify either "\code{ML}" or "\code{APL}"
+  for the maximum likelihood and adjusted profile
+  likelihood methods used, respectively, for the NBP model
+  estimations. ML is used for the NB2 model estimations.}
 }
 \value{
   An object of class "gofv" to which other methods can be
@@ -52,7 +52,8 @@ the Regression of a Univariate Count Response on One or More Explanatory Variabl
   function to test the goodness-of-fit of a specified
   negative binomial or Poisson regression model. It returns
   an object with the test results, which can be further
-  summarized and visualized using appropriate methods.
+  summarized and visualized using appropriate methods, e.g.
+  \code{\link{EPPlot}}.
 
   This function calls \code{\link{model.nb2.v}} to fit the
   NB2 model, calls \code{\link{model.nbp.v}} to fit the NBP
@@ -64,7 +65,7 @@ the Regression of a Univariate Count Response on One or More Explanatory Variabl
 library(NBGOF)
 
 ## basic set-up of the model:
-seed = 315825
+seed = 539768
 n = 100
 beta.v = c(1, -3)
 
@@ -90,15 +91,15 @@ par(mfrow=c(1,3))
 
 # NB2 model fit using MLE:
 gof.nb1.nb2 = nb.gof.v(y.nb1, X, s, sim=sim, model="NB2")
-plot(gof.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+EPPlot(gof.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 
 # NBP model fit using MLE:
-gof.nb1.nbp = nb.gof.v(y.nb1, X, s, sim=sim, model="NBP", est.method="ML")
-plot(gof.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+gof.nb1.nbp = nb.gof.v(y.nb1, X, s, sim=sim, model="NBP", method="ML")
+EPPlot(gof.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 
 # Poisson model fit:
 gof.nb1.poi = nb.gof.v(y.nb1, X, s, sim=sim, model="Poisson")
-plot(gof.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+EPPlot(gof.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
 # dev.off()
 }
 \author{
@@ -109,7 +110,7 @@ plot(gof.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
   Mi G., Di Y. and Schafer D.W. (2013). Goodness-of-Fit
   Tests and Model Diagnostics for Negative Binomial
   Regression of RNA sequencing Data. \emph{Biometrics}
-  (submitted).
+  (revision invited).
 
   Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The
   NBP Negative Binomial Model for Assessing Differential

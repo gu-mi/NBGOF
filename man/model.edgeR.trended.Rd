@@ -4,7 +4,7 @@
 Likelihood estimator (APLE) on Original and Simulated Datasets}
 \usage{
   model.edgeR.trended(counts, x, lib.sizes=colSums(counts),
-    min.n=min.n, design=design)
+    min.n=min.n, method=method)
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -21,15 +21,11 @@ Likelihood estimator (APLE) on Original and Simulated Datasets}
   (lower-level function of
   \code{\link{estimateGLMTrendedDisp}}).}
 
-  \item{design}{specifications of testing (1) a
-  single-group model (\code{single}); (2) a multiple-group
-  model (\code{multiple}); (3) complex design with
-  interactions (\code{complex}). \strong{The codes are only
-  tested for single- and multiple-group cases, and the
-  modeling of dispersions in the multiple-group case is
-  still under consideration! For the complex design with
-  interactions, though we can pass the design matrix
-  directly in edgeR, the results may not make any sense!}}
+  \item{method}{method for estimating the trended
+  dispersion, including "auto", "bin.spline", "bin.loess",
+  "power" and "spline". If NULL, then the "auto" method.
+  See \code{\link{estimateGLMTrendedDisp}} for more
+  details.}
 }
 \value{
   A list of quantities to be used in the main

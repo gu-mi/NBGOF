@@ -115,7 +115,7 @@ irls.nb.1 = function(y, s, x, phi, beta0=rep(NA,p),
     epsilon = 1e-7;
     
     ## call Fortran code via C wrapper
-    fit = .Call(Cdqrls, x[, id1, drop=FALSE] * w,  w * z, epsilon);
+    fit = .Call("Cdqrls", x[, id1, drop=FALSE] * w,  w * z, epsilon, PACKAGE="NBGOF");
     
     ##    fit = .Fortran("dqrls",
     ##                    qr = x[,id1] * w, n = nobs,
