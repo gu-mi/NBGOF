@@ -48,7 +48,7 @@
 #' @name NBGOF-package
 #' @aliases NBGOF-package NBGOF
 #' @docType package
-#' @import NBPSeq edgeR numDeriv parallel foreach
+#' @import NBPSeq edgeR numDeriv parallel foreach ggplot2
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
@@ -69,6 +69,7 @@ NULL
   suppressMessages(library(foreach))
   suppressMessages(library(iterators))
   suppressMessages(library(parallel))
+  suppressMessages(library(ggplot2))
   #
   # startup message of our own package
 #   packageStartupMessage("Loading NBGOF ...", appendLF = FALSE)

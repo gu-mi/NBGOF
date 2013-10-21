@@ -60,6 +60,7 @@ plotdata = function(gofm.obj, envelope=0.95, binwidth=0.1){
   return(list(qq = qq, info = info, histogram = histogram))
 }
 
+
 #' @title Diagnostic Plots for Graphical Checks of Negative Binomial Dispersion Models
 #' 
 #' @description This function makes diagnostic plots based on the goodness-of-fit test results (an "gofm" object) from

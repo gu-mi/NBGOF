@@ -23,10 +23,10 @@
   a single page. The layout can be flexibly specified.
 }
 \details{
-  If the layout is something like matrix(c(1,2,3,3),
-  nrow=2, byrow=TRUE), then plot 1 will go in the upper
-  left, 2 will go in the upper right, and 3 will go all the
-  way across the bottom.
+  If the layout is something like \code{matrix(c(1,2,3,3),
+  nrow=2, byrow=TRUE)}, then plot 1 will go in the upper
+  left, plot 2 will go in the upper right, and plot 3 will
+  go all the way across the bottom.
 }
 \seealso{
   \code{\link{nb.gof.m}} for simulated data examples.
