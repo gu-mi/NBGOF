@@ -14,7 +14,7 @@
   \item{data.note}{a note on how data are simulated or the
   source of data}
 
-  \item{...}{for future use}
+  \item{...}{(for future use)}
 }
 \value{
   Information of the dataset, simulation parameter

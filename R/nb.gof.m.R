@@ -1,6 +1,5 @@
 
-#' @title Main Function of Implementing Simulation-based Goodness-of-Fit Tests on an 
-#' RNA-Seq Dataset
+#' @title Main Function of Implementing Simulation-based Goodness-of-Fit Tests on an RNA-Seq Dataset
 #' 
 #' @description This function performs simulation-based goodness-of-fit tests of different 
 #' negative binomial dispersion models for an RNA-Seq dataset with a known design 
@@ -9,40 +8,52 @@
 #' 
 #' @param counts an m-by-n count matrix of non-negative integers. For a typical
 #' RNA-Seq experiment, this is the read counts with m genes and n samples.
+
 #' @param x an n-by-p design matrix.
+
 #' @param lib.sizes library sizes of an RNA-Seq experiment. Default is the column
 #' sums of the \code{counts} matrix.
+
 #' @param sim number of simulations performed.
+
 #' @param model a string of characters specifying the negative binomial
 #' dispersion model used to fit the data. Currently the following dispersion models
 #' are available to be checked for goodness-of-fit:
 #' \itemize{
 #' \item NBP dispersion model in the \code{NBPSeq} package (\code{NBP})
 #' \item NBQ dispersion model in the \code{NBPSeq} pacakge (\code{NBQ})
-#' \item NB common dispersion model in the \code{edgeR} package (\code{edgeR-common})
-#' \item NB genewise dispersion model in the \code{edgeR} package (\code{edgeR-genewise})
+#' \item NB common dispersion model in the \code{edgeR} package (\code{Common})
+#' \item NB genewise dispersion model in the \code{edgeR} package (\code{Genewise})
 #' \item NB trended (non-parametric) dispersion model in the \code{edgeR} package
-#' (\code{edgeR-trended})
+#' (\code{Trended})
 #' \item NB tagwise-common dispersion model in the \code{edgeR} package 
-#' (\code{edgeR-tagcom})
+#' (\code{Tagwise-Common})
 #' \item NB tagwise-trended dispersion model in the \code{edgeR} package 
-#' (\code{edgeR-tagtrd})
+#' (\code{Tagwise-Trend})
 #' }
 #' Users should specify \strong{exactly} the same characters as the
-#' ones in paratheses above for each dispersion model. If passing "new" to \code{model}, then a user-defined model function
-#' (\code{model.func}) is also required. See the \code{model.func} for more details.
-#' @param method method for estimating dispersions. MAPL: maximum adjusted profile likelihood; other estimation methods from
+#' ones in paratheses above for each dispersion model.
+
+#' @param method method for estimating dispersions. MAPL: maximum adjusted profile likelihood other estimation methods from
 #' \code{edgeR} can also be specified.
-#' @param min.n for \code{edgeR-trended} model only: specify the minimim number of genes in a bin (default is 100).
+
+#' @param min.n for \code{Trended} model only: specify the minimim number of genes in a bin (default is 100).
+
 #' @param prior.df control of the shrinkage applied for \code{edgeR} genewise, tagwise 
 #' (and its variants) dispersion models. Setting \code{prior.df=0} gives the genewise model
 #' without any shrinkage. Setting \code{prior.df=10} (default in \code{edgeR}) gives the tagwise
-#' model with shrinkage, either towards the common dispersion (\code{edgeR-tagcom}) or the
-#' global dispersion trend (\code{edgeR-tagtrd}).
+#' model with shrinkage, either towards the common dispersion (\code{Tagwise-Common}) or the
+#' global dispersion trend (\code{Tagwise-Trend}). In the paper of McCarthy, DJ et al. (2012),
+#' in the formula G_0 = prior.df/df = 20/df: df is the "residual df" (equals the number of libraries minus the number of distinct
+#' treatment groups), and prior.df=20. For example, if there are six libraries and two distinct groups, 
+#' df = residual df = 4. If we set prior.df = 20, then G_0 = 5. G_0 is the "prior.n" in \code{edgeR}'s earlier versions.
+#' Users should be careful in choosing appropriate prior.df when using tagwise models.
+
+#' @param seed initial random number seed for reproducibility of re-simulations (default is 1).
+
 #' @param ncores number of CPU cores to use. If unspecified, use the total number of CPUs minus 1.
-#' @param model.func this argument lets end-users pass a pre-defined function that outputs at least two matrices,
-#' mu and phi, from a particular new model not included in the \code{model} argument. 
-#' @param ... (optional arguments to be passed to the new model function defined in \code{model.func}).
+#' 
+#' @param ... (for future use)
 #' 
 #' @return An object of class "gofm" to which other methods can be applied.
 #' 
@@ -60,15 +71,15 @@
 #' 
 #' @usage 
 #' nb.gof.m(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, method=NULL, 
-#' min.n=100, prior.df = 10, ncores = NULL, model.func = NULL, ...)
+#' min.n=100, prior.df = 10, seed=1, ncores = NULL, ...)
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
 #' @export
 #' 
 #' @references 
-#' Mi G, Di Y and Schafer DW (2013). Goodness-of-Fit Tests and Model Diagnostics
-#' for Negative Binomial Regression of RNA sequencing Data. \emph{Biometrics} (revision invited).
+#' Mi G, Di Y and Schafer DW (2014). Goodness-of-Fit Tests and Model Diagnostics
+#' for Negative Binomial Regression of RNA sequencing Data. (revision invited).
 #' 
 #' Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The NBP Negative Binomial
 #' Model for Assessing Differential Gene Expression from RNA-Seq", \emph{Statistical 
@@ -88,32 +99,26 @@
 #' library(NBGOF)
 #' 
 #' ## basic set-up of the model:
-#' seed = 539768
+#' seed = 539
 #' sim = 999
 #' conf.env = 0.95
 #' 
 #' ## basic parameter specifications:
-#' m = 1000; # 1000 genes
-#' n = 6;    # 6 samples
-#' s = 1e6;  # lib.sizes
-#' offset = log(s);  # make sure offset for NBP functions should take the log
-#' offset    # 13.82
+#' m = 1000 # 1000 genes
+#' n = 6    # 6 samples
+#' s = 1e6  # lib.sizes
+#' offset = log(s)  # make sure offset for NBP functions should take the log
 #' 
 #' ## simulate coefficients:
-#' beta = matrix(0, m, 1);  # beta0 only
+#' beta = matrix(0, m, 1)  # beta0 only
 #' set.seed(seed)
-#' beta[,1] = rnorm(m, 5, 2) - offset;   # beta0 ~ normal (mean and a based on real RNA-Seq data)
-#' beta  # m-by-1 matrix
+#' beta[,1] = rnorm(m, 5, 2) - offset   # beta0 ~ normal (mean and a based on real RNA-Seq data)
 #' 
 #' ## design matrix (single group only):
 #' x = matrix(rep(1,n))
-#' x
 #' 
 #' ## specify mean levels:
-#' mu = round(t(s * exp(x %*% t(beta))));
-#' sum(rowSums(mu) == 0)  
-#' mu[rowSums(mu) == 0, ] = 1
-#' sum(rowSums(mu) == 0)
+#' mu = round(t(s * exp(x %*% t(beta))))
 #' pi = mu/s
 #' 
 #' ## simulate an m-by-n count matrix mimicking a RNA-Seq dataset:
@@ -123,7 +128,7 @@
 #' alpha0 = log(phi0)
 #' phi.nbp = phi0 * pi^alpha1
 #' range(phi.nbp)
-#' cbind(mu[,1], phi.nbp[,1]);
+#' cbind(mu[,1], phi.nbp[,1])
 #' 
 #' ## add noise:
 #' a = 0.1
@@ -144,13 +149,13 @@
 #' ## GOF tests for different dispersion models, using parallel computing:
 #' ## CAUTION: may be time-consuming depending on the size of data and simulations!
 #' nc = detectCores() - 1
-#' fnbp.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBP", ncores=nc)
-#' fnbq.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBQ", ncores=nc)
-#' fcom.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-common", ncores=nc)
-#' fgen.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-genewise", ncores=nc)
-#' ftgc.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-tagcom", ncores=nc)
-#' ftgt.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-tagtrd", ncores=nc)
-#' ftrd.noip = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-trended", ncores=nc)
+#' fnbp.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBP", seed=1, ncores=nc)
+#' fnbq.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBQ", seed=1, ncores=nc)
+#' fcom.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Common", seed=1, ncores=nc)
+#' fgen.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Genewise", seed=1, ncores=nc)
+#' ftgc.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Common", seed=1, ncores=nc)
+#' ftgt.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Trend", seed=1, ncores=nc)
+#' ftrd.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Trended", seed=1, ncores=nc)
 #' 
 #' ## summarize the GOF test results:
 #' summary(fnbp.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")
@@ -164,30 +169,32 @@
 #' ## evaluate GOF p-values using histograms and quantile-quantile uniform plots:
 #' # pdf("plots-NBP-01-1grp.pdf", width=20, height=20)
 #' h1 = diagPlot(fnbp.noip, type="hist", binwidth=0.1)
-#' q1 = diagPlot(fnbp.noip, type="qq", envelope=0.95)
+#' q1 = diagPlot(fnbp.noip, type="qq")
 #' h2 = diagPlot(fnbq.noip, type="hist", binwidth=0.1)
-#' q2 = diagPlot(fnbq.noip, type="qq", envelope=0.95)
+#' q2 = diagPlot(fnbq.noip, type="qq")
 #' h3 = diagPlot(fcom.noip, type="hist", binwidth=0.1)
-#' q3 = diagPlot(fcom.noip, type="qq", envelope=0.95)
+#' q3 = diagPlot(fcom.noip, type="qq")
 #' h4 = diagPlot(fgen.noip, type="hist", binwidth=0.1)
-#' q4 = diagPlot(fgen.noip, type="qq", envelope=0.95)
+#' q4 = diagPlot(fgen.noip, type="qq")
 #' h5 = diagPlot(ftgc.noip, type="hist", binwidth=0.1)
-#' q5 = diagPlot(ftgc.noip, type="qq", envelope=0.95)
+#' q5 = diagPlot(ftgc.noip, type="qq")
 #' h6 = diagPlot(ftgt.noip, type="hist", binwidth=0.1)
-#' q6 = diagPlot(ftgt.noip, type="qq", envelope=0.95)
+#' q6 = diagPlot(ftgt.noip, type="qq")
 #' h7 = diagPlot(ftrd.noip, type="hist", binwidth=0.1)
-#' q7 = diagPlot(ftrd.noip, type="qq", envelope=0.95)
+#' q7 = diagPlot(ftrd.noip, type="qq")
 #' multiplot(h1, q1, h2, q2, h3, q3, h4, q4, h5, q5, h6, q6, h7, q7, cols=4, layout=matrix(seq(1,16), nrow=4, byrow=TRUE))
 #' # dev.off()
 #' 
 nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, method = NULL, min.n=100, prior.df = 10, 
-                    ncores = NULL, model.func = NULL, ...){
+                    seed=1, ncores = NULL, ...){
   
-  if (is.null(model) & is.null(model.func)){
-    stop("You must specify a model or a model function!")
+  if (is.null(model)){
+    stop("You must specify a model name!")
   }
   
-  stopifnot(model %in% c("NBP", "NBQ", "edgeR-common", "edgeR-genewise", "edgeR-trended", "edgeR-tagcom", "edgeR-tagtrd", "new"))
+  if ( !model %in% c("NBP", "NBQ", "Common", "Genewise", "Trended", "Tagwise-Common", "Tagwise-Trend") ) {
+    stop("You must specify one of these model names: 'NBP', 'NBQ', 'Common', 'Genewise', 'Trended', 'Tagwise-Common' or 'Tagwise-Trend'!")
+  }
   
   # parallel computing: specify number of cores to use
   if (is.null(ncores)){
@@ -196,7 +203,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   # register for foreach
   registerDoMC(ncores)
   
-  # We recommend that genes with all zero counts be removed in advance;
+  # We recommend that genes with all zero counts be removed in advance
   # The first argument, counts, should be already subsetted before passing to the function
   
   m = dim(counts)[1]
@@ -219,6 +226,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     #pb = txtProgressBar(style=3)
     ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
       #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
@@ -230,6 +238,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
     #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0[ ,1]
   }
+  
   #### -----------------------------------------------------------------
   else if (model == "NBQ"){
     mnbq.0 = model.nbq.m(counts, x, lib.sizes=colSums(counts), method=method)
@@ -241,6 +250,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     #pb = txtProgressBar(style=3)
     ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
       #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
@@ -252,8 +262,9 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
     #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0[ ,1]
   }
+  
   #### -----------------------------------------------------------------
-  else if (model == "edgeR-common"){
+  else if (model == "Common"){
     mcom.0 = model.edgeR.common(counts, x, lib.sizes=colSums(counts), method=method)
     mu.hat.mat0 = mcom.0$mu.hat.mat
     phi.hat.mat0 = mcom.0$phi.hat.mat
@@ -263,6 +274,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     #pb = txtProgressBar(style=3)
     ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
       #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
@@ -274,9 +286,10 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
     #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
   }
+  
   #### -----------------------------------------------------------------
-  else if (model == "edgeR-genewise"){
-    mgen.0 = model.edgeR.genewise(counts, x, lib.sizes=colSums(counts))
+  else if (model == "Genewise"){
+    mgen.0 = model.edgeR.genewise(counts, x, lib.sizes=colSums(counts), min.n=min.n, method=method)
     mu.hat.mat0 = mgen.0$mu.hat.mat
     phi.hat.mat0 = mgen.0$phi.hat.mat
     res.omat0 = mgen.0$res.omat
@@ -285,19 +298,21 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     #pb = txtProgressBar(style=3)
     ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
       #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      model.edgeR.genewise(y.mat.h, x, lib.sizes=colSums(y.mat.h))$ord.res.vec
+      model.edgeR.genewise(y.mat.h, x, lib.sizes=colSums(y.mat.h), min.n=min.n, method=method)$ord.res.vec
     }
     #close(pb)
     dimnames(ord.res.sim.mat.tmp) = NULL
     ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
     #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
   }
+  
   #### -----------------------------------------------------------------
-  else if (model == "edgeR-trended"){
+  else if (model == "Trended"){
     mtrd.0 = model.edgeR.trended(counts, x, lib.sizes=colSums(counts), min.n=min.n, method=method)
     mu.hat.mat0 = mtrd.0$mu.hat.mat
     phi.hat.mat0 = mtrd.0$phi.hat.mat
@@ -307,6 +322,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     #pb = txtProgressBar(style=3)
     ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
       #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
@@ -318,8 +334,9 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
     #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
   }
+  
   #### -----------------------------------------------------------------
-  else if (model == "edgeR-tagcom"){
+  else if (model == "Tagwise-Common"){
     mtgc.0 = model.edgeR.tagcom(counts, x, lib.sizes=colSums(counts), prior.df = prior.df, method=method)
     mu.hat.mat0 = mtgc.0$mu.hat.mat
     phi.hat.mat0 = mtgc.0$phi.hat.mat
@@ -329,6 +346,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     #pb = txtProgressBar(style=3)
     ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
       #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
@@ -340,8 +358,9 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
     #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
   }
+  
   #### -----------------------------------------------------------------
-  else if (model == "edgeR-tagtrd"){
+  else if (model == "Tagwise-Trend"){
     mtgt.0 = model.edgeR.tagtrd(counts, x, lib.sizes=colSums(counts), min.n=min.n, prior.df = prior.df, method=method)
     mu.hat.mat0 = mtgt.0$mu.hat.mat
     phi.hat.mat0 = mtgt.0$phi.hat.mat
@@ -351,6 +370,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     #pb = txtProgressBar(style=3)
     ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
       #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
@@ -362,58 +382,17 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
     #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
   }
-  #### -----------------------------------------------------------------
-  ## user-specified function for a model other than currently provided
-  ## this function, no matter what arguments are needed, should return a list of 2 matrices, mu and phi, at the minimum
-  # Error:
-  # promise already under evaluation: recursive default argument reference or earlier problems? (to be done!)
-  #
-  else if (model == "new") {
-    if (is.null(model.func)){
-      stop("You must specify a model function to test the GOF of that model!")
-    }
-    message("Testing GOF of a user-specified model ... ")
-    FUN = match.fun(model.func)
-    model.obj.0 = FUN(counts, x, lib.sizes=colSums(counts), ...)  
-    # extract quantities from fun. output list
-    mu.hat.mat0 = model.obj.0$mu
-    phi.hat.mat0 = model.obj.0$phi
-    if ( sum(dim(mu.hat.mat0) != dim(counts)) + sum(dim(phi.hat.mat0) != dim(counts)) != 0){
-      stop("Check the output matrices: they both should have the same dimensions as the count matrix!")
-    }
-    # calculate other quantities
-    res.m = (counts - mu.hat.mat0) / sqrt(mu.hat.mat0 + phi.hat.mat0 * mu.hat.mat0^2)
-    res.m[ is.nan(res.m) ] = 0
-    res.m[ is.infinite(res.m) ] = 0
-    ord.res.v0 = as.vector(t(t(apply(res.m, 1, sort))))
-    ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
-      #setTxtProgressBar(pb, i/sim)
-      y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
-      dim(y.mat.h) = dim(counts)
-      rownames(y.mat.h) = rownames(counts)
-      colnames(y.mat.h) = colnames(counts)
-      model.obj.h = FUN(y.mat.h, x, lib.sizes=colSums(y.mat.h), ...)
-      res.m = (counts - model.obj.h$mu) / sqrt(model.obj.h$mu + model.obj.h$phi * model.obj.h$mu^2)
-      res.m[ is.nan(res.m) ] = 0
-      res.m[ is.infinite(res.m) ] = 0
-      as.vector(t(t(apply(res.m, 1, sort))))
-    }
-    #close(pb)
-    dimnames(ord.res.sim.mat.tmp) = NULL
-    ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
-  }
 
   #### -----------------------------------------------------------------
   # find the median of the big residual matrix (ordered): a vector
   ord.typ.res.sim = apply(ord.res.sim.mat[1:sim, ], 2, median)  # on simulated datasets ONLY!
   # subtract the typical residual vector from each row of the ordered residual matrix
-  # dists.mat.res =  abs(sweep(ord.res.sim.mat, 2, ord.typ.res.sim, "-"))
   dists.mat.res = (sweep(ord.res.sim.mat, 2, ord.typ.res.sim, "-"))^2
   
   # construct new distance matrix D of dimension (R+1)-by-m
   grp.vec = ( seq_len( ncol(dists.mat.res) ) - 1 ) %/% n     # grouping vector
   dist.mat = t( rowsum(t(dists.mat.res), grp.vec) )    # vertical distance matrix (sim. + obs.)
-  # THIS dist.mat IS UN-SORTED!! WE CAN USE THIS MATRIX FOR THE ENVELOPE METHOD CALCULATIONS
+  # THIS dist.mat IS UN-SORTED
   pear.mat = t( rowsum(t(ord.res.sim.mat)^2, grp.vec) )  # Pearson stats matrix (sim. + obs.)
   
   #### -----------------------------------------------------------------
@@ -421,18 +400,14 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   ## this p-value is the Monte Carlo p-value simply from a single univariate case
   v.pvals = numeric(m)     # M.C. p-values based on vertical distances
   p.pvals.1s = numeric(m)  # M.C. p-values based on Pearson statistics (1-sided)
-  p.pvals.2s = numeric(m)  # M.C. p-values based on Pearson statistics (2-sided)
   for (i in 1:m){
     v.pvals[i] = (sum(dist.mat[1:sim,i] >= dist.mat[(sim+1),i]) + 1) / (sim + 1)
     p.pvals.1s[i] = (sum(pear.mat[1:sim,i] >= pear.mat[(sim+1),i]) + 1) / (sim + 1)
-    p.pvals.2s[i] = 2 * min( (sum(pear.mat[1:sim,i] >= pear.mat[(sim+1),i]) + 1) / (sim + 1),
-                          1 - (sum(pear.mat[1:sim,i] >= pear.mat[(sim+1),i]) + 1) / (sim + 1) )
   }
   
   # to avoid potential zero p-values
   v.pvals[v.pvals == 0] = 1/sim
   p.pvals.1s[p.pvals.1s == 0] = 1/sim
-  p.pvals.2s[p.pvals.2s == 0] = 2/sim
   
   #### -----------------------------------------------------------------
   ## save as a list
@@ -440,15 +415,17 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
                  counts.dim = counts.dim,
                  design.mat = x,
                  lib.sizes = lib.sizes,
+                 seed = seed,
                  v.pvals = v.pvals,
                  p.pvals.1s = p.pvals.1s,
-                 p.pvals.2s = p.pvals.2s,
+                 mu.hat.mat0 =  mu.hat.mat0,
                  phi.hat.mat0 = phi.hat.mat0,
-                 #phi.hat.sim.mat = phi.hat.sim.mat,
+                 ord.res.sim.mat = ord.res.sim.mat,
                  dist.mat = dist.mat,
                  pear.mat = pear.mat,
                  sim = sim
                  )
+  
   # save the object as a "gofm" class
   class(gof.obj) = "gofm"
   return(gof.obj)

@@ -34,6 +34,9 @@
 #' 
 model.edgeR.common = function(counts, x, lib.sizes=colSums(counts), method=method){
   
+  grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
+                   labels = seq(ncol(x)))
+  
   ## edgeR common dispersion:
   
   method = ifelse(test = is.null(method), "CoxReid", method)
@@ -53,7 +56,7 @@ model.edgeR.common = function(counts, x, lib.sizes=colSums(counts), method=metho
   res.m[ is.infinite(res.m) ] = 0
   
   # sort res.m with care!
-  res.om = t(apply(res.m, 1, sort))  # if NaN is produced in res.m: error when sorting!
+  res.om = t(apply(res.m, 1, sort.vec, grp.ids)) 
   ord.res.v = as.vector(t(res.om))
   
   # save as a list

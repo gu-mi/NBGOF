@@ -1,5 +1,5 @@
 ################################################################################
-## Copyright (C) 2013 Gu Mi <mig@stat.oregonstate.edu>
+## Copyright (C) 2014 Gu Mi <mig@stat.oregonstate.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -35,24 +35,24 @@
 #' \itemize{
 #' \item NBP dispersion model in the \code{NBPSeq} package (\code{NBP})
 #' \item NBQ dispersion model in the \code{NBPSeq} package (\code{NBQ})
-#' \item NB common dispersion model in the \code{\link{edgeR}} package (\code{edgeR-common})
-#' \item NB genewise dispersion model in the \code{\link{edgeR}} package (\code{edgeR-genewise})
+#' \item NB common dispersion model in the \code{\link{edgeR}} package (\code{Common})
+#' \item NB genewise dispersion model in the \code{\link{edgeR}} package (\code{Genewise})
 #' \item NB trended (non-parametric) dispersion model in the \code{\link{edgeR}} package
-#' (\code{edgeR-trended})
+#' (\code{Trended})
 #' \item NB tagwise-common dispersion model in the \code{\link{edgeR}} package 
-#' (\code{edgeR-tagcom})
+#' (\code{Tagwise-Common})
 #' \item NB tagwise-trended dispersion model in the \code{\link{edgeR}} package 
-#' (\code{edgeR-tagtrd})
+#' (\code{Tagwise-Trend})
 #' }
 #' 
 #' @name NBGOF-package
 #' @aliases NBGOF-package NBGOF
 #' @docType package
-#' @import NBPSeq edgeR numDeriv parallel foreach ggplot2
+#' @import NBPSeq edgeR numDeriv MASS parallel foreach ggplot2
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
-#' Maintainer: Gu Mi <http://people.oregonstate.edu/~mig>
+#' Maintainer: Gu Mi <https://github.com/gu-mi>
 #' 
 #' @seealso See \code{\link{nb.gof.v}} and \code{\link{nb.gof.m}} for examples on simulated
 #' datasets. See \code{\link{earthquake}} and \code{\link{arab}} for real data examples.

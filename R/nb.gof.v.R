@@ -26,6 +26,8 @@
 #' @param method specify either "\code{ML}" or "\code{APL}" for the maximum likelihood
 #' and adjusted profile likelihood methods used, respectively, for the NBP model estimations. ML is used
 #' for the NB2 model estimations.
+#' @param seed initial random number seed for reproducibility of re-simulations.
+#' @param ncores number of CPU cores to use. If unspecified, use the total number of CPUs minus 1.
 #' 
 #' @return An object of class "gofv" to which other methods can be applied.
 #' 
@@ -39,15 +41,15 @@
 #' the Poisson model.
 #' 
 #' @usage 
-#' nb.gof.v(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML")
+#' nb.gof.v(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", seed=1, ncores=NULL)
 #' 
 #' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
 #' 
 #' @export
 #' 
 #' @references 
-#' Mi G., Di Y. and Schafer D.W. (2013). Goodness-of-Fit Tests and Model Diagnostics
-#' for Negative Binomial Regression of RNA sequencing Data. \emph{Biometrics} (revision invited).
+#' Mi G., Di Y. and Schafer D.W. (2014). Goodness-of-Fit Tests and Model Diagnostics
+#' for Negative Binomial Regression of RNA sequencing Data. (revision invited).
 #' 
 #' Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The NBP Negative Binomial
 #' Model for Assessing Differential Gene Expression from RNA-Seq", \emph{Statistical 
@@ -61,7 +63,7 @@
 #' library(NBGOF)
 #' 
 #' ## basic set-up of the model:
-#' seed = 539768
+#' seed = 539
 #' n = 100
 #' beta.v = c(1, -3)
 #' 
@@ -83,22 +85,23 @@
 #' 
 #' ## implement the GOF test for testing NB and Poisson model adequacy:
 #' # pdf("gofv-result.pdf", width=14, height=7)
-#' par(mfrow=c(1,3))
 #' 
 #' # NB2 model fit using MLE:
-#' gof.nb1.nb2 = nb.gof.v(y.nb1, X, s, sim=sim, model="NB2")
-#' EPPlot(gof.nb1.nb2, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+#' gof.nb1.nb2 = nb.gof.v(y.nb1, X, s, sim=sim, model="NB2", seed=1)
+#' p1 = EPPlot(gof.nb1.nb2, envelope=0.95, data.note="NB1")
 #' 
 #' # NBP model fit using MLE:
-#' gof.nb1.nbp = nb.gof.v(y.nb1, X, s, sim=sim, model="NBP", method="ML")
-#' EPPlot(gof.nb1.nbp, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+#' gof.nb1.nbp = nb.gof.v(y.nb1, X, s, sim=sim, model="NBP", method="ML", seed=1)
+#' p2 = EPPlot(gof.nb1.nbp, envelope=0.95, data.note="NB1")
 #' 
 #' # Poisson model fit:
-#' gof.nb1.poi = nb.gof.v(y.nb1, X, s, sim=sim, model="Poisson")
-#' EPPlot(gof.nb1.poi, conf.env=0.95, data.note="NB1", pch=".", cex=5)
+#' gof.nb1.poi = nb.gof.v(y.nb1, X, s, sim=sim, model="Poisson", seed=1)
+#' p3 = EPPlot(gof.nb1.poi, envelope=0.95, data.note="NB1")
+#' 
+#' multiplot(p1, p2, p3, cols=3, layout=matrix(seq(1,3), nrow=1, byrow=TRUE))
 #' # dev.off()
 #' 
-nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", ncores = NULL){
+nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", seed=1, ncores = NULL){
   
   n = length(y)
   p = dim(x)[2]
@@ -132,6 +135,7 @@ nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", n
     ## ---------------------------------    
     res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
       #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
       y.vec.h = rpois(n, lambda=mu.hat.v0)
       mpoi.h = model.poi.v(y=y.vec.h, x=x, lib.sizes=libs)  
       # Poisson model fit on simulated data
@@ -141,6 +145,7 @@ nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", n
     dimnames(res.sim.mat.tmp) = NULL
     res.sim.mat = rbind(res.sim.mat.tmp, res.vec0)
   }
+  
   #### -----------------------------------------------------------------
   if (model == "NB2"){
     libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
@@ -156,6 +161,7 @@ nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", n
     ## ---------------------------------    
     res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
       #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
       y.vec.h = rnbinom(n, mu = mu.hat.v0, size = 1/phi0)
       mnb2.h = model.nb2.v(y=y.vec.h, x=x, lib.sizes=libs)  # MLE for NB2 models
       # NB2 model fit on simulated data
@@ -165,6 +171,7 @@ nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", n
     dimnames(res.sim.mat.tmp) = NULL
     res.sim.mat = rbind(res.sim.mat.tmp, res.vec0)
   }
+  
   #### -----------------------------------------------------------------
   if (model == "NBP"){
     libs = ifelse(is.null(lib.sizes), rep(1, n), lib.sizes)
@@ -180,6 +187,7 @@ nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", n
     ## ---------------------------------    
     res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
       #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
       y.vec.h = rnbinom(n, mu = mu.hat.v0, size = 1/phi0)
       mnbp.h = model.nbp.v(y=y.vec.h, x=x, lib.sizes=libs, method=method)  
       # NBP model fit on simulated data
@@ -206,13 +214,12 @@ nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", n
     stat.sim.P[i] = sum( res.sim.mat[i, ]^2 )
     stat.sim.D[i] = sum( (ord.res.sim.mat[i, ] - ord.typ.res.sim)^2 )
   }
-  # 2-sided p-value for Pearson statistics
+  # 1-sided p-value for Pearson statistics
   # 1-sided p-value for vertical distance measure
-  pval.P = 2 * min( (sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1),
-                    1 - ( sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1) )
+  pval.P.1 = (sum(stat.sim.P >= stat0.P) + 1 ) / (sim + 1)
   pval.D = (sum(stat.sim.D >= stat0.D) + 1) / (sim + 1)
-  pv.P = round(pval.P, 6)
-  pv.D = round(pval.D, 6)
+  pv.P.1 = as.numeric(formatC(pval.P.1, flag="#", digits=4))
+  pv.D = as.numeric(formatC(pval.D, flag="#", digits=4))
   
   #### -----------------------------------------------------------------
   ## save as a list
@@ -220,13 +227,17 @@ nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", n
                  design.mat = x,
                  samp.size = n,
                  num.pred = p,
-                 pear.pval = pv.P,
+                 seed = seed,
+                 phi0 = phi0,
+                 pear.pval.1 = pv.P.1,
                  new.pval = pv.D,
                  res.vec0 = res.vec0,
+                 res.sim.mat = res.sim.mat,
                  ord.res.sim.mat = ord.res.sim.mat,
                  ord.typ.res.sim = ord.typ.res.sim,
                  sim = sim
   )
+  
   # save the object as a "gofv" class
   class(gof.obj) = "gofv"
   return(gof.obj)

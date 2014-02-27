@@ -40,6 +40,9 @@
 #' 
 model.edgeR.trended = function(counts, x, lib.sizes=colSums(counts), min.n=min.n, method=method){
   
+  grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
+                   labels = seq(ncol(x)))
+  
   ## edgeR trended (non-parametric) dispersion:
 
   method = ifelse(test = is.null(method), "auto", method)
@@ -50,7 +53,6 @@ model.edgeR.trended = function(counts, x, lib.sizes=colSums(counts), min.n=min.n
   e.trd = estimateGLMTrendedDisp(y.dge, design=x, min.n=min.n, method=method)
   trd.fit = glmFit(y=counts, design=x, dispersion=e.trd$trended.dispersion)
   
-    
   # extract quantities:
   mu.hat.m = trd.fit$fitted.values   # mu may be close to 0
   phi.hat.m = trd.fit$dispersion     # there may be NA's
@@ -62,7 +64,7 @@ model.edgeR.trended = function(counts, x, lib.sizes=colSums(counts), min.n=min.n
   res.m[ is.infinite(res.m) ] = 0
   
   # sort res.m with care!
-  res.om = t(apply(res.m, 1, sort))
+  res.om = t(apply(res.m, 1, sort.vec, grp.ids)) 
   ord.res.v = as.vector(t(res.om))
   
   # save as a list

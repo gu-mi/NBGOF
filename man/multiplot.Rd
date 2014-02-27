@@ -5,7 +5,8 @@
   http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
 }
 \usage{
-  multiplot(..., plotlist=NULL, cols=1, layout=NULL)
+  multiplot(..., plotlist=NULL, cols=1, layout=NULL,
+    labs=list(), labpos=list(c(0.5, 0.02), c(0.02, 0.5)))
 }
 \arguments{
   \item{...}{ggplot objects can be passed in ....}
@@ -17,6 +18,10 @@
 
   \item{layout}{a matrix specifying the layout. If present,
   'cols' is ignored.}
+
+  \item{labs}{global labels for x- and y-axes.}
+
+  \item{labpos}{positions for the global labels.}
 }
 \description{
   This function is used to plot multiple ggplot objects in
@@ -30,5 +35,7 @@
 }
 \seealso{
   \code{\link{nb.gof.m}} for simulated data examples.
+  Modifications of global labels made by Scott Chamberlain
+  (StackOverflow)
 }
 

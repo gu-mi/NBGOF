@@ -36,9 +36,10 @@ library(NBGOF)
 data(arab)
 
 ## simulation set-up:
-seed = 315825
+seed = 539
 sim = 999
 conf.env = 0.95
+nc = detectCores() - 1
 set.seed(seed)
 
 ## subset read counts to exclude all zero rows within each treatment:
@@ -52,18 +53,19 @@ y = arab.sub
 
 ## model matrix for arab.sub:
 x = as.matrix(rep(1,3))
-x
 
 ## GOF tests for different dispersion models:
-fnbp.arab = nb.gof.m(counts=y, x=x, sim=sim, model="NBP")
-fcom.arab = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-common")
-fgen.arab = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-genewise")
-ftgc.arab = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-tagcom", prior.df=10)
-ftgt.arab = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-tagtrd", prior.df=10, min.n=100)
-ftrd.arab = nb.gof.m(counts=y, x=x, sim=sim, model="edgeR-trended", min.n=100)
+fnbp.arab = nb.gof.m(counts=y, x=x, sim=sim, model="NBP", seed=1, ncores=nc)
+fnbq.arab = nb.gof.m(counts=y, x=x, sim=sim, model="NBQ", seed=1, ncores=nc)
+fcom.arab = nb.gof.m(counts=y, x=x, sim=sim, model="Common", seed=1, ncores=nc)
+fgen.arab = nb.gof.m(counts=y, x=x, sim=sim, model="Genewise", seed=1, ncores=nc)
+ftgc.arab = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Common", prior.df=10, seed=1, ncores=nc)
+ftgt.arab = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Trend", prior.df=10, min.n=100, seed=1, ncores=nc)
+ftrd.arab = nb.gof.m(counts=y, x=x, sim=sim, model="Trended", min.n=100, seed=1, ncores=nc)
 
 ## summarize the GOF test results:
 summary(fnbp.arab, conf.env=conf.env, data.note="arab")
+summary(fnbq.arab, conf.env=conf.env, data.note="arab")
 summary(fcom.arab, conf.env=conf.env, data.note="arab")
 summary(fgen.arab, conf.env=conf.env, data.note="arab")
 summary(ftgc.arab, conf.env=conf.env, data.note="arab")
@@ -71,28 +73,15 @@ summary(ftgt.arab, conf.env=conf.env, data.note="arab")
 summary(ftrd.arab, conf.env=conf.env, data.note="arab")
 
 ## mean-dispersion plot with some of the fitted dispersion models:
-
-# (1) based on the subsetted Arabidopsis dataset:
+# model.vec=c("Common", "NBP", "NBQ", "Trended", "Tagwise-Common", "Tagwise-Trend")
+# pl.arab = MDPlot(model.vec, y, x, title="Mean-Dispersion Plot with Fitted Dispersion Models (Arabidopsis Data)")
 # pdf(file="arab-md-plot-subset.pdf", width=7, height=7)
-plot.md(y, x, model = NULL, scatter = TRUE, legend = FALSE, cex=4,
-main="Mean-Dispersion Plot with Fitted NB Models (Arabidopsis Data)")
-plot.md(y, x, model = "edgeR-common")
-plot.md(y, x, model = "edgeR-trended")
-plot.md(y, x, model = "edgeR-tagcom")
-plot.md(y, x, model = "edgeR-tagtrd", legend=TRUE)
+# print(pl.arab)
 # dev.off()
 
-# (2) based on the complete Arabidopsis dataset (may take longer to run):
-arab.all = good.arab[ ,1:3]
-y2 = arab.all
-# pdf(file="arab-md-plot.pdf", width=7, height=7)
-plot.md(y2, x, model = NULL, scatter = TRUE, legend = FALSE, cex=4,
-main="Mean-Dispersion Plot with Fitted NB Models (Arabidopsis Data)")
-plot.md(y2, x, model = "edgeR-common")
-plot.md(y2, x, model = "edgeR-trended")
-plot.md(y2, x, model = "edgeR-tagcom")
-plot.md(y2, x, model = "edgeR-tagtrd", legend=TRUE)
-# dev.off()
+## diagnostic plot (histogram or uniform QQ plot of GOF p-values):
+# dp1 = diagPlot(fnbq.arab, type="hist", binwidth=0.1)
+# print(dp1)
 }
 \references{
   Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The

@@ -1,7 +1,7 @@
 \name{model.nbq.m}
 \alias{model.nbq.m}
-\title{Modeling NBQ Genewise Dispersion with the Maximum Ajdusted Profile Likelihood Estimator
-(MAPLE) on Original and Simulated Datasets}
+\title{Modeling NBQ Genewise Dispersion with the Maximum Ajdusted Profile Likelihood (MAPL) Estimator
+on Original and Simulated Datasets}
 \usage{
   model.nbq.m(counts, x, lib.sizes=colSums(counts),
     method=method)

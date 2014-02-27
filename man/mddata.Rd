@@ -1,0 +1,30 @@
+\name{mddata}
+\alias{mddata}
+\title{Prepare Quantities for Mean-Dispersion Plots Using ggplot2}
+\usage{
+  mddata(counts, x, model = NULL)
+}
+\arguments{
+  \item{counts}{an m-by-n count matrix of non-negative
+  integers. For a typical RNA-Seq experiment, this is the
+  read counts with m genes and n samples}
+
+  \item{x}{an n-by-p design matrix}
+
+  \item{model}{a string of characters specifying the
+  negative binomial dispersion model used to fit the data.
+  Currently supported dispersion models include "NBP",
+  "NBQ", "Common", "Tagwise-Common", "Tagwise-Trend" and
+  "Trended"}
+}
+\value{
+  a data frame for each specified model.
+}
+\description{
+  This function prepares quantities for making
+  mean-dispersion plots with curves of fitted negative
+  binomial dispersion models. The result (a data frame)
+  will be passed to the \code{\link{MDPlot}} function.
+}
+\keyword{internal}
+

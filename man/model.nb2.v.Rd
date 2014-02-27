@@ -1,7 +1,6 @@
 \name{model.nb2.v}
 \alias{model.nb2.v}
-\title{Modeling NB2 Regression Model with Maximum Likelihood (ML) on Original and Simulated
-Datasets}
+\title{Modeling NB2 Regression Model with Maximum Likelihood (ML) on Original and Simulated Datasets}
 \usage{
   model.nb2.v(y, x, lib.sizes=NULL)
 }

@@ -1,3 +1,4 @@
+
 ##' Estimate the regression coefficients in an NBP GLM model for each gene
 ##'
 ##' @title Estiamte the regression coefficients in an NB GLM model
@@ -9,6 +10,7 @@
 ##' @param beta0 a K vector, non NA components are hypothesized values of beta, NA components are free components
 ##' @return beta a K vector, the MLE of the regression coefficients.
 ##' @keywords internal
+##' 
 irls.nb = function(y, s, x, phi, beta0, ..., print.level=0) {
   m = dim(y)[1];
   n = dim(y)[2];
@@ -116,19 +118,6 @@ irls.nb.1 = function(y, s, x, phi, beta0=rep(NA,p),
     
     ## call Fortran code via C wrapper
     fit = .Call("Cdqrls", x[, id1, drop=FALSE] * w,  w * z, epsilon, PACKAGE="NBGOF");
-    
-    ##    fit = .Fortran("dqrls",
-    ##                    qr = x[,id1] * w, n = nobs,
-    ##                    p = nvars, y = w * z, ny = 1L,
-    ##                    tol = epsilon,
-    ##                    coefficients = double(nvars),
-    ##                    residuals = double(nobs),
-    ##                    effects = double(nobs),
-    ##                    rank = integer(1L),
-    ##                    pivot = 1L:nvars,
-    ##                    qraux = double(nvars),
-    ##                    work = double(2 * nvars),
-    ##                    PACKAGE = "base");
     
     if (any(!is.finite(fit$coefficients))) {
       warning(gettextf("non-finite coefficients at iteration %d", iter), domain = NA);

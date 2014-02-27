@@ -7,7 +7,7 @@
 #' @param x an object of class "gofm" from the \code{\link{nb.gof.m}} output
 #' @param conf.env confidence level for the envelope
 #' @param data.note a note on how data are simulated or the source of data
-#' @param ... for future use
+#' @param ... (for future use)
 #' 
 #' @method summary gofm
 #' @rdname summary.gofm
@@ -30,10 +30,7 @@
 #' @references
 #' See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #'
-summary.gofm = function(x, 
-                        conf.env=0.95,
-                        data.note=NULL,
-                        ...){
+summary.gofm = function(x, conf.env=0.95, data.note=NULL, ...){
   
   ## quantities from a "gofm" object:
   model = x$model
@@ -45,7 +42,6 @@ summary.gofm = function(x,
   ## Fisher's method:
   pv.fisher.vert = chisq_gof(x)$fisher.vert
   pv.fisher.pear.1s = chisq_gof(x)$fisher.pear.1s
-  pv.fisher.pear.2s = chisq_gof(x)$fisher.pear.2s
   
   #### -----------------------------------------------------------------------------------------
   # summaries
@@ -56,7 +52,6 @@ summary.gofm = function(x,
   cat("| Count matrix dimension:", counts.dim, "\n")
   cat("| Fisher Method GOF p-value (Vert.Dist.(1s)) =", pv.fisher.vert, "\n")
   cat("| Fisher Method GOF p-value (Pear.Stat.(1s)) =", pv.fisher.pear.1s, "\n")
-  cat("| Fisher Method GOF p-value (Pear.Stat.(2s)) =", pv.fisher.pear.2s, "\n")
   cat("-------------------------------------------------------------- \n")  
 
 }

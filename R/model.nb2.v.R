@@ -1,6 +1,5 @@
 
-#' @title Modeling NB2 Regression Model with Maximum Likelihood (ML) on Original and Simulated 
-#' Datasets
+#' @title Modeling NB2 Regression Model with Maximum Likelihood (ML) on Original and Simulated Datasets
 #' 
 #' @description This function is designed to fit an NB2 regression model. The output of
 #' this function will be passed to the main GOF function \code{\link{nb.gof.v}}.

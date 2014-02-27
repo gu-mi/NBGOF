@@ -27,13 +27,17 @@
 #' \code{edgeR} package for more details.
 #' 
 #' @usage
-#' model.edgeR.genewise(counts, x, lib.sizes=colSums(counts))
+#' model.edgeR.genewise(counts, x, lib.sizes=colSums(counts), min.n=min.n, method=method)
 #' 
 #' @param counts an m-by-n count matrix of non-negative integers. For a typical
 #' RNA-Seq experiment, this is the read counts with m genes and n samples.
 #' @param x an n-by-p design matrix.
 #' @param lib.sizes library sizes of an RNA-Seq experiment. Default is the column
 #' sums of the \code{counts} matrix.
+#' @param min.n minimim number of genes in a bin. Default is 100. See \code{\link{dispBinTrend}}
+#' for details (lower-level function of \code{\link{estimateGLMTrendedDisp}}).
+#' @param method method for estimating the trended dispersion, including "auto", "bin.spline", "bin.loess", "power" and "spline". 
+#' If NULL, then the "auto" method. See \code{\link{estimateGLMTrendedDisp}} for more details.
 #' 
 #' @return A list of quantities to be used in the main \code{\link{nb.gof.m}} function.
 #' 
@@ -44,13 +48,20 @@
 #' 
 #' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-model.edgeR.genewise = function(counts, x, lib.sizes=colSums(counts)){
+model.edgeR.genewise = function(counts, x, lib.sizes=colSums(counts), min.n = min.n, method=method){
+  
+  grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
+                   labels = seq(ncol(x)))
   
   ## edgeR genewise dispersion:
   
-  e.com = estimateGLMCommonDisp(y=counts, design=x, verbose=FALSE)  # feed common dispersion to TagwiseDisp that follows, not trended disp.
-  e.gen = estimateGLMTagwiseDisp(y=counts, design=x, offset=log(lib.sizes), dispersion=e.com, prior.df=0, trend=FALSE)  # prior.df = 0
-  # e.gen: trend is FALSE since we didn't use estimateGLMTrendedDisp() beforehand
+  method = ifelse(test = is.null(method), "auto", method)
+  stopifnot(method %in% c("auto", "bin.spline", "bin.loess", "power", "spline"))
+  
+  y.dge = DGEList(counts=counts)
+  y.dge$offset = log(lib.sizes)  
+  y.dge = estimateGLMTrendedDisp(y.dge, design=x, min.n=min.n, method=method)
+  e.gen = estimateGLMTagwiseDisp(y.dge, design=x, dispersion=y.dge$trended.dispersion, prior.df = 0, trend=TRUE)  # prior.df = 0
   gen.fit = glmFit(y=counts, design=x, dispersion=e.gen$tagwise.dispersion)
   
   # extract quantities:
@@ -64,7 +75,7 @@ model.edgeR.genewise = function(counts, x, lib.sizes=colSums(counts)){
   res.m[ is.infinite(res.m) ] = 0
   
   # sort res.m with care!
-  res.om = t(apply(res.m, 1, sort))
+  res.om = t(apply(res.m, 1, sort.vec, grp.ids)) 
   ord.res.v = as.vector(t(res.om))
   
   # save as a list
@@ -79,4 +90,4 @@ model.edgeR.genewise = function(counts, x, lib.sizes=colSums(counts)){
 
 
 
-  
+

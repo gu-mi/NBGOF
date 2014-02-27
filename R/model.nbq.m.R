@@ -1,6 +1,6 @@
 
-#' @title Modeling NBQ Genewise Dispersion with the Maximum Ajdusted Profile Likelihood Estimator 
-#' (MAPLE) on Original and Simulated Datasets
+#' @title Modeling NBQ Genewise Dispersion with the Maximum Ajdusted Profile Likelihood (MAPL) Estimator 
+#' on Original and Simulated Datasets
 #' 
 #' @description This function fits an NBQ dispersion model where the dispersion parameter
 #' is modeled as a linear function of the relative means, plus a quadratic term. See details below. 
@@ -40,6 +40,8 @@
 #' 
 model.nbq.m = function(counts, x, lib.sizes=colSums(counts), method=method){
   
+  grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
+                   labels = seq(ncol(x)))
   nc = dim(counts)[2]
   
   # preconditions
@@ -64,7 +66,7 @@ model.nbq.m = function(counts, x, lib.sizes=colSums(counts), method=method){
   res.m[ is.infinite(res.m) ] = 0
   
   # sort res.m with care!
-  res.om = t(apply(res.m, 1, sort))
+  res.om = t(apply(res.m, 1, sort.vec, grp.ids)) 
   ord.res.v = as.vector(t(res.om))
   
   # save as a list

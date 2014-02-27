@@ -3,7 +3,7 @@
 \title{Modeling NBP Regression Model with Maximum Likelihood (ML) or Adjusted Profile
 Likelihood (APL) on Original and Simulated Datasets}
 \usage{
-  model.nbp.v(y, x, lib.sizes=NULL, est.method="ML")
+  model.nbp.v(y, x, lib.sizes=NULL, method="ML")
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
@@ -17,8 +17,8 @@ Likelihood (APL) on Original and Simulated Datasets}
   \item{lib.sizes}{library sizes of a RNA-Seq experiment.
   Default is 1 for all samples.}
 
-  \item{est.method}{estimation method for NBP model fit.
-  Either maximum likelihood (\code{ML}) or adjusted profile
+  \item{method}{estimation method for NBP model fit. Either
+  maximum likelihood (\code{ML}) or adjusted profile
   likelihood (\code{APL}). Default is \code{ML}.}
 }
 \value{

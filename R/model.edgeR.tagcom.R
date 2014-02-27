@@ -52,6 +52,9 @@
 #' 
 model.edgeR.tagcom = function(counts, x, lib.sizes=colSums(counts), prior.df = prior.df, method=method){
   
+  grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
+                   labels = seq(ncol(x)))
+  
   ## edgeR tagwise-common dispersion:
   
   method = ifelse(test = is.null(method), "CoxReid", method)
@@ -73,7 +76,7 @@ model.edgeR.tagcom = function(counts, x, lib.sizes=colSums(counts), prior.df = p
   res.m[ is.infinite(res.m) ] = 0
   
   # sort res.m with care!
-  res.om = t(apply(res.m, 1, sort))
+  res.om = t(apply(res.m, 1, sort.vec, grp.ids)) 
   ord.res.v = as.vector(t(res.om))
   
   # save as a list

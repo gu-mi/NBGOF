@@ -1,30 +1,26 @@
 \name{EPPlot}
 \alias{EPPlot}
-\title{Empirical Probability Plot for Univariate Negative Binomial Regression Model Diagnostics}
+\title{Empirical Probability Plots of Negative Binomial Regression Models}
 \usage{
-  EPPlot(x, conf.env=0.95, data.note=NULL, leg.cex=1, ...)
+  EPPlot(gofv.obj, envelope=0.95, data.note=NULL)
 }
 \arguments{
-  \item{x}{an object of class "gofv" from the
+  \item{gofv.obj}{an object of class "gofv" from the
   \code{\link{nb.gof.v}} output.}
 
-  \item{conf.env}{confidence level for the envelope.}
+  \item{envelope}{the level of prediction band when drawing
+  EPP.}
 
-  \item{data.note}{a note on how data are simulated or the
-  source of data.}
-
-  \item{leg.cex}{size of the legend fonts.}
-
-  \item{...}{for future use.}
+  \item{data.note}{user-specified notes on lower right part
+  of the plot.}
 }
 \value{
-  An empirical probability plot with points outside a
-  pre-specified confidence envelope colored in red. GOF
-  test p-values are also reported on the plot.
+  A ggplot object of empirical probability plot.
 }
 \description{
-  Empirical probability plot based on a "gofv" object
-  obtained from the \code{\link{nb.gof.v}} outputs.
+  This function makes empirical probability plots (EPP)
+  based on the goodness-of-fit test results (an "gofv"
+  object) from \code{\link{nb.gof.v}}.
 }
 \author{
   Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
@@ -35,7 +31,6 @@
   details.
 }
 \seealso{
-  \code{\link{nb.gof.v}} for simulated data examples, and
-  \code{\link{earthquake}} for a real data example.
+  \code{\link{nb.gof.v}} for simulated data examples.
 }
 

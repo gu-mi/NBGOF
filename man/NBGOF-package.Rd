@@ -19,21 +19,20 @@ RNA Sequencing Data}
   (\code{NBP}) \item NBQ dispersion model in the
   \code{NBPSeq} package (\code{NBQ}) \item NB common
   dispersion model in the \code{\link{edgeR}} package
-  (\code{edgeR-common}) \item NB genewise dispersion model
-  in the \code{\link{edgeR}} package
-  (\code{edgeR-genewise}) \item NB trended (non-parametric)
-  dispersion model in the \code{\link{edgeR}} package
-  (\code{edgeR-trended}) \item NB tagwise-common dispersion
-  model in the \code{\link{edgeR}} package
-  (\code{edgeR-tagcom}) \item NB tagwise-trended dispersion
-  model in the \code{\link{edgeR}} package
-  (\code{edgeR-tagtrd}) }
+  (\code{Common}) \item NB genewise dispersion model in the
+  \code{\link{edgeR}} package (\code{Genewise}) \item NB
+  trended (non-parametric) dispersion model in the
+  \code{\link{edgeR}} package (\code{Trended}) \item NB
+  tagwise-common dispersion model in the
+  \code{\link{edgeR}} package (\code{Tagwise-Common}) \item
+  NB tagwise-trended dispersion model in the
+  \code{\link{edgeR}} package (\code{Tagwise-Trend}) }
 }
 \author{
   Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
   Schafer
 
-  Maintainer: Gu Mi <http://people.oregonstate.edu/~mig>
+  Maintainer: Gu Mi <https://github.com/gu-mi>
 }
 \references{
   See \url{https://github.com/gu-mi/NBGOF/wiki/} for more

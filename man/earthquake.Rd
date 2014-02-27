@@ -28,16 +28,15 @@ range(earthquake$Frequency)  # 1  33280
 y = earthquake$Frequency
 x = as.matrix(cbind(rep(1,length(y)), earthquake$Magnitude))
 gof.nb2 = nb.gof.v(y, x, sim=999, model="NB2")
-gof.nbp = nb.gof.v(y, x, sim=999, model="NBP", est.method="ML")
+gof.nbp = nb.gof.v(y, x, sim=999, model="NBP", method="ML")
 x2 = x[,2]
 gof.poi = nb.gof.v(y, x2, sim=999, model="Poisson")
 
-## empirical probability plots:
-# pdf(file=file.path(path1, "eqk-nb-models-12.pdf"), width=8, height=4)
-par(mfrow=c(1,3))
-EPPlot(gof.nb2, pch=".", cex=5,  leg.cex = 0.9, data.note="Earthquake Dataset")
-EPPlot(gof.nbp, pch=".", cex=5,  leg.cex = 0.9, data.note="Earthquake Dataset")
-EPPlot(gof.poi, pch=".", cex=5,  leg.cex = 0.9, data.note="Earthquake Dataset")
+## Empirical Probability Plots:
+# pdf(file=file.path(path1, "eqk-nb-models.pdf"), width=8, height=4)
+par(mfrow=c(1,2))
+print(EPPlot(gof.nb2, envelope=0.95, data.note="Earthquake Dataset"))
+print(EPPlot(gof.nbp, envelope=0.95, data.note="Earthquake Dataset"))
 # dev.off()
 }
 \references{

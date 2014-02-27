@@ -1,9 +1,9 @@
-\name{model.edgeR.genewise}
-\alias{model.edgeR.genewise}
+\name{model.edgeR.genewise2}
+\alias{model.edgeR.genewise2}
 \title{Modeling NB Genewise Dispersion with the Adjusted Profile Likelihood
 Estimator (APLE) on Original and Simulated Datasets}
 \usage{
-  model.edgeR.genewise(counts, x,
+  model.edgeR.genewise2(counts, x,
     lib.sizes=colSums(counts), min.n=min.n, method=method)
 }
 \arguments{

@@ -1,0 +1,24 @@
+\name{eppdata}
+\alias{eppdata}
+\title{Prepare Quantities for Empirical Probability Plots Using ggplot2}
+\usage{
+  eppdata(gofv.obj, envelope = 0.95)
+}
+\arguments{
+  \item{gofv.obj}{an object of class "gofv" from the
+  \code{\link{nb.gof.v}} output.}
+
+  \item{envelope}{the level of prediction band when drawing
+  EPP.}
+}
+\value{
+  a list of four components.
+}
+\description{
+  This function prepares quantities for making empirical
+  probability plots (EPP) of negative binomial regression
+  models. The result (a list) will be passed to the
+  \code{\link{EPPlot}} function to make EPP.
+}
+\keyword{internal}
+
