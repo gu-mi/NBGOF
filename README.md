@@ -1,7 +1,7 @@
 NBGOF
 =====
 
-Goodness-of-Fit Tests and Model Diagnostics for Negative Binomial Regression of RNA sequencing Data
+**Goodness-of-Fit Tests and Model Diagnostics for Negative Binomial Regression of RNA sequencing Data**
 
 ----------------------------------------------------------------------------------------------------
 
@@ -26,4 +26,4 @@ To load the package into current R session, run
 ```{r}
 library(NBGOF)
 ```
-Two main functions for testing the adequacy of regression models and NB dispersion models are `nb.gof.v` and `nb.gof.m`. 
+Two main functions for testing the adequacy of regression models and NB dispersion models are `nb.gof.v` and `nb.gof.m`, repectively. We provide two real datasets to illustrate the use of this package.
