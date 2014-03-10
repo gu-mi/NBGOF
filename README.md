@@ -5,6 +5,8 @@ NBGOF
 
 ----------------------------------------------------------------------------------------------------
 
+This README file for the R package NBGOF is incomplete for now. We will update on a regular basis.
+
 The NBGOF package implements goodness-of-fit (GOF) tests for negative binomial (NB) distributions and NB dispersion models, with applications in RNA-Seq data analysis. This package can be used to test the GOF of the NB2, NBP or Poisson **regression models**. It can also be used to test GOF for a variety of **NB dispersion models** in popular R/Bioconductor packages, including
 
 * NBP dispersion model in the NBPSeq package (NBP)
