@@ -103,6 +103,8 @@ diagPlot = function(gofm.obj, type="qq", binwidth=0.1){
             legend.title = element_blank(),
             legend.key = element_blank()
       )
+    
+    return(qq)
   }
   
   if (type == "hist"){
@@ -123,5 +125,6 @@ diagPlot = function(gofm.obj, type="qq", binwidth=0.1){
             legend.title = element_blank(),
             legend.key = element_blank()
       )
+    return(hist)
   }
 }
