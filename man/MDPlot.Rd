@@ -2,7 +2,7 @@
 \alias{MDPlot}
 \title{Mean-Dispersion Plots with Curves of Fitted Negative Binomial Dispersion Models}
 \usage{
-  MDPlot(model.vec, counts, x, title=NULL)
+MDPlot(model.vec, counts, x, title=NULL)
 }
 \arguments{
   \item{model.vec}{a character vector specifying the names
@@ -19,13 +19,13 @@
   \item{title}{title of the plot}
 }
 \value{
-  A ggplot object of mean-dispersion plot with fitted NB
-  dispersion model curves.
+A ggplot object of mean-dispersion plot with fitted NB
+dispersion model curves.
 }
 \description{
-  This function makes mean-dispersion plots with curves of
-  fitted negative binomial dispersion models. We currently
-  consider only one group and fit an intercept-only model.
+This function makes mean-dispersion plots with curves of
+fitted negative binomial dispersion models. We currently
+consider only one group and fit an intercept-only model.
 }
 \examples{
 # load package
@@ -44,11 +44,11 @@ pl.arab = MDPlot(model.vec, counts, x, title="Mean-Dispersion Plot with Fitted D
 print(pl.arab)
 }
 \author{
-  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
-  Schafer
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+Schafer
 }
 \references{
-  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
-  details.
+See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+details.
 }
 

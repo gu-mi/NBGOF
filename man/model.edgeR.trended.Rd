@@ -3,8 +3,7 @@
 \title{Modeling NB Trended (Non-parametric) Dispersion with the Adjusted Profile
 Likelihood estimator (APLE) on Original and Simulated Datasets}
 \usage{
-  model.edgeR.trended(counts, x, lib.sizes=colSums(counts),
-    min.n=min.n, method=method)
+model.edgeR.trended(counts, x, lib.sizes=colSums(counts), min.n=min.n, method=method)
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -28,38 +27,38 @@ Likelihood estimator (APLE) on Original and Simulated Datasets}
   details.}
 }
 \value{
-  A list of quantities to be used in the main
-  \code{\link{nb.gof.m}} function.
+A list of quantities to be used in the main
+\code{\link{nb.gof.m}} function.
 }
 \description{
-  This function fits an NB regression model with trended
-  (non-parametric) dispersions using the adjusted profile
-  likelihood estimator. In \code{edgeR}, this function
-  assumes the dispersion \eqn{\phi_i} satisfies
-  \eqn{\phi_i=s(\bar{\mu}_{i\cdot})}, where \eqn{s(\cdot)}
-  is a smooth function of each gene's average read counts
-  across samples. A variety of non-parametric approaches
-  can be used by fitting loess or spline curves on binned
-  genes, or using locally weighted APL. See details below.
-  The output of this function will be passed to the main
-  GOF function \code{\link{nb.gof.m}}.
+This function fits an NB regression model with trended
+(non-parametric) dispersions using the adjusted profile
+likelihood estimator. In \code{edgeR}, this function
+assumes the dispersion \eqn{\phi_i} satisfies
+\eqn{\phi_i=s(\bar{\mu}_{i\cdot})}, where \eqn{s(\cdot)} is
+a smooth function of each gene's average read counts across
+samples. A variety of non-parametric approaches can be used
+by fitting loess or spline curves on binned genes, or using
+locally weighted APL. See details below. The output of this
+function will be passed to the main GOF function
+\code{\link{nb.gof.m}}.
 }
 \details{
-  In this trended non-parametric model, \eqn{\phi_{ij}} is
-  estimated in a first step as a smooth function of
-  \eqn{\log(\hat{\phi}_{ij})} on
-  \eqn{\log(\hat{\mu}_{ij})}, and then treated as known in
-  the second step of regression coefficient inference. See
-  the \code{\link{estimateGLMTrendedDisp}} and
-  \code{\link{glmFit}} functions in the \code{\link{edgeR}}
-  package for more information.
+In this trended non-parametric model, \eqn{\phi_{ij}} is
+estimated in a first step as a smooth function of
+\eqn{\log(\hat{\phi}_{ij})} on \eqn{\log(\hat{\mu}_{ij})},
+and then treated as known in the second step of regression
+coefficient inference. See the
+\code{\link{estimateGLMTrendedDisp}} and
+\code{\link{glmFit}} functions in the \code{\link{edgeR}}
+package for more information.
 }
 \author{
-  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
-  Schafer
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+Schafer
 }
 \references{
-  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
-  details.
+See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+details.
 }
 

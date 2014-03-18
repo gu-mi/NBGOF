@@ -3,8 +3,7 @@
 \title{Modeling NB2 Common Dispersion with the Adjusted Profile Likelihood
 Estimator (APLE) on Original and Simulated Datasets}
 \usage{
-  model.edgeR.common(counts, x, lib.sizes=colSums(counts),
-    method=method)
+model.edgeR.common(counts, x, lib.sizes=colSums(counts), method=method)
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -22,36 +21,34 @@ Estimator (APLE) on Original and Simulated Datasets}
   \code{\link{estimateGLMCommonDisp}} for more details.}
 }
 \value{
-  A list of quantities to be used in the main
-  \code{\link{nb.gof.m}} function.
+A list of quantities to be used in the main
+\code{\link{nb.gof.m}} function.
 }
 \description{
-  This function fits an NB regression model with a common
-  dispersion using the adjusted profile likelihood
-  estimator. See details below. The output of this function
-  will be passed to the main GOF function
-  \code{\link{nb.gof.m}}.
+This function fits an NB regression model with a common
+dispersion using the adjusted profile likelihood estimator.
+See details below. The output of this function will be
+passed to the main GOF function \code{\link{nb.gof.m}}.
 }
 \details{
-  This function calls the
-  \code{\link{estimateGLMCommonDisp}} function in
-  \code{edgeR}, with the default estimation method using
-  Cox-Reid adjusted profile likelihood
-  (\code{\link{dispCoxReid}}). See the
-  \code{\link{estimateGLMCommonDisp}} and
-  \code{\link{glmFit}} functions in the \code{\link{edgeR}}
-  package for more information.
+This function calls the \code{\link{estimateGLMCommonDisp}}
+function in \code{edgeR}, with the default estimation
+method using Cox-Reid adjusted profile likelihood
+(\code{\link{dispCoxReid}}). See the
+\code{\link{estimateGLMCommonDisp}} and
+\code{\link{glmFit}} functions in the \code{\link{edgeR}}
+package for more information.
 }
 \author{
-  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
-  Schafer
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+Schafer
 }
 \references{
-  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
-  details.
+See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+details.
 }
 \seealso{
-  \code{\link{model.edgeR.tagcom}} and
-  \code{\link{model.edgeR.genewise}}
+\code{\link{model.edgeR.tagcom}} and
+\code{\link{model.edgeR.genewise}}
 }
 

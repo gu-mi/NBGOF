@@ -2,7 +2,7 @@
 \alias{model.nb2.v}
 \title{Modeling NB2 Regression Model with Maximum Likelihood (ML) on Original and Simulated Datasets}
 \usage{
-  model.nb2.v(y, x, lib.sizes=NULL)
+model.nb2.v(y, x, lib.sizes=NULL)
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
@@ -17,24 +17,24 @@
   Default is 1 for all samples.}
 }
 \value{
-  A list of quantities to be used in the main
-  \code{\link{nb.gof.v}} function.
+A list of quantities to be used in the main
+\code{\link{nb.gof.v}} function.
 }
 \description{
-  This function is designed to fit an NB2 regression model.
-  The output of this function will be passed to the main
-  GOF function \code{\link{nb.gof.v}}.
+This function is designed to fit an NB2 regression model.
+The output of this function will be passed to the main GOF
+function \code{\link{nb.gof.v}}.
 }
 \details{
-  The \code{nb.regression.1} function is used for NB2 model
-  fitting with MLE.
+The \code{nb.regression.1} function is used for NB2 model
+fitting with MLE.
 }
 \author{
-  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
-  Schafer
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+Schafer
 }
 \references{
-  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
-  details.
+See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+details.
 }
 

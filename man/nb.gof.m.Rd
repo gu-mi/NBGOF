@@ -2,9 +2,8 @@
 \alias{nb.gof.m}
 \title{Main Function of Implementing Simulation-based Goodness-of-Fit Tests on an RNA-Seq Dataset}
 \usage{
-  nb.gof.m(counts, x, lib.sizes=colSums(counts), sim=999,
-    model=NULL, method=NULL, min.n=100, prior.df = 10,
-    seed=1, ncores = NULL, ...)
+nb.gof.m(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, method=NULL,
+min.n=100, prior.df = 10, seed=1, ncores = NULL, ...)
 }
 \arguments{
   \item{counts}{an m-by-n count matrix of non-negative
@@ -71,34 +70,34 @@
   \item{...}{(for future use)}
 }
 \value{
-  An object of class "gofm" to which other methods can be
-  applied.
+An object of class "gofm" to which other methods can be
+applied.
 }
 \description{
-  This function performs simulation-based goodness-of-fit
-  tests of different negative binomial dispersion models
-  for an RNA-Seq dataset with a known design matrix.
-  Currently supported models are implemented in the
-  \code{NBPSeq} and \code{edgeR} packages.
+This function performs simulation-based goodness-of-fit
+tests of different negative binomial dispersion models for
+an RNA-Seq dataset with a known design matrix. Currently
+supported models are implemented in the \code{NBPSeq} and
+\code{edgeR} packages.
 }
 \details{
-  When the response is a count matrix, we can use this
-  function to test the goodness-of-fit of a specified
-  negative binomial dispersion model. Specifically, this
-  function calls \code{\link{model.nbp.m}} to fit the NBP
-  dispersion model, calls \code{\link{model.nbq.m}} to fit
-  the NBQ dispersion model, calls
-  \code{\link{model.edgeR.common}} to fit the common
-  dispersion model, calls
-  \code{\link{model.edgeR.genewise}} to fit the pure
-  genewise dispersion model (without shrinkage), calls
-  \code{\link{model.edgeR.trended}} to fit the
-  non-parametric trended dispersion model in \code{edgeR},
-  calls \code{\link{model.edgeR.tagcom}} to fit the tagwise
-  model with the dispersions shrinking towards a common
-  dispersion, and calls \code{\link{model.edgeR.tagtrd}} to
-  fit the tagwise model with the dispersions shrinking
-  towards the global dispersion trend.
+When the response is a count matrix, we can use this
+function to test the goodness-of-fit of a specified
+negative binomial dispersion model. Specifically, this
+function calls \code{\link{model.nbp.m}} to fit the NBP
+dispersion model, calls \code{\link{model.nbq.m}} to fit
+the NBQ dispersion model, calls
+\code{\link{model.edgeR.common}} to fit the common
+dispersion model, calls \code{\link{model.edgeR.genewise}}
+to fit the pure genewise dispersion model (without
+shrinkage), calls \code{\link{model.edgeR.trended}} to fit
+the non-parametric trended dispersion model in
+\code{edgeR}, calls \code{\link{model.edgeR.tagcom}} to fit
+the tagwise model with the dispersions shrinking towards a
+common dispersion, and calls
+\code{\link{model.edgeR.tagtrd}} to fit the tagwise model
+with the dispersions shrinking towards the global
+dispersion trend.
 }
 \examples{
 ## load package into session:
@@ -192,29 +191,29 @@ multiplot(h1, q1, h2, q2, h3, q3, h4, q4, h5, q5, h6, q6, h7, q7, cols=4, layout
 # dev.off()
 }
 \author{
-  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
-  Schafer
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+Schafer
 }
 \references{
-  Mi G, Di Y and Schafer DW (2014). Goodness-of-Fit Tests
-  and Model Diagnostics for Negative Binomial Regression of
-  RNA sequencing Data. (revision invited).
+Mi G, Di Y and Schafer DW (2014). Goodness-of-Fit Tests and
+Model Diagnostics for Negative Binomial Regression of RNA
+sequencing Data. (revision invited).
 
-  Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The
-  NBP Negative Binomial Model for Assessing Differential
-  Gene Expression from RNA-Seq", \emph{Statistical
-  Applications in Genetics and Molecular Biology}, 10 (1).
+Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The NBP
+Negative Binomial Model for Assessing Differential Gene
+Expression from RNA-Seq", \emph{Statistical Applications in
+Genetics and Molecular Biology}, 10 (1).
 
-  McCarthy DJ, Chen Y and Smyth GK (2012). Differential
-  expression analysis of multifactor RNA-Seq experiments
-  with respect to biological variation. \emph{Nucleic Acids
-  Research} 40, 4288-4297.
+McCarthy DJ, Chen Y and Smyth GK (2012). Differential
+expression analysis of multifactor RNA-Seq experiments with
+respect to biological variation. \emph{Nucleic Acids
+Research} 40, 4288-4297.
 
-  Cox, DR, and Reid, N (1987). Parameter orthogonality and
-  approximate conditional inference. \emph{Journal of the
-  Royal Statistical Society Series B} 49, 1-39.
+Cox, DR, and Reid, N (1987). Parameter orthogonality and
+approximate conditional inference. \emph{Journal of the
+Royal Statistical Society Series B} 49, 1-39.
 
-  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
-  details.
+See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+details.
 }
 

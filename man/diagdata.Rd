@@ -2,21 +2,20 @@
 \alias{diagdata}
 \title{Prepare Quantities for Diagnostic Plots (Histogram and Uniform Q-Q Plots) Using ggplot2}
 \usage{
-  diagdata(gofm.obj)
+diagdata(gofm.obj)
 }
 \arguments{
   \item{gofm.obj}{an object of class "gofm" from the
   \code{\link{nb.gof.m}} output.}
 }
 \value{
-  a list of two components.
+a list of two components.
 }
 \description{
-  This function prepares quantities for making diagnostic
-  plots of negative binomial dispersion models. The result
-  (a list) will be passed to the \code{\link{diagPlot}}
-  function to make histogram of p-values and uniform Q-Q
-  plots.
+This function prepares quantities for making diagnostic
+plots of negative binomial dispersion models. The result (a
+list) will be passed to the \code{\link{diagPlot}} function
+to make histogram of p-values and uniform Q-Q plots.
 }
 \keyword{internal}
 

@@ -2,14 +2,14 @@
 \alias{sort.vec}
 \title{Group-wise sort of residual matrix in multivariate case}
 \usage{
-  sort.vec(x, grp.ids)
+\method{sort}{vec}(x, grp.ids)
 }
 \description{
-  Group-wise sort of residual matrix in multivariate case.
+Group-wise sort of residual matrix in multivariate case.
 }
 \author{
-  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
-  Schafer
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+Schafer
 }
 \keyword{internal}
 

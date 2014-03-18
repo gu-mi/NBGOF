@@ -38,7 +38,6 @@ chisq_gof = function(x, ...){
   sim = x$sim
   v.pvals = x$v.pvals  # p-values based on vertical distances
   p.pvals.1s = x$p.pvals.1s  # p-values based on Pearson statistics (1-sided)
-  p.pvals.2s = x$p.pvals.2s  # p-values based on Pearson statistics (2-sided)
   m = length(v.pvals)
   
   ## Fisher's method of combining p-values
@@ -48,14 +47,10 @@ chisq_gof = function(x, ...){
   # Pearson statistics (1-sided)
   Fisher.method.X2.pear.1s = -2*sum(log(p.pvals.1s))
   Fisher.method.p.pear.1s = pchisq(Fisher.method.X2.pear.1s, 2*m, lower.tail=FALSE) 
-  # Pearson statistics (2-sided)
-  Fisher.method.X2.pear.2s = -2*sum(log(p.pvals.2s))
-  Fisher.method.p.pear.2s = pchisq(Fisher.method.X2.pear.2s, 2*m, lower.tail=FALSE) 
   
   # save as a list
   results = list(fisher.vert = Fisher.method.p.vert,
-                 fisher.pear.1s = Fisher.method.p.pear.1s,
-                 fisher.pear.2s = Fisher.method.p.pear.2s
+                 fisher.pear.1s = Fisher.method.p.pear.1s
                  )
   return(results)
   

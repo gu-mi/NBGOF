@@ -2,7 +2,7 @@
 \alias{EPPlot}
 \title{Empirical Probability Plots of Negative Binomial Regression Models}
 \usage{
-  EPPlot(gofv.obj, envelope=0.95, data.note=NULL)
+EPPlot(gofv.obj, envelope=0.95, data.note=NULL)
 }
 \arguments{
   \item{gofv.obj}{an object of class "gofv" from the
@@ -15,22 +15,22 @@
   of the plot.}
 }
 \value{
-  A ggplot object of empirical probability plot.
+A ggplot object of empirical probability plot.
 }
 \description{
-  This function makes empirical probability plots (EPP)
-  based on the goodness-of-fit test results (an "gofv"
-  object) from \code{\link{nb.gof.v}}.
+This function makes empirical probability plots (EPP) based
+on the goodness-of-fit test results (an "gofv" object) from
+\code{\link{nb.gof.v}}.
 }
 \author{
-  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
-  Schafer
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+Schafer
 }
 \references{
-  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
-  details.
+See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+details.
 }
 \seealso{
-  \code{\link{nb.gof.v}} for simulated data examples.
+\code{\link{nb.gof.v}} for simulated data examples.
 }
 

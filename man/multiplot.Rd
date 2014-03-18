@@ -2,11 +2,10 @@
 \alias{multiplot}
 \title{Multiple plot function}
 \source{
-  http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
+http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
 }
 \usage{
-  multiplot(..., plotlist=NULL, cols=1, layout=NULL,
-    labs=list(), labpos=list(c(0.5, 0.02), c(0.02, 0.5)))
+multiplot(..., plotlist=NULL, cols=1, layout=NULL, labs=list(), labpos=list(c(0.5, 0.02), c(0.02, 0.5)))
 }
 \arguments{
   \item{...}{ggplot objects can be passed in ....}
@@ -24,18 +23,18 @@
   \item{labpos}{positions for the global labels.}
 }
 \description{
-  This function is used to plot multiple ggplot objects in
-  a single page. The layout can be flexibly specified.
+This function is used to plot multiple ggplot objects in a
+single page. The layout can be flexibly specified.
 }
 \details{
-  If the layout is something like \code{matrix(c(1,2,3,3),
-  nrow=2, byrow=TRUE)}, then plot 1 will go in the upper
-  left, plot 2 will go in the upper right, and plot 3 will
-  go all the way across the bottom.
+If the layout is something like \code{matrix(c(1,2,3,3),
+nrow=2, byrow=TRUE)}, then plot 1 will go in the upper
+left, plot 2 will go in the upper right, and plot 3 will go
+all the way across the bottom.
 }
 \seealso{
-  \code{\link{nb.gof.m}} for simulated data examples.
-  Modifications of global labels made by Scott Chamberlain
-  (StackOverflow)
+\code{\link{nb.gof.m}} for simulated data examples.
+Modifications of global labels made by Scott Chamberlain
+(StackOverflow)
 }
 

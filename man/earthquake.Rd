@@ -3,16 +3,19 @@
 \alias{earthquake}
 \title{The Earthquake Dataset}
 \format{A 45 by 2 matrix, with column names "Magnitude" and "Frequency"}
+\usage{
+data(earthquake)
+}
 \description{
-  This dataset contains the frequencies of all earthquakes
-  of a given magnitude (reported to one decimal place) for
-  magnitudes from 4.5 to 9.1, that occurred between January
-  1, 1964 to December 31, 2012.
+This dataset contains the frequencies of all earthquakes of
+a given magnitude (reported to one decimal place) for
+magnitudes from 4.5 to 9.1, that occurred between January
+1, 1964 to December 31, 2012.
 }
 \details{
-  We use this dataset as a real data example to illustrate
-  goodness-of-fit tests of NB and Poisson regression models
-  (univariate response).
+We use this dataset as a real data example to illustrate
+goodness-of-fit tests of NB and Poisson regression models
+(univariate response).
 }
 \examples{
 ## Load the dataset into R session:
@@ -40,12 +43,12 @@ print(EPPlot(gof.nbp, envelope=0.95, data.note="Earthquake Dataset"))
 # dev.off()
 }
 \references{
-  Composite Earthquake Catalog, Advanced National Seismic
-  System, Northern California Earthquake Data Center
-  (NCEDC), \url{http://quake.geo.berkeley.edu/cnss/}.
+Composite Earthquake Catalog, Advanced National Seismic
+System, Northern California Earthquake Data Center (NCEDC),
+\url{http://quake.geo.berkeley.edu/cnss/}.
 
-  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
-  details.
+See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+details.
 }
 \keyword{datasets}
 

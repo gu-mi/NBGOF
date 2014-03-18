@@ -2,7 +2,7 @@
 \alias{irls.nb}
 \title{Estiamte the regression coefficients in an NB GLM model}
 \usage{
-  irls.nb(y, s, x, phi, beta0, ..., print.level = 0)
+irls.nb(y, s, x, phi, beta0, ..., print.level = 0)
 }
 \arguments{
   \item{y}{an m*n matrix of counts}
@@ -20,11 +20,11 @@
   components}
 }
 \value{
-  beta a K vector, the MLE of the regression coefficients.
+beta a K vector, the MLE of the regression coefficients.
 }
 \description{
-  Estimate the regression coefficients in an NBP GLM model
-  for each gene
+Estimate the regression coefficients in an NBP GLM model
+for each gene
 }
 \keyword{internal}
 

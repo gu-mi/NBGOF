@@ -2,7 +2,7 @@
 \alias{model.poi.v}
 \title{Modeling Poisson Regression Model on Original and Simulated Datasets}
 \usage{
-  model.poi.v(y, x, lib.sizes=NULL)
+model.poi.v(y, x, lib.sizes=NULL)
 }
 \arguments{
   \item{y}{an n-by-1 vector of non-negative integers. For a
@@ -18,24 +18,24 @@
   Default is 0 for all samples.}
 }
 \value{
-  A list of quantities to be used in the main
-  \code{\link{nb.gof.v}} function.
+A list of quantities to be used in the main
+\code{\link{nb.gof.v}} function.
 }
 \description{
-  This function is designed to fit a Poisson regression
-  model. The output of this function will be passed to the
-  main GOF function.
+This function is designed to fit a Poisson regression
+model. The output of this function will be passed to the
+main GOF function.
 }
 \details{
-  The \code{glm} function with \code{family=poisson} is
-  used for Poisson model fitting.
+The \code{glm} function with \code{family=poisson} is used
+for Poisson model fitting.
 }
 \author{
-  Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
-  Schafer
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+Schafer
 }
 \references{
-  See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
-  details.
+See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+details.
 }
 
