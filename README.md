@@ -10,7 +10,7 @@ This README file for the R package NBGOF is incomplete for now. We will update o
 ### Install
 Installation from this repository requires the `devtools` package pre-installed. Run the following R command to install `NBGOF`:
 
-```{r}
+```S
 devtools::install_github('NBGOF', 'gu-mi')
 ```
 
@@ -32,7 +32,7 @@ The NBGOF package implements goodness-of-fit (GOF) tests for negative binomial (
 
 To load the package into current R session, run
 
-```{r}
+```S
 library(NBGOF)
 ```
 Two main functions for testing the adequacy of regression models and NB dispersion models are `nb.gof.v` and `nb.gof.m`, repectively. We provide two real datasets to illustrate the use of this package.
