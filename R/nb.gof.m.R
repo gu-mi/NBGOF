@@ -245,7 +245,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      model.nbp.m(y.mat.h, x, lib.sizes=colSums(y.mat.h))$ord.res.vec
+      model.nbp.m(y.mat.h, x, lib.sizes=colSums(y.mat.h), method=method)$ord.res.vec
     }
     #close(pb)
     dimnames(ord.res.sim.mat.tmp) = NULL
@@ -269,7 +269,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      model.nbq.m(y.mat.h, x, lib.sizes=colSums(y.mat.h))$ord.res.vec
+      model.nbq.m(y.mat.h, x, lib.sizes=colSums(y.mat.h, method=method))$ord.res.vec
     }
     #close(pb)
     dimnames(ord.res.sim.mat.tmp) = NULL
@@ -293,7 +293,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      model.nbs.m(y.mat.h, x, lib.sizes=colSums(y.mat.h))$ord.res.vec
+      model.nbs.m(y.mat.h, x, lib.sizes=colSums(y.mat.h), method=method)$ord.res.vec
     }
     #close(pb)
     dimnames(ord.res.sim.mat.tmp) = NULL
@@ -317,7 +317,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
       dim(y.mat.h) = dim(counts)
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
-      model.nbstep.m(y.mat.h, x, lib.sizes=colSums(y.mat.h))$ord.res.vec
+      model.nbstep.m(y.mat.h, x, lib.sizes=colSums(y.mat.h), method=method)$ord.res.vec
     }
     #close(pb)
     dimnames(ord.res.sim.mat.tmp) = NULL
