@@ -1,7 +1,7 @@
 \name{model.nbp.m}
 \alias{model.nbp.m}
 \title{Modeling NBP Genewise Dispersion with the Maximum Ajdusted Profile Likelihood (MAPL) Estimator
-on Original and Simulated Datasets}
+or Maximum Likelihood Estimator (MLE) on Original and Simulated Datasets}
 \usage{
 model.nbp.m(counts, x, lib.sizes=colSums(counts), method=method)
 }

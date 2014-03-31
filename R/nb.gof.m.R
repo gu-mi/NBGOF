@@ -185,15 +185,20 @@
 #' multiplot(h1, q1, h2, q2, h3, q3, h4, q4, h5, q5, h6, q6, h7, q7, cols=4, layout=matrix(seq(1,16), nrow=4, byrow=TRUE))
 #' # dev.off()
 #' 
-nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, method = NULL, min.n=100, prior.df = 10, 
+nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, method = "MAPL", min.n=100, prior.df = 10, 
                     seed=1, ncores = NULL, ...){
   
   if (is.null(model)){
     stop("You must specify a model name!")
   }
   
-  if ( !model %in% c("NBP", "NBQ", "Common", "Genewise", "Trended", "Tagwise-Common", "Tagwise-Trend") ) {
-    stop("You must specify one of these model names: 'NBP', 'NBQ', 'Common', 'Genewise', 'Trended', 'Tagwise-Common' or 'Tagwise-Trend'!")
+  if ( !model %in% c("NBP", "NBQ", "NBS", "STEP", "Common", "Genewise", "Trended", "Tagwise-Common", "Tagwise-Trend") ) {
+    stop("You must specify one of these model names: 
+         'NBP', 'NBQ', 'NBS', 'STEP', 'Common', 'Genewise', 'Trended', 'Tagwise-Common' or 'Tagwise-Trend'!")
+  }
+  
+  if ( !method %in% c("ML", "MAPL") ) {
+    stop("You must specify one of these estimation method: 'ML' or 'MAPL'!")
   }
   
   # parallel computing: specify number of cores to use
@@ -256,6 +261,54 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
       rownames(y.mat.h) = rownames(counts)
       colnames(y.mat.h) = colnames(counts)
       model.nbq.m(y.mat.h, x, lib.sizes=colSums(y.mat.h))$ord.res.vec
+    }
+    #close(pb)
+    dimnames(ord.res.sim.mat.tmp) = NULL
+    ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
+    #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0[ ,1]
+  }
+  
+  #### -----------------------------------------------------------------
+  else if (model == "NBS"){
+    mnbs.0 = model.nbs.m(counts, x, lib.sizes=colSums(counts), method=method)
+    mu.hat.mat0 = mnbs.0$mu.hat.mat
+    phi.hat.mat0 = mnbs.0$phi.hat.mat
+    res.omat0 = mnbs.0$res.omat
+    ord.res.vec0 = mnbs.0$ord.res.vec
+    ## simulate new datasets and re-fit
+    #pb = txtProgressBar(style=3)
+    ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
+      y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
+      dim(y.mat.h) = dim(counts)
+      rownames(y.mat.h) = rownames(counts)
+      colnames(y.mat.h) = colnames(counts)
+      model.nbs.m(y.mat.h, x, lib.sizes=colSums(y.mat.h))$ord.res.vec
+    }
+    #close(pb)
+    dimnames(ord.res.sim.mat.tmp) = NULL
+    ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
+    #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0[ ,1]
+  }
+  
+  #### -----------------------------------------------------------------
+  else if (model == "STEP"){
+    mnbstep.0 = model.nbstep.m(counts, x, lib.sizes=colSums(counts), method=method)
+    mu.hat.mat0 = mnbstep.0$mu.hat.mat
+    phi.hat.mat0 = mnbstep.0$phi.hat.mat
+    res.omat0 = mnbstep.0$res.omat
+    ord.res.vec0 = mnbstep.0$ord.res.vec
+    ## simulate new datasets and re-fit
+    #pb = txtProgressBar(style=3)
+    ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
+      y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
+      dim(y.mat.h) = dim(counts)
+      rownames(y.mat.h) = rownames(counts)
+      colnames(y.mat.h) = colnames(counts)
+      model.nbstep.m(y.mat.h, x, lib.sizes=colSums(y.mat.h))$ord.res.vec
     }
     #close(pb)
     dimnames(ord.res.sim.mat.tmp) = NULL

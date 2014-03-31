@@ -1,23 +1,16 @@
 
-#' @title Modeling NBP Genewise Dispersion with the Maximum Ajdusted Profile Likelihood (MAPL) Estimator 
+#' @title Modeling NBS Genewise Dispersion with the Maximum Ajdusted Profile Likelihood (MAPL) Estimator 
 #' or Maximum Likelihood Estimator (MLE) on Original and Simulated Datasets
 #' 
-#' @description This function fits an NBP dispersion model where the dispersion parameter
-#' is modeled as a linear function of the relative means. See details below. 
+#' @description This function fits an NBS dispersion model where the dispersion is modeled as a smooth function
+#'  (a natural cubic spline function) of the preliminary estimates of the log mean realtive frequencies. 
 #' The output of this function will be passed to the main GOF function \code{\link{nb.gof.m}}.
 #' 
-#' @details Under the NB model, the mean-variance relationship of a single read count 
-#' satisfies \eqn{\sigma_{ij}^2 = \mu_{ij} + \phi_{ij} \mu_{ij}^2}. For applying the NBP 
-#' model to RNA-Seq data, we consider the "log-linear-rel-mean" method assuming a 
-#' parametric dispersion model \eqn{\phi_{ij} = \alpha_0 + \alpha_1 \log(\pi_{ij})},
-#' where \eqn{\pi_{ij} = \mu_{ij}/(N_j R_j)} is the relative mean frequency after 
-#' normalization. The parameters \eqn{(\alpha_0, \alpha_1)} in this dispersion model 
-#' are estimated by maximizing the adjusted profile likelihood. See the 
-#' \code{\link{estimate.dispersion}} function in the \code{NBPSeq} package
+#' @details See the \code{\link{estimate.dispersion}} function in the \code{NBPSeq} package
 #' for more information.
 #' 
 #' @usage
-#' model.nbp.m(counts, x, lib.sizes=colSums(counts), method=method)
+#' model.nbs.m(counts, x, lib.sizes=colSums(counts), method=method)
 #' 
 #' @param counts an m-by-n count matrix of non-negative integers. For a typical
 #' RNA-Seq experiment, this is the read counts with m genes and n samples.
@@ -37,7 +30,7 @@
 #'  
 #' See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-model.nbp.m = function(counts, x, lib.sizes=colSums(counts), method=method){
+model.nbs.m = function(counts, x, lib.sizes=colSums(counts), method=method){
   
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
                    labels = seq(ncol(x)))
@@ -48,7 +41,7 @@ model.nbp.m = function(counts, x, lib.sizes=colSums(counts), method=method){
   
   # data preparations
   nb.data = prepare.nb.data(counts, lib.sizes=lib.sizes)
-  fit = estimate.dispersion(nb.data, x, model = "NBP", method = method, print.level=0)
+  fit = estimate.dispersion(nb.data, x, model = "NBS", method = method, print.level=0)
   
   # extract quantities
   phi = fit$estimates        # NBP "phi" --> mu+phi*mu^2
@@ -69,13 +62,13 @@ model.nbp.m = function(counts, x, lib.sizes=colSums(counts), method=method){
   ord.res.v = as.vector(t(res.om))
   
   # save as a list
-  model_nbp_m_obj = list(mu.hat.mat = mu,
+  model_nbs_m_obj = list(mu.hat.mat = mu,
                          res.mat = res.m,
                          res.omat = res.om,
                          ord.res.vec = ord.res.v,
                          phi.hat.mat = phi
   )
-  return(model_nbp_m_obj)
+  return(model_nbs_m_obj)
 }
 
 

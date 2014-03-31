@@ -14,8 +14,8 @@ mddata(counts, x, model = NULL)
   \item{model}{a string of characters specifying the
   negative binomial dispersion model used to fit the data.
   Currently supported dispersion models include "NBP",
-  "NBQ", "Common", "Tagwise-Common", "Tagwise-Trend" and
-  "Trended"}
+  "NBQ", "NBS", "STEP", "Common", "Tagwise-Common",
+  "Tagwise-Trend" and "Trended"}
 }
 \value{
 a data frame for each specified model.

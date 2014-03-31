@@ -1,0 +1,48 @@
+\name{model.nbs.m}
+\alias{model.nbs.m}
+\title{Modeling NBS Genewise Dispersion with the Maximum Ajdusted Profile Likelihood (MAPL) Estimator
+or Maximum Likelihood Estimator (MLE) on Original and Simulated Datasets}
+\usage{
+model.nbs.m(counts, x, lib.sizes=colSums(counts), method=method)
+}
+\arguments{
+  \item{counts}{an m-by-n count matrix of non-negative
+  integers. For a typical RNA-Seq experiment, this is the
+  read counts with m genes and n samples.}
+
+  \item{x}{an n-by-p design matrix.}
+
+  \item{lib.sizes}{library sizes of an RNA-Seq experiment.
+  Default is the column sums of the \code{counts} matrix.}
+
+  \item{method}{method for estimating dispersions.}
+}
+\value{
+A list of quantities to be used in the main
+\code{\link{nb.gof.m}} function.
+}
+\description{
+This function fits an NBS dispersion model where the
+dispersion is modeled as a smooth function (a natural cubic
+spline function) of the preliminary estimates of the log
+mean realtive frequencies. The output of this function will
+be passed to the main GOF function \code{\link{nb.gof.m}}.
+}
+\details{
+See the \code{\link{estimate.dispersion}} function in the
+\code{NBPSeq} package for more information.
+}
+\author{
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel
+Schafer
+}
+\references{
+Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The NBP
+Negative Binomial Model for Assessing Differential Gene
+Expression from RNA-Seq", \emph{Statistical Applications in
+Genetics and Molecular Biology}, 10 (1).
+
+See \url{https://github.com/gu-mi/NBGOF/wiki/} for more
+details.
+}
+

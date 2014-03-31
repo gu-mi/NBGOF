@@ -5,8 +5,8 @@ Title: Goodness-of-Fit Tests and Model Diagnostics for Negative Binomial
 Description: An R package for implementing goodness-of-fit tests for negative
     binomial (NB) distributions and NB dispersion models, with applications in
     RNA-Seq data analysis.
-Version: 0.1.4
-Date: 2014-02-28
+Version: 0.1.5
+Date: 2014-03-31
 License: GPL-2
 Author: Gu Mi <mig@stat.oregonstate.edu>, Yanming Di
     <diy@stat.oregonstate.edu>, Daniel Schafer
