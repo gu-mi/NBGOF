@@ -49,9 +49,10 @@ model.edgeR.common = function(counts, x, lib.sizes=colSums(counts), method=metho
   mu.hat.m = com.fit$fitted.values  # mu may be close to 0
   phi.hat.m = com.fit$dispersion    # there may be NA's
   v = mu.hat.m + phi.hat.m * mu.hat.m^2
-  res.m = (counts - mu.hat.m) / sqrt(v)   # res.m may contain an entire row of NaN
+  res.m = as.matrix((counts - mu.hat.m) / sqrt(v))   # res.m may contain an entire row of NaN
   
   # make sure 0/0 (NaN) and 1/0 (Inf) won't appear in residual matrix (before sorting)
+  # make sure res.m is a matrix, not a list
   res.m[ is.nan(res.m) ] = 0
   res.m[ is.infinite(res.m) ] = 0
   

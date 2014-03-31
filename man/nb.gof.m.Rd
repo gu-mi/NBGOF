@@ -23,16 +23,18 @@ min.n=100, prior.df = 10, seed=1, ncores = NULL, ...)
   to be checked for goodness-of-fit: \itemize{ \item NBP
   dispersion model in the \code{NBPSeq} package
   (\code{NBP}) \item NBQ dispersion model in the
-  \code{NBPSeq} pacakge (\code{NBQ}) \item NB common
+  \code{NBPSeq} pacakge (\code{NBQ}) \item NBS dispersion
+  model in the \code{NBPSeq} pacakge (\code{NBS}) \item
+  NBSTEP dispersion model in the \code{NBPSeq} pacakge
+  (\code{NBSTEP}) \item NB common dispersion model in the
+  \code{edgeR} package (\code{Common}) \item NB genewise
   dispersion model in the \code{edgeR} package
-  (\code{Common}) \item NB genewise dispersion model in the
-  \code{edgeR} package (\code{Genewise}) \item NB trended
-  (non-parametric) dispersion model in the \code{edgeR}
-  package (\code{Trended}) \item NB tagwise-common
+  (\code{Genewise}) \item NB trended (non-parametric)
   dispersion model in the \code{edgeR} package
-  (\code{Tagwise-Common}) \item NB tagwise-trended
-  dispersion model in the \code{edgeR} package
-  (\code{Tagwise-Trend}) } Users should specify
+  (\code{Trended}) \item NB tagwise-common dispersion model
+  in the \code{edgeR} package (\code{Tagwise-Common}) \item
+  NB tagwise-trended dispersion model in the \code{edgeR}
+  package (\code{Tagwise-Trend}) } Users should specify
   \strong{exactly} the same characters as the ones in
   paratheses above for each dispersion model.}
 
@@ -154,13 +156,13 @@ plot(mu, phi.noi, log="xy")
 ## GOF tests for different dispersion models, using parallel computing:
 ## CAUTION: may be time-consuming depending on the size of data and simulations!
 nc = detectCores() - 1
-fnbp.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBP", seed=1, ncores=nc)
-fnbq.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBQ", seed=1, ncores=nc)
-fcom.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Common", seed=1, ncores=nc)
-fgen.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Genewise", seed=1, ncores=nc)
-ftgc.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Common", seed=1, ncores=nc)
-ftgt.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Trend", seed=1, ncores=nc)
-ftrd.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Trended", seed=1, ncores=nc)
+fnbp.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBP", method="MAPL", seed=1, ncores=nc)
+fnbq.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBQ", method="MAPL", seed=1, ncores=nc)
+fcom.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Common", method="CoxReid", seed=1, ncores=nc)
+fgen.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Genewise", method="auto", seed=1, ncores=nc)
+ftgc.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Common", method="CoxReid", seed=1, ncores=nc)
+ftgt.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Trend", method="auto", seed=1, ncores=nc)
+ftrd.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Trended", method="auto", seed=1, ncores=nc)
 
 ## summarize the GOF test results:
 summary(fnbp.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")

@@ -58,7 +58,7 @@ model.nbp.m = function(counts, x, lib.sizes=colSums(counts), method=method){
                phi = phi,
                beta0 = rep(NA, dim(x)[2]))$mu
   v = mu + phi * mu^2              # variance matrix
-  res.m = (counts - mu) / sqrt(v)  # res. matrix
+  res.m = as.matrix((counts - mu) / sqrt(v))  # res. matrix
   
   # make sure 0/0 (NaN) and 1/0 (Inf) won't appear in residual matrix (before sorting)
   res.m[ is.nan(res.m) ] = 0

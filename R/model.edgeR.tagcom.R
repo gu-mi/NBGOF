@@ -69,7 +69,7 @@ model.edgeR.tagcom = function(counts, x, lib.sizes=colSums(counts), prior.df = p
   mu.hat.m = tgc.fit$fitted.values   # mu may be close to 0
   phi.hat.m = tgc.fit$dispersion     # there may be NA's
   v = mu.hat.m + phi.hat.m * mu.hat.m^2
-  res.m = (counts - mu.hat.m) / sqrt(v)
+  res.m = as.matrix((counts - mu.hat.m) / sqrt(v))
   
   # make sure 0/0 (NaN) and 1/0 (Inf) won't appear in residual matrix (before sorting)
   res.m[ is.nan(res.m) ] = 0

@@ -29,8 +29,10 @@ model.edgeR.tagtrd(counts, x, lib.sizes=colSums(counts), prior.df=prior.df, min.
   \item{method}{method for estimating the trended
   dispersion, including "auto", "bin.spline", "bin.loess",
   "power" and "spline". If NULL, then the "auto" method.
-  See \code{\link{estimateGLMTrendedDisp}} for more
-  details.}
+  Normally the number of tags analyzed is greater than 200,
+  so the "bin.spline" method is used which calls the
+  \code{\link{dispBinTrend}} function. See
+  \code{\link{estimateGLMTrendedDisp}} for more details.}
 }
 \value{
 A list of quantities to be used in the main

@@ -37,7 +37,8 @@
 #' @param min.n minimim number of genes in a bin. Default is 100. See \code{\link{dispBinTrend}}
 #' for details (lower-level function of \code{\link{estimateGLMTrendedDisp}}).
 #' @param method method for estimating the trended dispersion, including "auto", "bin.spline", "bin.loess", "power" and "spline". 
-#' If NULL, then the "auto" method. See \code{\link{estimateGLMTrendedDisp}} for more details.
+#' If NULL, then the "auto" method. Normally the number of tags analyzed is greater than 200, so the "bin.spline" method is used which
+#' calls the \code{\link{dispBinTrend}} function. See \code{\link{estimateGLMTrendedDisp}} for more details.
 #' 
 #' @return A list of quantities to be used in the main \code{\link{nb.gof.m}} function.
 #' 
@@ -68,7 +69,7 @@ model.edgeR.genewise = function(counts, x, lib.sizes=colSums(counts), min.n = mi
   mu.hat.m = gen.fit$fitted.values   # mu may be close to 0
   phi.hat.m = gen.fit$dispersion     # there may be NA's
   v = mu.hat.m + phi.hat.m * mu.hat.m^2
-  res.m = (counts - mu.hat.m) / sqrt(v)
+  res.m = as.matrix((counts - mu.hat.m) / sqrt(v))
   
   # make sure 0/0 (NaN) and 1/0 (Inf) won't appear in residual matrix (before sorting)
   res.m[ is.nan(res.m) ] = 0

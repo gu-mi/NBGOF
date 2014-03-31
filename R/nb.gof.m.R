@@ -22,6 +22,8 @@
 #' \itemize{
 #' \item NBP dispersion model in the \code{NBPSeq} package (\code{NBP})
 #' \item NBQ dispersion model in the \code{NBPSeq} pacakge (\code{NBQ})
+#' \item NBS dispersion model in the \code{NBPSeq} pacakge (\code{NBS})
+#' \item NBSTEP dispersion model in the \code{NBPSeq} pacakge (\code{NBSTEP})
 #' \item NB common dispersion model in the \code{edgeR} package (\code{Common})
 #' \item NB genewise dispersion model in the \code{edgeR} package (\code{Genewise})
 #' \item NB trended (non-parametric) dispersion model in the \code{edgeR} package
@@ -149,13 +151,13 @@
 #' ## GOF tests for different dispersion models, using parallel computing:
 #' ## CAUTION: may be time-consuming depending on the size of data and simulations!
 #' nc = detectCores() - 1
-#' fnbp.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBP", seed=1, ncores=nc)
-#' fnbq.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBQ", seed=1, ncores=nc)
-#' fcom.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Common", seed=1, ncores=nc)
-#' fgen.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Genewise", seed=1, ncores=nc)
-#' ftgc.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Common", seed=1, ncores=nc)
-#' ftgt.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Trend", seed=1, ncores=nc)
-#' ftrd.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Trended", seed=1, ncores=nc)
+#' fnbp.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBP", method="MAPL", seed=1, ncores=nc)
+#' fnbq.noip = nb.gof.m(counts=y, x=x, sim=sim, model="NBQ", method="MAPL", seed=1, ncores=nc)
+#' fcom.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Common", method="CoxReid", seed=1, ncores=nc)
+#' fgen.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Genewise", method="auto", seed=1, ncores=nc)
+#' ftgc.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Common", method="CoxReid", seed=1, ncores=nc)
+#' ftgt.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Tagwise-Trend", method="auto", seed=1, ncores=nc)
+#' ftrd.noip = nb.gof.m(counts=y, x=x, sim=sim, model="Trended", method="auto", seed=1, ncores=nc)
 #' 
 #' ## summarize the GOF test results:
 #' summary(fnbp.noip, conf.env=conf.env, data.note="NB1.8-noise(a=0.1)")
@@ -185,20 +187,27 @@
 #' multiplot(h1, q1, h2, q2, h3, q3, h4, q4, h5, q5, h6, q6, h7, q7, cols=4, layout=matrix(seq(1,16), nrow=4, byrow=TRUE))
 #' # dev.off()
 #' 
-nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, method = "MAPL", min.n=100, prior.df = 10, 
+nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, method = NULL, min.n=100, prior.df = 10, 
                     seed=1, ncores = NULL, ...){
   
+  # model specifications
   if (is.null(model)){
     stop("You must specify a model name!")
   }
-  
   if ( !model %in% c("NBP", "NBQ", "NBS", "STEP", "Common", "Genewise", "Trended", "Tagwise-Common", "Tagwise-Trend") ) {
     stop("You must specify one of these model names: 
          'NBP', 'NBQ', 'NBS', 'STEP', 'Common', 'Genewise', 'Trended', 'Tagwise-Common' or 'Tagwise-Trend'!")
   }
   
-  if ( !method %in% c("ML", "MAPL") ) {
-    stop("You must specify one of these estimation method: 'ML' or 'MAPL'!")
+  # method specifications
+  if ( model %in% c("NBP", "NBQ", "NBS", "STEP") & !method %in% c("ML", "MAPL") ) {
+    stop("You must specify one of these estimation methods (in NBPSeq): 'ML' or 'MAPL'!")
+  }
+  if ( model %in% c("Common", "Tagwise-Common") & !method %in% c("CoxReid", "Pearson", "deviance") ) {
+    stop("You must specify one of these methods for estimating the dispersion (in edgeR): 'CoxReid', 'Pearson' or 'deviance'!")
+  }
+  if ( model %in% c("Trended", "Tagwise-Trend", "Genewise") & !method %in% c("auto", "bin.spline", "bin.loess", "power", "spline") ) {
+    stop("You must specify one of these methods for estimating the trended dispersions (in edgeR): 'auto', 'bin.spline','bin.loess', 'power', or 'spline'!")
   }
   
   # parallel computing: specify number of cores to use
