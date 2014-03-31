@@ -60,4 +60,4 @@ loaded via a namespace (and not attached):
 [16] tools_3.0.2       
 ```
 
-The current package version is 0.1.5, the beta version of next release including new dispersion models and minor bug fixes.
+**The current package version is 0.1.5, the beta version for next release including new dispersion models and minor bug fixes to version 0.1.4. **
