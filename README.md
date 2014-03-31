@@ -59,3 +59,5 @@ loaded via a namespace (and not attached):
 [11] RColorBrewer_1.0-5 Rcpp_0.11.0        reshape2_1.2.2     stringr_0.6.2      tcltk_3.0.2       
 [16] tools_3.0.2       
 ```
+
+The current package version is 0.1.5, the beta version of next release including new dispersion models and minor bug fixes.
