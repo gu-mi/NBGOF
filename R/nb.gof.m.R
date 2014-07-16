@@ -25,7 +25,7 @@
 #' \item NBS dispersion model in the \code{NBPSeq} pacakge (\code{NBS})
 #' \item NBSTEP dispersion model in the \code{NBPSeq} pacakge (\code{NBSTEP})
 #' \item NB common dispersion model in the \code{edgeR} package (\code{Common})
-#' \item NB genewise dispersion model in the \code{edgeR} package (\code{Genewise})
+#' \item NB genewise in the \code{NBPSeq} package (\code{Genewise})
 #' \item NB trended (non-parametric) dispersion model in the \code{edgeR} package
 #' (\code{Trended})
 #' \item NB tagwise-common dispersion model in the \code{edgeR} package 
@@ -372,6 +372,31 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
     ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
     #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
   }
+  
+#   #### -----------------------------------------------------------------
+    ## genewise method in NBPSeq: TBD
+#   else if (model == "Genewise"){
+#     mgen.0 = model.genewise(counts, x)
+#     mu.hat.mat0 = mgen.0$mu.hat.mat
+#     phi.hat.mat0 = mgen.0$phi.hat.mat
+#     res.omat0 = mgen.0$res.omat
+#     ord.res.vec0 = mgen.0$ord.res.vec
+#     ## simulate new datasets and re-fit
+#     #pb = txtProgressBar(style=3)
+#     ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+#       #setTxtProgressBar(pb, i/sim)
+#       set.seed(i+seed)
+#       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
+#       dim(y.mat.h) = dim(counts)
+#       rownames(y.mat.h) = rownames(counts)
+#       colnames(y.mat.h) = colnames(counts)
+#       model.genewise(y.mat.h, x)$ord.res.vec
+#     }
+#     #close(pb)
+#     dimnames(ord.res.sim.mat.tmp) = NULL
+#     ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
+#     #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+#   }
   
   #### -----------------------------------------------------------------
   else if (model == "Trended"){

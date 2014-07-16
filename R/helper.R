@@ -44,6 +44,7 @@ chisq_gof = function(x, ...){
   # vertical distance measure
   Fisher.method.X2.vert = -2*sum(log(v.pvals))
   Fisher.method.p.vert = pchisq(Fisher.method.X2.vert, 2*m, lower.tail=FALSE) 
+  
   # Pearson statistics (1-sided)
   Fisher.method.X2.pear.1s = -2*sum(log(p.pvals.1s))
   Fisher.method.p.pear.1s = pchisq(Fisher.method.X2.pear.1s, 2*m, lower.tail=FALSE) 
@@ -51,7 +52,7 @@ chisq_gof = function(x, ...){
   # save as a list
   results = list(fisher.vert = Fisher.method.p.vert,
                  fisher.pear.1s = Fisher.method.p.pear.1s
-                 )
+  )
   return(results)
   
 }
