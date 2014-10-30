@@ -7,6 +7,8 @@ NBGOF
 
 This README file for the R package NBGOF is incomplete for now. We will update on a regular basis.
 
+The source package can be downloaded [here](https://www.dropbox.com/s/lzpi5apn8el7may/NBGOF_0.1.6.tar.gz?dl=0)
+
 ### Install
 Installation from this repository requires the `devtools` package pre-installed. Run the following R command to install `NBGOF`:
 
