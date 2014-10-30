@@ -49,6 +49,8 @@
 #' 
 #' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
+#' @export
+#' 
 model.edgeR.genewise = function(counts, x, lib.sizes=colSums(counts), min.n = min.n, method=method){
   
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
@@ -59,11 +61,19 @@ model.edgeR.genewise = function(counts, x, lib.sizes=colSums(counts), min.n = mi
   method = ifelse(test = is.null(method), "auto", method)
   stopifnot(method %in% c("auto", "bin.spline", "bin.loess", "power", "spline"))
   
-  y.dge = DGEList(counts=counts)
-  y.dge$offset = log(lib.sizes)  
-  y.dge = estimateGLMTrendedDisp(y.dge, design=x, min.n=min.n, method=method)
-  e.gen = estimateGLMTagwiseDisp(y.dge, design=x, dispersion=y.dge$trended.dispersion, prior.df = 0, trend=TRUE)  # prior.df = 0
-  gen.fit = glmFit(y=counts, design=x, dispersion=e.gen$tagwise.dispersion)
+  y.dge = DGEList(counts = y, group = grp.ids)
+  y.dge = calcNormFactors(y.dge, method="RLE")
+  y.dge = estimateGLMTrendedDisp(y.dge, design=x, min.n=min.n, verbose=FALSE)
+  e.gen = estimateGLMTagwiseDisp(y.dge, design=x, prior.df=0, trend=TRUE)  # prior.df = 0
+  # e.gen: trend is FALSE since we didn't use estimateGLMTrendedDisp() beforehand
+  gen.fit = glmFit(e.gen, design=x, dispersion=e.gen$tagwise.dispersion)
+  
+  
+#   y.dge = DGEList(counts=counts)
+#   y.dge$offset = log(lib.sizes)  
+#   y.dge = estimateGLMTrendedDisp(y.dge, design=x, min.n=min.n, method=method)
+#   e.gen = estimateGLMTagwiseDisp(y.dge, design=x, dispersion=y.dge$trended.dispersion, prior.df = 0, trend=TRUE)  # prior.df = 0
+#   gen.fit = glmFit(y=counts, design=x, dispersion=e.gen$tagwise.dispersion)
   
   # extract quantities:
   mu.hat.m = gen.fit$fitted.values   # mu may be close to 0

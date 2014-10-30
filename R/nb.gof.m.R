@@ -190,25 +190,25 @@
 nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, method = NULL, min.n=100, prior.df = 10, 
                     seed=1, ncores = NULL, ...){
   
-  # model specifications
-  if (is.null(model)){
-    stop("You must specify a model name!")
-  }
-  if ( !model %in% c("NBP", "NBQ", "NBS", "STEP", "Common", "Genewise", "Trended", "Tagwise-Common", "Tagwise-Trend") ) {
-    stop("You must specify one of these model names: 
-         'NBP', 'NBQ', 'NBS', 'STEP', 'Common', 'Genewise', 'Trended', 'Tagwise-Common' or 'Tagwise-Trend'!")
-  }
+#   # model specifications
+#   if (is.null(model)){
+#     stop("You must specify a model name!")
+#   }
+#   if ( !model %in% c("NBP", "NBQ", "NBS", "STEP", "Common", "Genewise", "Trended", "Tagwise-Common", "Tagwise-Trend") ) {
+#     stop("You must specify one of these model names: 
+#          'NBP', 'NBQ', 'NBS', 'STEP', 'Common', 'Genewise', 'Trended', 'Tagwise-Common' or 'Tagwise-Trend'!")
+#   }
   
-  # method specifications
-  if ( model %in% c("NBP", "NBQ", "NBS", "STEP") & !method %in% c("ML", "MAPL") ) {
-    stop("You must specify one of these estimation methods (in NBPSeq): 'ML' or 'MAPL'!")
-  }
-  if ( model %in% c("Common", "Tagwise-Common") & !method %in% c("CoxReid", "Pearson", "deviance") ) {
-    stop("You must specify one of these methods for estimating the dispersion (in edgeR): 'CoxReid', 'Pearson' or 'deviance'!")
-  }
-  if ( model %in% c("Trended", "Tagwise-Trend", "Genewise") & !method %in% c("auto", "bin.spline", "bin.loess", "power", "spline") ) {
-    stop("You must specify one of these methods for estimating the trended dispersions (in edgeR): 'auto', 'bin.spline','bin.loess', 'power', or 'spline'!")
-  }
+#   # method specifications
+#   if ( model %in% c("NBP", "NBQ", "NBS", "STEP") & !method %in% c("ML", "MAPL") ) {
+#     stop("You must specify one of these estimation methods (in NBPSeq): 'ML' or 'MAPL'!")
+#   }
+#   if ( model %in% c("Common", "Tagwise-Common") & !method %in% c("CoxReid", "Pearson", "deviance") ) {
+#     stop("You must specify one of these methods for estimating the dispersion (in edgeR): 'CoxReid', 'Pearson' or 'deviance'!")
+#   }
+#   if ( model %in% c("Trended", "Tagwise-Trend", "Genewise") & !method %in% c("auto", "bin.spline", "bin.loess", "power", "spline") ) {
+#     stop("You must specify one of these methods for estimating the trended dispersions (in edgeR): 'auto', 'bin.spline','bin.loess', 'power', or 'spline'!")
+#   }
   
   # parallel computing: specify number of cores to use
   if (is.null(ncores)){
@@ -254,7 +254,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   }
   
   #### -----------------------------------------------------------------
-  else if (model == "NBQ"){
+  if (model == "NBQ"){
     mnbq.0 = model.nbq.m(counts, x, lib.sizes=colSums(counts), method=method)
     mu.hat.mat0 = mnbq.0$mu.hat.mat
     phi.hat.mat0 = mnbq.0$phi.hat.mat
@@ -278,7 +278,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   }
   
   #### -----------------------------------------------------------------
-  else if (model == "NBS"){
+  if (model == "NBS"){
     mnbs.0 = model.nbs.m(counts, x, lib.sizes=colSums(counts), method=method)
     mu.hat.mat0 = mnbs.0$mu.hat.mat
     phi.hat.mat0 = mnbs.0$phi.hat.mat
@@ -302,7 +302,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   }
   
   #### -----------------------------------------------------------------
-  else if (model == "STEP"){
+  if (model == "STEP"){
     mnbstep.0 = model.nbstep.m(counts, x, lib.sizes=colSums(counts), method=method)
     mu.hat.mat0 = mnbstep.0$mu.hat.mat
     phi.hat.mat0 = mnbstep.0$phi.hat.mat
@@ -326,7 +326,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   }
   
   #### -----------------------------------------------------------------
-  else if (model == "Common"){
+  if (model == "Common"){
     mcom.0 = model.edgeR.common(counts, x, lib.sizes=colSums(counts), method=method)
     mu.hat.mat0 = mcom.0$mu.hat.mat
     phi.hat.mat0 = mcom.0$phi.hat.mat
@@ -350,7 +350,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   }
   
   #### -----------------------------------------------------------------
-  else if (model == "Genewise"){
+  if (model == "Genewise"){
     mgen.0 = model.edgeR.genewise(counts, x, lib.sizes=colSums(counts), min.n=min.n, method=method)
     mu.hat.mat0 = mgen.0$mu.hat.mat
     phi.hat.mat0 = mgen.0$phi.hat.mat
@@ -374,32 +374,32 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   }
   
 #   #### -----------------------------------------------------------------
-    ## genewise method in NBPSeq: TBD
-#   else if (model == "Genewise"){
-#     mgen.0 = model.genewise(counts, x)
-#     mu.hat.mat0 = mgen.0$mu.hat.mat
-#     phi.hat.mat0 = mgen.0$phi.hat.mat
-#     res.omat0 = mgen.0$res.omat
-#     ord.res.vec0 = mgen.0$ord.res.vec
-#     ## simulate new datasets and re-fit
-#     #pb = txtProgressBar(style=3)
-#     ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
-#       #setTxtProgressBar(pb, i/sim)
-#       set.seed(i+seed)
-#       y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
-#       dim(y.mat.h) = dim(counts)
-#       rownames(y.mat.h) = rownames(counts)
-#       colnames(y.mat.h) = colnames(counts)
-#       model.genewise(y.mat.h, x)$ord.res.vec
-#     }
-#     #close(pb)
-#     dimnames(ord.res.sim.mat.tmp) = NULL
-#     ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
-#     #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
-#   }
+    # genewise method in NBPSeq: TBD
+  if (model == "Genewise-HOA"){
+    mgen.0 = model.genewise(counts, x)
+    mu.hat.mat0 = mgen.0$mu.hat.mat
+    phi.hat.mat0 = mgen.0$phi.hat.mat
+    res.omat0 = mgen.0$res.omat
+    ord.res.vec0 = mgen.0$ord.res.vec
+    ## simulate new datasets and re-fit
+    #pb = txtProgressBar(style=3)
+    ord.res.sim.mat.tmp = foreach(i=1:sim, .combine="rbind", .inorder=TRUE) %dopar% {
+      #setTxtProgressBar(pb, i/sim)
+      set.seed(i+seed)
+      y.mat.h = rnbinom(n=N, mu=mu.hat.mat0, size=1/phi.hat.mat0)
+      dim(y.mat.h) = dim(counts)
+      rownames(y.mat.h) = rownames(counts)
+      colnames(y.mat.h) = colnames(counts)
+      model.genewise(y.mat.h, x)$ord.res.vec
+    }
+    #close(pb)
+    dimnames(ord.res.sim.mat.tmp) = NULL
+    ord.res.sim.mat = rbind(ord.res.sim.mat.tmp, ord.res.vec0)
+    #phi.hat.sim.mat[(sim+1), ] = phi.hat.mat0
+  }
   
   #### -----------------------------------------------------------------
-  else if (model == "Trended"){
+  if (model == "Trended"){
     mtrd.0 = model.edgeR.trended(counts, x, lib.sizes=colSums(counts), min.n=min.n, method=method)
     mu.hat.mat0 = mtrd.0$mu.hat.mat
     phi.hat.mat0 = mtrd.0$phi.hat.mat
@@ -423,7 +423,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   }
   
   #### -----------------------------------------------------------------
-  else if (model == "Tagwise-Common"){
+  if (model == "Tagwise-Common"){
     mtgc.0 = model.edgeR.tagcom(counts, x, lib.sizes=colSums(counts), prior.df = prior.df, method=method)
     mu.hat.mat0 = mtgc.0$mu.hat.mat
     phi.hat.mat0 = mtgc.0$phi.hat.mat
@@ -447,7 +447,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   }
   
   #### -----------------------------------------------------------------
-  else if (model == "Tagwise-Trend"){
+  if (model == "Tagwise-Trend"){
     mtgt.0 = model.edgeR.tagtrd(counts, x, lib.sizes=colSums(counts), min.n=min.n, prior.df = prior.df, method=method)
     mu.hat.mat0 = mtgt.0$mu.hat.mat
     phi.hat.mat0 = mtgt.0$phi.hat.mat

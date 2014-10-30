@@ -67,7 +67,7 @@ model.edgeR.tagtrd = function(counts, x, lib.sizes=colSums(counts), prior.df = p
   y.dge = DGEList(counts=counts)
   y.dge$offset = log(lib.sizes)  
   y.dge = estimateGLMTrendedDisp(y.dge, design=x, min.n=min.n, method=method)
-  e.tgt = estimateGLMTagwiseDisp(y.dge, design=x, dispersion=y.dge$trended.dispersion, prior.df = prior.df, trend=TRUE)
+  e.tgt = estimateGLMTagwiseDisp(y.dge, design=x, prior.df = prior.df, trend=TRUE)
   tgt.fit = glmFit(y=counts, design=x, dispersion=e.tgt$tagwise.dispersion)
     
   # extract quantities:
