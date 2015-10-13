@@ -23,7 +23,7 @@ The methodologies are discussed in the manuscript **Goodness-of-Fit Tests and Mo
 
 ******
 
-**The `NBGOF` source package can be downloaded [here](https://www.dropbox.com/s/lzpi5apn8el7may/NBGOF_0.1.6.tar.gz?dl=0).**
+**The `NBGOF` source package can be downloaded [here](https://www.dropbox.com/s/4pb3wfiee48o6v7/NBGOF_0.1.8.tar.gz?dl=0).**
 
 ### Install
 Installation from this repository requires the `devtools` package pre-installed. Run the following R command to install `NBGOF`:
