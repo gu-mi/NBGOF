@@ -37,10 +37,11 @@ diagdata = function(gofm.obj){
   
   # construct data frames for quantities to be used
   qq = data.frame(px = z, py = ord.x)
+  hist = data.frame(px = x)
   info = data.frame(model = model)
   
   # return as a list
-  return(list(qq = qq, info = info))
+  return(list(qq = qq, histogram = hist, info = info))
 }
 
 #' @title Diagnostic Plots for Graphical Checks of Negative Binomial Dispersion Model Fits Using ggplot2
@@ -109,7 +110,7 @@ diagPlot = function(gofm.obj, type="qq", binwidth=0.1){
   
   if (type == "hist"){
     title = with(diagdata$info, paste("Histogram of P-values for ", model, " Model", sep=""))
-    hist = ggplot(data=diagdata$histogram, aes(x=pvals)) +
+    hist = ggplot(data=diagdata$histogram, aes(x=px)) +
       geom_histogram(colour = "black", fill = "white", binwidth = binwidth) + 
       ggtitle(title) + theme_bw() +
       scale_x_continuous("P-values", limits = c(0,1)) + 

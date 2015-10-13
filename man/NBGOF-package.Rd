@@ -28,11 +28,25 @@ dispersion models in popular R/Bioconductor packages, including
 }
 }
 \author{
-Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
 
 Maintainer: Gu Mi <https://github.com/gu-mi>
 }
 \references{
+Mi, G, Di, Y, & Schafer, DW (2015). Goodness-of-Fit Tests and Model Diagnostics for
+Negative Binomial Regression of RNA Sequencing Data. \emph{PLOS ONE}, 10(3).
+
+Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The NBP Negative Binomial
+Model for Assessing Differential Gene Expression from RNA-Seq", \emph{Statistical
+Applications in Genetics and Molecular Biology}, 10 (1).
+
+McCarthy DJ, Chen Y and Smyth GK (2012). Differential expression analysis of multifactor
+RNA-Seq experiments with respect to biological variation. \emph{Nucleic Acids Research}
+40, 4288-4297.
+
+Cox, DR, and Reid, N (1987). Parameter orthogonality and approximate conditional inference.
+\emph{Journal of the Royal Statistical Society Series B} 49, 1-39.
+
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
 \seealso{

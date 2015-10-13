@@ -62,7 +62,7 @@ model.edgeR.genewise = function(counts, x, lib.sizes=colSums(counts), min.n = mi
   stopifnot(method %in% c("auto", "bin.spline", "bin.loess", "power", "spline"))
   
   # keep only complete cases:
-  counts = counts[complete.cases(counts), ]
+  y = counts[complete.cases(counts), ]
   
   y.dge = DGEList(counts = y, group = grp.ids)
   y.dge = calcNormFactors(y.dge, method="RLE")
