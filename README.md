@@ -62,8 +62,9 @@ We provide (Dropbox) links below to download R source codes and related supporti
 All results (figures/tables) in the submitted manuscript was produced using the following versions of R and its packages:
 
 ```{r}
-R version 3.1.0 Patched (2014-05-22 r65728)
-Platform: x86_64-apple-darwin10.8.0 (64-bit)
+R version 3.2.2 (2015-08-14)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X 10.11 (El Capitan)
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -72,13 +73,13 @@ attached base packages:
 [1] grid      parallel  stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] plyr_1.8.1      edgeR_3.6.2     limma_3.20.7    NBPSeq_0.3.0    NBGOF_0.1.6     ggplot2_1.0.0   doMC_1.3.3     
-[8] iterators_1.0.7 foreach_1.4.2  
+[1] NBGOF_0.2.0     ggplot2_1.0.1   doMC_1.3.3      iterators_1.0.7 foreach_1.4.2  
 
 loaded via a namespace (and not attached):
- [1] codetools_0.2-9   colorspace_1.2-4  digest_0.6.4      gtable_0.1.2      MASS_7.3-35       munsell_0.4.2    
- [7] numDeriv_2012.9-1 proto_0.3-10      Rcpp_0.11.3       reshape2_1.4      scales_0.2.4      splines_3.1.0    
-[13] stringr_0.6.2     tools_3.1.0      
+ [1] Rcpp_0.12.1       NBPSeq_0.3.0      magrittr_1.5      edgeR_3.10.5      splines_3.2.2     MASS_7.3-44      
+ [7] munsell_0.4.2     colorspace_1.2-6  stringr_1.0.0     plyr_1.8.3        tools_3.2.2       gtable_0.1.2     
+[13] digest_0.6.8      numDeriv_2014.2-1 reshape2_1.4.1    codetools_0.2-14  qvalue_2.0.0      labeling_0.3     
+[19] limma_3.24.15     stringi_0.5-5     compiler_3.2.2    scales_0.3.0      proto_0.3-10     
 ```
 
 ******
