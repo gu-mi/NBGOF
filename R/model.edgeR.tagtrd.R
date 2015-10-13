@@ -64,6 +64,9 @@ model.edgeR.tagtrd = function(counts, x, lib.sizes=colSums(counts), prior.df = p
   method = ifelse(test = is.null(method), "auto", method)
   stopifnot(method %in% c("auto", "bin.spline", "bin.loess", "power", "spline"))
 
+  # keep only complete cases:
+  counts = counts[complete.cases(counts), ]
+  
   y.dge = DGEList(counts=counts)
   y.dge$offset = log(lib.sizes)  
   y.dge = estimateGLMTrendedDisp(y.dge, design=x, min.n=min.n, method=method)

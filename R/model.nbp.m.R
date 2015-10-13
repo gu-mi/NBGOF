@@ -37,7 +37,7 @@
 #'  
 #' See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 
-model.nbp.m = function(counts, x, lib.sizes=colSums(counts), method=method){
+model.nbp.m = function(counts, x, lib.sizes=colSums(counts, na.rm = TRUE), method=method){
   
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
                    labels = seq(ncol(x)))

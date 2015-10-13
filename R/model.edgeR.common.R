@@ -42,6 +42,9 @@ model.edgeR.common = function(counts, x, lib.sizes=colSums(counts), method=metho
   method = ifelse(test = is.null(method), "CoxReid", method)
   stopifnot(method %in% c("CoxReid", "Pearson", "deviance"))
   
+  # keep only complete cases:
+  counts = counts[complete.cases(counts), ]
+  
   e.com = estimateGLMCommonDisp(y=counts, design=x, method=method, verbose=FALSE)
   com.fit = glmFit(y=counts, design=x, dispersion=e.com)
   

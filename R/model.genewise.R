@@ -25,6 +25,9 @@ model.genewise = function(counts, x){
   grp.ids = factor(apply(x, 1, function(x){paste(rev(x), collapse = ".")}), 
                    labels = seq(ncol(x)))
   
+  # keep only complete cases:
+  counts = counts[complete.cases(counts), ]
+  
   nf = estimate.norm.factors(counts, method="AH2010")
   nb.data = prepare.nb.data(counts, norm.factors=nf)
   grp1 = as.character(unique(grp.ids)[1])

@@ -60,6 +60,9 @@ model.edgeR.tagcom = function(counts, x, lib.sizes=colSums(counts), prior.df = p
   method = ifelse(test = is.null(method), "CoxReid", method)
   stopifnot(method %in% c("CoxReid", "Pearson", "deviance"))
   
+  # keep only complete cases:
+  counts = counts[complete.cases(counts), ]
+  
   e.com = estimateGLMCommonDisp(y=counts, design=x, verbose=FALSE, method=method)
   e.tgc = estimateGLMTagwiseDisp(y=counts, design=x, offset=log(lib.sizes), dispersion=e.com, prior.df = prior.df, trend=FALSE)
   # e.tag: trend is FALSE since we didn't use estimateGLMTrendedDisp() beforehand

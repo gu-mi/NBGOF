@@ -80,8 +80,8 @@
 #' @export
 #' 
 #' @references 
-#' Mi G, Di Y and Schafer DW (2014). Goodness-of-Fit Tests and Model Diagnostics
-#' for Negative Binomial Regression of RNA sequencing Data. (revision invited).
+#' Mi, G, Di, Y, & Schafer, DW (2015). Goodness-of-Fit Tests and Model Diagnostics for 
+#' Negative Binomial Regression of RNA Sequencing Data. \emph{PLOS ONE}, 10(3).
 #' 
 #' Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The NBP Negative Binomial
 #' Model for Assessing Differential Gene Expression from RNA-Seq", \emph{Statistical 
@@ -187,7 +187,7 @@
 #' multiplot(h1, q1, h2, q2, h3, q3, h4, q4, h5, q5, h6, q6, h7, q7, cols=4, layout=matrix(seq(1,16), nrow=4, byrow=TRUE))
 #' # dev.off()
 #' 
-nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, method = NULL, min.n=100, prior.df = 10, 
+nb.gof.m = function(counts, x, lib.sizes=colSums(counts, na.rm = TRUE), sim=999, model=NULL, method = NULL, min.n=100, prior.df = 10, 
                     seed=1, ncores = NULL, ...){
   
 #   # model specifications
@@ -217,6 +217,9 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   # register for foreach
   registerDoMC(ncores)
   
+  # keep only complete cases:
+  counts = counts[complete.cases(counts), ]
+  
   # We recommend that genes with all zero counts be removed in advance
   # The first argument, counts, should be already subsetted before passing to the function
   
@@ -231,7 +234,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   
   #### -----------------------------------------------------------------
   if (model == "NBP"){
-    mnbp.0 = model.nbp.m(counts, x, lib.sizes=colSums(counts), method=method)
+    mnbp.0 = model.nbp.m(counts, x, lib.sizes=colSums(counts, na.rm = TRUE), method=method)
     mu.hat.mat0 = mnbp.0$mu.hat.mat
     phi.hat.mat0 = mnbp.0$phi.hat.mat
     res.omat0 = mnbp.0$res.omat
@@ -255,7 +258,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   
   #### -----------------------------------------------------------------
   if (model == "NBQ"){
-    mnbq.0 = model.nbq.m(counts, x, lib.sizes=colSums(counts), method=method)
+    mnbq.0 = model.nbq.m(counts, x, lib.sizes=colSums(counts, na.rm = TRUE), method=method)
     mu.hat.mat0 = mnbq.0$mu.hat.mat
     phi.hat.mat0 = mnbq.0$phi.hat.mat
     res.omat0 = mnbq.0$res.omat
@@ -279,7 +282,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   
   #### -----------------------------------------------------------------
   if (model == "NBS"){
-    mnbs.0 = model.nbs.m(counts, x, lib.sizes=colSums(counts), method=method)
+    mnbs.0 = model.nbs.m(counts, x, lib.sizes=colSums(counts, na.rm = TRUE), method=method)
     mu.hat.mat0 = mnbs.0$mu.hat.mat
     phi.hat.mat0 = mnbs.0$phi.hat.mat
     res.omat0 = mnbs.0$res.omat
@@ -303,7 +306,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   
   #### -----------------------------------------------------------------
   if (model == "STEP"){
-    mnbstep.0 = model.nbstep.m(counts, x, lib.sizes=colSums(counts), method=method)
+    mnbstep.0 = model.nbstep.m(counts, x, lib.sizes=colSums(counts, na.rm = TRUE), method=method)
     mu.hat.mat0 = mnbstep.0$mu.hat.mat
     phi.hat.mat0 = mnbstep.0$phi.hat.mat
     res.omat0 = mnbstep.0$res.omat
@@ -327,7 +330,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   
   #### -----------------------------------------------------------------
   if (model == "Common"){
-    mcom.0 = model.edgeR.common(counts, x, lib.sizes=colSums(counts), method=method)
+    mcom.0 = model.edgeR.common(counts, x, lib.sizes=colSums(counts, na.rm = TRUE), method=method)
     mu.hat.mat0 = mcom.0$mu.hat.mat
     phi.hat.mat0 = mcom.0$phi.hat.mat
     res.omat0 = mcom.0$res.omat
@@ -351,7 +354,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   
   #### -----------------------------------------------------------------
   if (model == "Genewise"){
-    mgen.0 = model.edgeR.genewise(counts, x, lib.sizes=colSums(counts), min.n=min.n, method=method)
+    mgen.0 = model.edgeR.genewise(counts, x, lib.sizes=colSums(counts, na.rm = TRUE), min.n=min.n, method=method)
     mu.hat.mat0 = mgen.0$mu.hat.mat
     phi.hat.mat0 = mgen.0$phi.hat.mat
     res.omat0 = mgen.0$res.omat
@@ -400,7 +403,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   
   #### -----------------------------------------------------------------
   if (model == "Trended"){
-    mtrd.0 = model.edgeR.trended(counts, x, lib.sizes=colSums(counts), min.n=min.n, method=method)
+    mtrd.0 = model.edgeR.trended(counts, x, lib.sizes=colSums(counts, na.rm = TRUE), min.n=min.n, method=method)
     mu.hat.mat0 = mtrd.0$mu.hat.mat
     phi.hat.mat0 = mtrd.0$phi.hat.mat
     res.omat0 = mtrd.0$res.omat
@@ -424,7 +427,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   
   #### -----------------------------------------------------------------
   if (model == "Tagwise-Common"){
-    mtgc.0 = model.edgeR.tagcom(counts, x, lib.sizes=colSums(counts), prior.df = prior.df, method=method)
+    mtgc.0 = model.edgeR.tagcom(counts, x, lib.sizes=colSums(counts, na.rm = TRUE), prior.df = prior.df, method=method)
     mu.hat.mat0 = mtgc.0$mu.hat.mat
     phi.hat.mat0 = mtgc.0$phi.hat.mat
     res.omat0 = mtgc.0$res.omat
@@ -448,7 +451,7 @@ nb.gof.m = function(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, m
   
   #### -----------------------------------------------------------------
   if (model == "Tagwise-Trend"){
-    mtgt.0 = model.edgeR.tagtrd(counts, x, lib.sizes=colSums(counts), min.n=min.n, prior.df = prior.df, method=method)
+    mtgt.0 = model.edgeR.tagtrd(counts, x, lib.sizes=colSums(counts, na.rm = TRUE), min.n=min.n, prior.df = prior.df, method=method)
     mu.hat.mat0 = mtgt.0$mu.hat.mat
     phi.hat.mat0 = mtgt.0$phi.hat.mat
     res.omat0 = mtgt.0$res.omat
