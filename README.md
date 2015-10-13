@@ -19,7 +19,7 @@ NBGOF
 
 * NB tagwise-trended dispersion model in the edgeR package (Tagwise-Trend)
 
-The methodologies are discussed in the manuscript **Goodness-of-Fit Tests and Model Diagnostics for Negative Binomial Regression of RNA Sequencing Data** (by Gu Mi, Yanming Di, and Daniel W. Schafer, PLOS ONE, under review). Functions in `NBGOF` have been used to generate all figures and tables displayed in the manuscript, plus some additional analysis tools for further investigations.
+The methodologies are discussed in the manuscript **Goodness-of-Fit Tests and Model Diagnostics for Negative Binomial Regression of RNA Sequencing Data** (by Gu Mi, Yanming Di, and Daniel W. Schafer, PLOS ONE, 10(3)). The paper is freely available from this [link](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0119254). Functions in `NBGOF` have been used to generate all figures and tables displayed in the manuscript, plus some additional analysis tools for further investigations.
 
 ******
 
