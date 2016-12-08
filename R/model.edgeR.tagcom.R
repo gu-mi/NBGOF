@@ -46,7 +46,7 @@
 #' and \code{\link{model.edgeR.tagtrd}} for the tagwise model that shrinks towards the trended
 #' dispersion.
 #' 
-#' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+#' @author Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
 #' 
 #' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 

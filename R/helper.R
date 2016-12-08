@@ -6,7 +6,7 @@
 
 #' @title Group-wise sort of residual matrix in multivariate case
 #' @description Group-wise sort of residual matrix in multivariate case.
-#' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+#' @author Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
 #' @keywords internal
 #' 
 sort.vec = function(x, grp.ids)  ave(x, grp.ids, FUN = sort)

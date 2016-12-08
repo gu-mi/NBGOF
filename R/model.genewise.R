@@ -16,7 +16,7 @@
 #' 
 #' @return A list of quantities to be used in the main \code{\link{nb.gof.m}} function.
 #'  
-#' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+#' @author Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
 #' 
 #' @references See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 #' 

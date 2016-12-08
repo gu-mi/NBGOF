@@ -25,7 +25,7 @@
 #' @seealso \code{\link{nb.gof.m}} for simulated data examples, and \code{\link{arab}} for 
 #' a real RNA-Seq data example.
 #' 
-#' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+#' @author Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
 #' 
 #' @references
 #' See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.

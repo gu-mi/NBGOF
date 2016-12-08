@@ -75,7 +75,7 @@
 #' nb.gof.m(counts, x, lib.sizes=colSums(counts), sim=999, model=NULL, method=NULL, 
 #' min.n=100, prior.df = 10, seed=1, ncores = NULL, ...)
 #' 
-#' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+#' @author Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
 #' 
 #' @export
 #' 

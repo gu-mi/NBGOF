@@ -43,7 +43,7 @@
 #' @usage 
 #' nb.gof.v(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", seed=1, ncores=NULL)
 #' 
-#' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+#' @author Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
 #' 
 #' @export
 #' 
@@ -127,6 +127,7 @@ nb.gof.v = function(y, x, lib.sizes=NULL, sim=999, model = "NB2", method="ML", s
     mpoi.0 = model.poi.v(y=y, x=x, lib.sizes=libs)  
     # Poisson model fit on original data
     mu.hat.v0 = mpoi.0$mu.hat.v
+    phi0 = 0  # actually not used in Poisson model
     res.vec0 = mpoi.0$res.vec
     ## simulate new datasets and re-fit
     #pb = txtProgressBar(style=3)

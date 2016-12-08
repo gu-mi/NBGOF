@@ -28,7 +28,7 @@
 #' 
 #' @return A list of quantities to be used in the main \code{\link{nb.gof.m}} function.
 #' 
-#' @author Gu Mi <mig@@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+#' @author Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
 #' 
 #' @references 
 #' Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The NBP Negative Binomial
