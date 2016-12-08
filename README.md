@@ -29,7 +29,7 @@ The methodologies are discussed in the manuscript **Goodness-of-Fit Tests and Mo
 Installation from this repository requires the `devtools` package pre-installed. Run the following R command to install `NBGOF`:
 
 ```S
-devtools::install_github('NBGOF', 'gu-mi')
+devtools::install_github("gu-mi/NBGOF")
 ```
 
 To load the package into current R session, run
