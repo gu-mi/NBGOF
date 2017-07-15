@@ -101,9 +101,6 @@ multiplot(p1, p2, p3, cols=3, layout=matrix(seq(1,3), nrow=1, byrow=TRUE))
 # dev.off()
 
 }
-\author{
-Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
-}
 \references{
 Mi, G, Di, Y, & Schafer, DW (2015). Goodness-of-Fit Tests and Model Diagnostics for 
 Negative Binomial Regression of RNA Sequencing Data. \emph{PLOS ONE}, 10(3).
@@ -114,4 +111,6 @@ Applications in Genetics and Molecular Biology}, 10 (1).
 
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
-
+\author{
+Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
+}

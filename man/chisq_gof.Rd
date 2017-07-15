@@ -21,11 +21,10 @@ This function is designed to provide different methods of combining p-values
 When the response is a count matrix, we can use this function to test
 the goodness-of-fit of a specified negative binomial dispersion model.
 }
-\author{
-Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
-}
 \references{
 \url{https://github.com/gu-mi/NBGOF/wiki/}
 }
+\author{
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+}
 \keyword{internal}
-

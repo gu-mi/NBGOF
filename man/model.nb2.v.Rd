@@ -25,10 +25,9 @@ this function will be passed to the main GOF function \code{\link{nb.gof.v}}.
 \details{
 The \code{nb.regression.1} function is used for NB2 model fitting with MLE.
 }
-\author{
-Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
-}
 \references{
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
-
+\author{
+Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
+}

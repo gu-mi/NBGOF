@@ -20,13 +20,12 @@ A ggplot object of empirical probability plot.
 This function makes empirical probability plots (EPP) based on the goodness-of-fit test results (an "gofv" object) from
 \code{\link{nb.gof.v}}.
 }
-\author{
-Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
-}
 \references{
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
 \seealso{
 \code{\link{nb.gof.v}} for simulated data examples.
 }
-
+\author{
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+}

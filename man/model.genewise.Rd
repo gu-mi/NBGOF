@@ -23,10 +23,9 @@ will be passed to the main GOF function \code{\link{nb.gof.m}}.
 \details{
 details here (HOA)
 }
-\author{
-Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
-}
 \references{
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
-
+\author{
+Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
+}

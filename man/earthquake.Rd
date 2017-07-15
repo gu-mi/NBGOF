@@ -51,4 +51,3 @@ California Earthquake Data Center (NCEDC), \url{http://quake.geo.berkeley.edu/cn
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
 \keyword{datasets}
-

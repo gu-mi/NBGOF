@@ -19,4 +19,3 @@ This function prepares quantities for making empirical probability plots (EPP) o
 The result (a list) will be passed to the \code{\link{EPPlot}} function to make EPP.
 }
 \keyword{internal}
-

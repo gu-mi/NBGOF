@@ -20,13 +20,12 @@ A ggplot object, either a Q-Q plot (\code{type="qq"}) or a histogram (\code{type
 This function makes diagnostic plots based on the goodness-of-fit test results (an "gofm" object) from
 \code{\link{nb.gof.m}}: a histogram of p-values or a uniform quantile-quantile (Q-Q) plot is available.
 }
-\author{
-Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
-}
 \references{
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
 \seealso{
 \code{\link{nb.gof.m}} for simulated data examples.
 }
-
+\author{
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+}

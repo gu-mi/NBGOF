@@ -2,8 +2,8 @@
 % Please edit documentation in R/NBGOF-package.R
 \docType{package}
 \name{NBGOF-package}
-\alias{NBGOF}
 \alias{NBGOF-package}
+\alias{NBGOF}
 \title{Goodness-of-Fit Tests and Model Diagnostics for Negative Binomial Regression of 
 RNA Sequencing Data}
 \description{
@@ -27,11 +27,6 @@ dispersion models in popular R/Bioconductor packages, including
 (\code{Tagwise-Trend})
 }
 }
-\author{
-Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
-
-Maintainer: Gu Mi <https://github.com/gu-mi>
-}
 \references{
 Mi, G, Di, Y, & Schafer, DW (2015). Goodness-of-Fit Tests and Model Diagnostics for 
 Negative Binomial Regression of RNA Sequencing Data. \emph{PLOS ONE}, 10 (3).
@@ -53,5 +48,9 @@ See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 See \code{\link{nb.gof.v}} and \code{\link{nb.gof.m}} for examples on simulated
 datasets. See \code{\link{earthquake}} and \code{\link{arab}} for real data examples.
 }
-\keyword{package}
+\author{
+Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
 
+Maintainer: Gu Mi <https://github.com/gu-mi>
+}
+\keyword{package}

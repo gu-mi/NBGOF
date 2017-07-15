@@ -35,13 +35,12 @@ This function calls the \code{\link{estimateGLMCommonDisp}} function in
 \code{\link{estimateGLMCommonDisp}} and \code{\link{glmFit}} functions in the 
 \code{\link{edgeR}} package for more information.
 }
-\author{
-Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
-}
 \references{
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
 \seealso{
 \code{\link{model.edgeR.tagcom}} and \code{\link{model.edgeR.genewise}}
 }
-
+\author{
+Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
+}

@@ -25,10 +25,9 @@ this function will be passed to the main GOF function.
 \details{
 The \code{glm} function with \code{family=poisson} is used for Poisson model fitting.
 }
-\author{
-Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
-}
 \references{
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
-
+\author{
+Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
+}

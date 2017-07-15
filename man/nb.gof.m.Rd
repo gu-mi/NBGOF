@@ -173,9 +173,6 @@ multiplot(h1, q1, h2, q2, h3, q3, h4, q4, h5, q5, h6, q6, h7, q7, cols=4, layout
 # dev.off()
 
 }
-\author{
-Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
-}
 \references{
 Mi, G, Di, Y, & Schafer, DW (2015). Goodness-of-Fit Tests and Model Diagnostics for 
 Negative Binomial Regression of RNA Sequencing Data. \emph{PLOS ONE}, 10(3).
@@ -193,4 +190,6 @@ Cox, DR, and Reid, N (1987). Parameter orthogonality and approximate conditional
 
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
-
+\author{
+Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
+}

@@ -30,9 +30,6 @@ this function will be passed to the main GOF function \code{\link{nb.gof.v}}.
 The \code{glm.nbp.1.MLE} function is used for NBP model fitting with MLE.
 The \code{glm.nbp.1} function is used for NBP model fitting with APLE.
 }
-\author{
-Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
-}
 \references{
 Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The NBP Negative Binomial
 Model for Assessing Differential Gene Expression from RNA-Seq", \emph{Statistical 
@@ -40,4 +37,6 @@ Applications in Genetics and Molecular Biology}, 10 (1).
 
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
-
+\author{
+Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
+}

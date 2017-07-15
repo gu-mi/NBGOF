@@ -38,9 +38,6 @@ are estimated by maximizing the adjusted profile likelihood. See the
 \code{\link{estimate.dispersion}} function in the \code{NBPSeq} package
 for more information.
 }
-\author{
-Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
-}
 \references{
 Di Y, Schafer DW, Cumbie JS, and Chang JH (2011): "The NBP Negative Binomial
 Model for Assessing Differential Gene Expression from RNA-Seq", \emph{Statistical 
@@ -48,4 +45,6 @@ Applications in Genetics and Molecular Biology}, 10 (1).
  
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
-
+\author{
+Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
+}

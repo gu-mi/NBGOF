@@ -26,4 +26,3 @@ beta a K vector, the MLE of the regression coefficients.
 Estimate the regression coefficients in an NBP GLM model for each gene
 }
 \keyword{internal}
-

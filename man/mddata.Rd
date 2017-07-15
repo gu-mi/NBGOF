@@ -22,4 +22,3 @@ a data frame for each specified model.
 This function prepares quantities for making mean-dispersion plots with curves of fitted negative binomial dispersion models. The result (a data frame) will be passed to the \code{\link{MDPlot}} function.
 }
 \keyword{internal}
-

@@ -57,9 +57,6 @@ groups). We leave the default value of \code{prior.df} at 10. See the
 trended dispersion models, and \code{\link{glmFit}} functions in the 
 \code{edgeR} package for more details.
 }
-\author{
-Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
-}
 \references{
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
@@ -68,4 +65,6 @@ See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 and \code{\link{model.edgeR.tagcom}} for the tagwise model that shrinks towards a common
 dispersion.
 }
-
+\author{
+Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
+}

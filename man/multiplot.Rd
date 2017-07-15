@@ -32,4 +32,3 @@ plot 2 will go in the upper right, and plot 3 will go all the way across the bot
 \seealso{
 \code{\link{nb.gof.m}} for simulated data examples. Modifications of global labels made by Scott Chamberlain (StackOverflow)
 }
-

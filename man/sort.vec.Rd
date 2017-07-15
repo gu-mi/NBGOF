@@ -13,4 +13,3 @@ Group-wise sort of residual matrix in multivariate case.
 Gu Mi <neo.migu@gmail.com>, Yanming Di, Daniel Schafer
 }
 \keyword{internal}
-

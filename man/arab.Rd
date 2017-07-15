@@ -93,4 +93,3 @@ Applications in Genetics and Molecular Biology}, 10 (1).
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
 \keyword{datasets}
-

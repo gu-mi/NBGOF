@@ -15,4 +15,3 @@ a data frame where each row is from hoa.1u() function output
 \author{
 Yanming Di Gu Mi
 }
-

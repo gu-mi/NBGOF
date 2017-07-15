@@ -2,6 +2,7 @@
 % Please edit documentation in R/glm.nbp.1.MLE.R, R/glm.nbp.1.R
 \name{irls.nbp.1}
 \alias{irls.nbp.1}
+\alias{irls.nbp.1}
 \title{Estiamte the regression coefficients in an NBP GLM model}
 \usage{
 irls.nbp.1(y, s, x, phi0, alpha1, beta0 = rep(NA, p), maxit = 50,
@@ -90,4 +91,3 @@ dl/dkappa dkappa/dbeta
 
 to the score equation.
 }
-

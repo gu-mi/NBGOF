@@ -17,4 +17,3 @@ This function prepares quantities for making diagnostic plots of negative binomi
 The result (a list) will be passed to the \code{\link{diagPlot}} function to make histogram of p-values and uniform Q-Q plots.
 }
 \keyword{internal}
-

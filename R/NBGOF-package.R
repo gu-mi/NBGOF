@@ -49,6 +49,7 @@
 #' @aliases NBGOF-package NBGOF
 #' @docType package
 #' @import NBPSeq edgeR numDeriv MASS parallel foreach ggplot2 grid
+#' @useDynLib NBGOF Cdqrls
 #' 
 #' @author Gu Mi <neo.migu@@gmail.com>, Yanming Di, Daniel Schafer
 #' 

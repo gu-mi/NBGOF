@@ -42,10 +42,9 @@ pl.arab = MDPlot(model.vec, counts, x, title="Mean-Dispersion Plot with Fitted D
 print(pl.arab)
 
 }
-\author{
-Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
-}
 \references{
 See \url{https://github.com/gu-mi/NBGOF/wiki/} for more details.
 }
-
+\author{
+Gu Mi <mig@stat.oregonstate.edu>, Yanming Di, Daniel Schafer
+}

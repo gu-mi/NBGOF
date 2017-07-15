@@ -15,4 +15,3 @@ phi.hat and mu.hat
 \author{
 Yanming Di Gu Mi
 }
-
