@@ -6,7 +6,7 @@ Description: An R package for implementing goodness-of-fit tests for negative bi
           (NB) distributions and NB dispersion models, with applications in RNA-Seq data
           analysis.
 Version: 0.2.2
-Date: 2017-07-15
+Date: 2017-07-18
 License: GPL-2
 Author: Gu Mi <neo.migu@gmail.com>, Yanming Di <diy@stat.oregonstate.edu>, Daniel Schafer
           <schafer@science.oregonstate.edu>

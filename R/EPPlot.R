@@ -37,7 +37,13 @@ eppdata = function(gofv.obj, envelope=0.95){
   }
   n.star = quantile(sv, probs=envelope)   # n* in Buja and Rolke, page 32, which determines the lower/upper simultaneous bounds
   ord.res.sim.mat2 = apply(gofv.obj$ord.res.sim.mat, 2, sort)
-  sci.lower = ord.res.sim.mat2[sim + 1 - n.star, ]
+  # avoid row index (sim+1-n.star) equals zero
+  if (sim + 1 - n.star == 0) {
+    sci.lower = ord.res.sim.mat2[1, ]
+  }
+  else {
+    sci.lower = ord.res.sim.mat2[sim + 1 - n.star, ]
+  }
   sci.upper = ord.res.sim.mat2[n.star, ]
   
   out.ind.sci = ( (ord.res.obs < sci.lower) | (ord.res.obs > sci.upper) )
