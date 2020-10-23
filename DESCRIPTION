@@ -5,8 +5,8 @@ Title: Goodness-of-Fit Tests and Model Diagnostics for Negative Binomial Regress
 Description: An R package for implementing goodness-of-fit tests for negative binomial
           (NB) distributions and NB dispersion models, with applications in RNA-Seq data
           analysis.
-Version: 0.2.3
-Date: 2018-04-12
+Version: 0.2.4
+Date: 2020-10-23
 License: GPL-2
 Author: Gu Mi <neo.migu@gmail.com>, Yanming Di <diy@stat.oregonstate.edu>, Daniel Schafer
           <schafer@science.oregonstate.edu>
@@ -19,4 +19,4 @@ LazyData: yes
 LazyLoad: yes
 URL: https://github.com/gu-mi/NBGOF
 BugReports: https://github.com/gu-mi/NBGOF/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 7.1.1
